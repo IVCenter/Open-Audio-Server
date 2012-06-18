@@ -7,9 +7,10 @@ Installation and Set-Up
 1.  Download the source code.
 2.  Change to the build directory.
         cd build
-3.  If you want to configure options yourself, type ccmake ..
-    Otherwise, if you want to go with default options you can just type cmake ..
-4.  Then, you can make install
+3.  If you want to configure options yourself, type `ccmake ..`
+    Otherwise, if you want to go with default options you can just type `cmake ..`
+4.  Then, you can compile with `make` and install with `make install`
+5.  To generate documentation with Doxygen, use `make docs`
 
 Usage
 -----
