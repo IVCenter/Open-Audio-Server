@@ -1,13 +1,46 @@
-ADD_EXECUTABLE(OAS src/OASServer.cpp src/OASSocketHandler.cpp
-src/OASAudioHandler.cpp src/OASAudioBuffer.cpp src/OASAudioSource.cpp 
-src/OASAudioListener.cpp src/OASLogger.cpp src/OASServerWindow.cpp 
-src/OASFileHandler.cpp src/OASMessage.cpp src/OASServerInfo.cpp 
-src/OASServerWindowLogBrowser.cpp src/OASServerWindowTable.cpp)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+
+# Set the build type
+SET(OAS_DEFAULT_CMAKE_BUILD_TYPE RelWithDebInfo)
+
+IF(DEFINED CMAKE_BUILD_TYPE)
+   SET(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel")
+ELSE()
+   SET(CMAKE_BUILD_TYPE ${OAS_DEFAULT_CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel.")
+ENDIF()
+
+# Start defining the project
+PROJECT (OAS)
+
+SET(OAS_MAJOR_VERSION 0)
+SET(OAS_MINOR_VERSION 9)
+SET(OAS_VERSION "${OAS_MAJOR_VERSION}.${OAS_MINOR_VERSION}")
+
+SET(CMAKE_MODULE_PATH "${OAS_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
+
+SET(EXECUTABLE_OUTPUT_PATH "${OAS_SOURCE_DIR}/build/bin")
 
 FIND_PACKAGE(OPENAL REQUIRED)
 FIND_PACKAGE(ALUT REQUIRED)
-FIND_PACKAGE(FLTK REQUIRED)
+FIND_PACKAGE(FLTK 1.3.0)
 FIND_PACKAGE(MXML REQUIRED)
+
+ADD_EXECUTABLE(OAS
+    src/OASServer.cpp 
+    src/OASSocketHandler.cpp
+    src/OASAudioHandler.cpp 
+    src/OASAudioBuffer.cpp 
+    src/OASAudioSource.cpp 
+    src/OASAudioListener.cpp 
+    src/OASLogger.cpp 
+    src/OASServerWindow.cpp 
+    src/OASFileHandler.cpp 
+    src/OASMessage.cpp 
+    src/OASServerInfo.cpp 
+    src/OASServerWindowLogBrowser.cpp 
+    src/OASServerWindowTable.cpp
+    )
+
 
 INCLUDE_DIRECTORIES(src)
 INCLUDE_DIRECTORIES(${OPENAL_INCLUDE_DIR})
@@ -21,4 +54,5 @@ TARGET_LINK_LIBRARIES(OAS ${FLTK_LIBRARY})
 TARGET_LINK_LIBRARIES(OAS ${MXML_LIBRARY})
 
 INSTALL(TARGETS OAS DESTINATION bin)
+
 
