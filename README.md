@@ -11,6 +11,8 @@ Installation and Set-Up
     Otherwise, if you want to go with default options you can just type `cmake ..`
 4.  Then, you can compile with `make` and install with `make install`
 5.  To generate documentation with Doxygen, use `make docs`
+6.  Look at the sample configuration file `sample_oas_config.xml` to view or set runtime
+    server options, such as port address and audio output device.
 
 Usage
 -----
