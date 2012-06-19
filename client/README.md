@@ -1,0 +1,17 @@
+OAS Client API
+=================
+
+Installation and Set-Up
+-----------------------
+
+1.  Checkout the source code.
+2.  From inside the checked out repository, change to the build directory,
+    with `cd build`
+3.  If you want to configure options yourself, type `ccmake ..`
+    Otherwise, if you want to go with default options you can just type `cmake ..`
+
+    Default options will install the library and include files to `/usr/local`
+4.  Then, you can compile with `make` and install the library with `make install`
+5.  To generate documentation with Doxygen, use `make docs`
+
+
