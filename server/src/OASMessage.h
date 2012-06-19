@@ -17,6 +17,8 @@
 namespace oas
 {
 
+#define MAX_MESSAGE_SIZE 1024
+
 // Message Type Strings
 #define M_TEST									    "TEST"
 #define M_GET_HANDLE            				    "GHDL"

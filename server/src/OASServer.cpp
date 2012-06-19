@@ -18,22 +18,26 @@ bool oas::Server::_readConfigFile(int argc, char **argv)
         return false;
     }
 
-    std::string configFile;
+    std::string configFilePath(argv[1]);
+
+    // Check if the command line arg is unreasonably large to stop simple buffer overflow attacks
+    if (configFilePath.size() > 1024)
+    {
+    	oas::Logger::logf("The specified config file location is unreasonably large.\n");
+    	return false;
+    }
+
     oas::FileHandler fh;
 
 	// Check the first argument as the config file location
-	if (fh.doesFileExist(argv[1]))
+	if (!fh.doesFileExist(configFilePath))
 	{
-		configFile = argv[1];
-	}
-	else
-	{
-		oas::Logger::errorf("The specified configuration file at '%s' does not exist.\n", argv[1]);
+		oas::Logger::errorf("The specified configuration file at '%s' does not exist.\n", configFilePath.c_str());
 		return false;
 	}
 
     // Load the XML file
-    if (!fh.loadXML(configFile, "OAS"))
+    if (!fh.loadXML(configFilePath, "OAS"))
     {
     	oas::Logger::errorf("Unable to load a valid configuration file!");
     	return false;

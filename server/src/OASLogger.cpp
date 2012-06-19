@@ -14,7 +14,7 @@ void Logger::logf(const char *message, ...)
     va_list args;
 
     va_start(args, message);
-    sprintf(buf, "%s%s", ServerWindow::getNullBrowserFormatter(), 
+    sprintf(buf, "%s%s", ServerWindow::getNullBrowserFormatter(),
                          message ? message : "(null)");
     Logger::_sendFormattedOutput(buf, args);
     va_end(args);

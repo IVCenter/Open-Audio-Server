@@ -224,22 +224,6 @@ bool Message::_parseFloatParameter(char *startBuf, char*& pEnd, const int maxPar
 
 Message::MessageError Message::parseString(char*& messageString, const int maxParseAmount, int& totalParsed)
 {
-    //    
-    // All cases:
-    //          endMessageString needs to point to just after the end of the current message
-    //          endMessageString = startMessageString + totalParsed
-    //          return appropriate error message
-    // Case 1: messageString does not contain a complete message
-    //          need to make a copy of the messagestring so that original buffer is not mangled
-    //          need to halt parsing if maxParseAmount is reached
-    //          the next read must append to the message string, but the message must be parsed from the very beginning
-    // Case 2: messageString contains valid message plus 0 or more bytes of extra stuff
-    //          values in message should be set accordingly
-    // Case 3: messageString does not contain valid message (e.g. parameters incorrect (and not incomplete) or message
-    //			 type unknown)
-    //          return appropriate error message
-    //char *startBuf, char*& pEnd, int maxParseAmount, unsigned int& totalParsed)
-
     // Perform preliminary validation of the input string
     if (!messageString)
     {
@@ -247,7 +231,7 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
         return _errorType;
     }
 
-    char tokenBuf[512];
+    char tokenBuf[MAX_MESSAGE_SIZE + 1];
     char *pType, *pEnd, *pChar;
     bool isSuccess = false;
 
@@ -269,7 +253,8 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
         return _errorType;
     }
 
-    // Replace all newline/carriage returns with a blank space to fix FLTK browser text rendering
+    // Replace all newline/carriage returns with a blank space
+    // This kludge FLTK browser text rendering of newline/carriage returns
     for (pChar = messageString; *pChar; pChar++)
     {
         if (*pChar == '\n' || *pChar == '\r')
@@ -278,12 +263,11 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
         }
     }
 
-    //oas::Logger::logf("Parsing string \"%s\"", messageString);
-
     this->_originalString = std::string(messageString);
 
     // Copy the original string into a buffer
-    strcpy(tokenBuf, messageString);
+    strncpy(tokenBuf, messageString, MAX_MESSAGE_SIZE);
+    tokenBuf[MAX_MESSAGE_SIZE] = '\0';
     
     // Get the first token: message type
     // Parse, and then make sure we aren't parsing more than we should be
