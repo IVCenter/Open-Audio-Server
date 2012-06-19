@@ -17,7 +17,7 @@ class ServerInfo
 public:
 
     std::string const& getCacheDirectory() const;
-    unsigned short getPort() const;
+    long int getPort() const;
 
     std::string const& getAudioDeviceString() const;
     void setAudioDeviceString(std::string const& audioDevice);
@@ -25,13 +25,13 @@ public:
     bool useGUI() const;
     void setGUI(bool useGUI);
 
-    ServerInfo(std::string const& cacheDirectory, unsigned short port);
+    ServerInfo(std::string const& cacheDirectory, long int port);
 
 private:
     ServerInfo();
 
     std::string _cacheDirectory;
-    unsigned short _port;
+    long int _port;
     std::string _audioDeviceString;
     bool _useGUI;
 };

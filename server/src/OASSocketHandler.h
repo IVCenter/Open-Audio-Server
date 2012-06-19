@@ -36,7 +36,7 @@ namespace oas
 class SocketHandler
 {
     public:
-        static bool initialize(unsigned short listeningPort);
+        static bool initialize(long int listeningPort);
         static void terminate();
         static bool isSocketOpen();
         static bool isConnectedToClient();
@@ -71,6 +71,7 @@ class SocketHandler
         static void  _receiveBinaryFile(int connection, const Message& ptfi);
         static void  _addToIncomingMessages(Message *message);
         static char* _getNextOutgoingResponse();
+        static bool _validatePortNumber(long int portNum);
         SocketHandler();
         ~SocketHandler();
 }; // End class SocketHandler

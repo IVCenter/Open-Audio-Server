@@ -9,68 +9,41 @@ oas::Server& oas::Server::getInstance()
 }
 
 // private
-void oas::Server::_readConfigFile(int argc, char **argv)
+bool oas::Server::_readConfigFile(int argc, char **argv)
 {
-    const std::string defaultConfigFileLocation = "oas_config.xml";
+    // If there aren't any command line arguments
+    if (argc < 2)
+    {
+        oas::Logger::logf("Usage: \"%s [config file]\"\n", argv[0]);
+        return false;
+    }
+
     std::string configFile;
-    bool fileExists = false;
-
-    oas::FileHandler fileHandler;
-
-    // If there are command line arguments
-    if (argc > 1)
-    {
-        // Check the first argument as the config file location
-        if (fileHandler.doesFileExist(argv[1]))
-        {
-            // File exists, so use it
-            fileExists = true;
-            configFile = argv[1];
-        }
-        else
-        {
-            oas::Logger::logf(  "The file at '%s' does not exist. Checking for a default configuration file at: ",
-                                "'%s'\n", argv[1], defaultConfigFileLocation.c_str());
-        }
-    }
-    else
-    {
-        oas::Logger::logf(  "Usage: \"%s [config file]\"\n", argv[0]);
-        oas::Logger::logf(  "No config file parameter given. Checking for a default configuration file at: "
-                            "'%s'\n", defaultConfigFileLocation.c_str());
-    }
-
-    // If no valid config file has been found
-    if (!fileExists)
-    {
-        // Try the default config file location
-        if (fileHandler.doesFileExist(defaultConfigFileLocation))
-        {
-            configFile = defaultConfigFileLocation;
-            fileExists = true;
-        }
-        // Else, we have failed to load any configuration
-        else
-        {
-            // @TODO: Use default settings, and generate default config file
-            // For now, we say this is a warning, and load the hardcoded defaults.
-            oas::Logger::warnf("Unable to load configuration file.");
-
-            // Use defaults
-            this->_serverInfo = new ServerInfo("/home/calvr/CalVR/applications/OAS/cache/", 31231);
-           
-            return;
-        }
-    }
-
-    // At this point, we have guaranteed that a config file exists.
-    
-    // Load the XML file
     oas::FileHandler fh;
+
+	// Check the first argument as the config file location
+	if (fh.doesFileExist(argv[1]))
+	{
+		configFile = argv[1];
+	}
+	else
+	{
+		oas::Logger::errorf("The specified configuration file at '%s' does not exist.\n", argv[1]);
+		return false;
+	}
+
+    // Load the XML file
     if (!fh.loadXML(configFile, "OAS"))
     {
-        this->_fatalError("Unable to load a valid configuration file.");
+    	oas::Logger::errorf("Unable to load a valid configuration file!");
+    	return false;
     }
+
+    /*
+     * Parse required sections of the config file:
+     *   cache directory
+     *   port
+     */
 
     std::string cacheDirectory; 
     std::string port;
@@ -90,7 +63,11 @@ void oas::Server::_readConfigFile(int argc, char **argv)
             this->_fatalError("Could not retrieve port number information from configuration file.");
     }
 
-    // Optional sections of the config file
+    /*
+     * Parse optional sections of the config file:
+     *   audioDevice
+     *   gui
+     */
     std::string audioDevice;
     std::string gui;
 
@@ -100,7 +77,9 @@ void oas::Server::_readConfigFile(int argc, char **argv)
     // GUI is enabled by default. We disable it only if explicitly specified
     this->_serverInfo->setGUI(true);
 
-    if (fh.findXML("gui", NULL, NULL, gui) && gui.size())
+    if (fh.findXML("gui", NULL, NULL, gui)
+    		&& gui.size())
+    {
         if (!gui.compare("off") 
             || !gui.compare("false")
             || !gui.compare("no")
@@ -110,6 +89,9 @@ void oas::Server::_readConfigFile(int argc, char **argv)
             oas::Logger::logf("The GUI has been disabled, as requested by the configuration file.");
             this->_serverInfo->setGUI(false);
         }
+    }
+
+    return true;
 }
 
 // private
@@ -274,7 +256,12 @@ void oas::Server::_processMessage(const Message &message)
 // public
 void oas::Server::initialize(int argc, char **argv)
 {
-    this->_readConfigFile(argc, argv);
+	// Attempt to read the config file specified by the command line argument
+    if (!this->_readConfigFile(argc, argv))
+    {
+    	// Exit if failed
+    	exit(1);
+    }
 
     if (this->_serverInfo->useGUI() 
         && !oas::ServerWindow::initialize(argc, argv, &oas::Server::_atExit))
@@ -400,8 +387,7 @@ double oas::Server::_computeElapsedTime(struct timeval start, struct timeval end
 // private, static
 void oas::Server::_fatalError(const char *errorMessage)
 {
-    std::cerr << "\n\n" 
-              << "OAS: Fatal Error occured!\n"
+    std::cerr << "OAS: Fatal Error occured!\n"
               << "     Error: " << errorMessage << "\n"
               << "Exiting OAS...\n\n";
     exit(1);

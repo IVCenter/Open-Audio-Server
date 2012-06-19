@@ -35,7 +35,7 @@ class FileHandler
 public:
 
     /**
-     * Static method to sets up FileHandler with a root cache directory. 
+     * Static method to set up all FileHandlers with a root cache directory.
      * All FileHandler instances will share this cache directory path.
      * @param cacheDirectoryPath Path of the cache directory
      * @retval True Directory is valid and exists
@@ -44,7 +44,7 @@ public:
     static bool initialize(const std::string &cacheDirectoryPath);
 
     /**
-     * @brief Checks if 'cacheDirectory/filename' exists.
+     * @brief Checks if file at filePath exists.
      * @param filename Name of file to check
      * @retval True File exists and can be opened
      * @retval False File does not exist or cannot be opened

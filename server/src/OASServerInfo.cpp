@@ -8,7 +8,7 @@ ServerInfo::ServerInfo()
 }
 
 ServerInfo::ServerInfo( std::string const& cacheDirectory, 
-                        unsigned short port):
+                        long int port):
                         _cacheDirectory(cacheDirectory),
                         _port(port)
 {
@@ -20,7 +20,7 @@ std::string const& ServerInfo::getCacheDirectory() const
     return this->_cacheDirectory;
 }
 
-unsigned short ServerInfo::getPort() const
+long int ServerInfo::getPort() const
 {
     return this->_port;
 }

@@ -37,7 +37,7 @@ private:
     ServerInfo* _serverInfo;
 
     // private worker methods
-    void _readConfigFile(int argc, char **argv);
+    bool _readConfigFile(int argc, char **argv);
     static void* _serverLoop(void *parameter);
     void _processMessage(const Message &message);
     void _fatalError(const char *errorMessage);

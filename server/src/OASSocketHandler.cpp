@@ -24,7 +24,7 @@ bool                    SocketHandler::_isConnectedToClient = false;
 
 
 // static, public
-bool SocketHandler::initialize(unsigned short listeningPort)
+bool SocketHandler::initialize(long int listeningPort)
 {
     // If already initialized, close the socket so that it can be re-opened
     if (SocketHandler::isSocketOpen())
@@ -32,6 +32,10 @@ bool SocketHandler::initialize(unsigned short listeningPort)
         SocketHandler::_closeSocket();
     }
 
+    if (!_validatePortNumber(listeningPort))
+    {
+    	return false;
+    }
     SocketHandler::_listeningPort = listeningPort;
 
     // Initialize mutexes
@@ -583,3 +587,16 @@ char* SocketHandler::_getNextOutgoingResponse()
     return retval;
 }
 
+// static, private
+bool SocketHandler::_validatePortNumber(long int portNum)
+{
+	if (portNum > 0 && portNum <= 65535)
+	{
+		return true;
+	}
+	else
+	{
+    	oas::Logger::errorf("The specified port number, %ld, is invalid! Values must be between 1 and 65535", portNum);
+		return false;
+	}
+}
