@@ -1,4 +1,5 @@
 # Ignore Eclipse/Workspace settings
 .cproject
 .project
+.settings
 

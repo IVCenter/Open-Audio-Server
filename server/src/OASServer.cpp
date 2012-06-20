@@ -324,9 +324,9 @@ void* oas::Server::_serverLoop(void *parameter)
 
     while (1)
     {
-        // If a client is connected, use a very short timeout to give fast updates
+        // If a client is connected, use a very short timeout allowing for fast updates
         if (SocketHandler::isConnectedToClient())
-            _computeTimeout(timeOut, 0, 100);
+            _computeTimeout(timeOut, 0, 500000); // 500,000 nanoseconds = 500 microseconds
         // Else use a longer timeout to save CPU cycles
         else
             _computeTimeout(timeOut, 5, 0);
@@ -367,30 +367,32 @@ void* oas::Server::_serverLoop(void *parameter)
 }
 
 // private, static
-void oas::Server::_computeTimeout(struct timespec &timeout, unsigned long timeoutSeconds, unsigned long timeoutMicroseconds)
+void oas::Server::_computeTimeout(struct timespec &timeout, unsigned long timeoutSeconds, unsigned long timeoutNanoseconds)
 {
-    struct timeval currTime;
-    unsigned long microSeconds, seconds;
+    struct timespec currTime;
+    unsigned long int nanoseconds;
 
-    gettimeofday(&currTime, NULL);
+    clock_gettime(CLOCK_MONOTONIC, &currTime);
 
-    microSeconds = currTime.tv_usec + timeoutMicroseconds;
-    seconds = currTime.tv_sec + timeoutSeconds + (microSeconds / 1000000);
-    microSeconds = microSeconds % 1000000;
-
-    timeout.tv_sec = seconds;
-    timeout.tv_nsec = microSeconds * 1000;
-
-}
-
-double oas::Server::_computeElapsedTime(struct timeval start, struct timeval end)
-{
-    return ((end.tv_sec + ((double) end.tv_usec / 1000000.0)) - (start.tv_sec + ((double) start.tv_usec / 1000000.0))); 
+    if (0 != timeoutNanoseconds)
+    {
+    	nanoseconds = currTime.tv_nsec + timeoutNanoseconds;
+    	timeout.tv_sec = currTime.tv_sec + timeoutSeconds + (nanoseconds / 1000000000);
+    	timeout.tv_nsec = nanoseconds % 1000000000;
+    }
+    else
+    {
+    	timeout.tv_sec = currTime.tv_sec + timeoutSeconds;
+    	timeout.tv_nsec = currTime.tv_nsec;
+    }
 }
 
 // private, static
 void oas::Server::_fatalError(const char *errorMessage)
 {
+	if (!errorMessage)
+		errorMessage = "(no error was provided)";
+
     std::cerr << "OAS: Fatal Error occured!\n"
               << "     Error: " << errorMessage << "\n"
               << "Exiting OAS...\n\n";

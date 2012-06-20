@@ -43,8 +43,14 @@ bool SocketHandler::initialize(long int listeningPort)
     pthread_mutex_init(&SocketHandler::_outMutex, NULL);
 
     // Initialize condition variables
-    pthread_cond_init(&SocketHandler::_inCondition, NULL);
+    pthread_condattr_t inCondAttr;
+    pthread_condattr_init(&inCondAttr);
+    // Have the inCondition use the monotonic clock, for pthread_condtimedwait()
+    pthread_condattr_setclock(&inCondAttr, CLOCK_MONOTONIC);
+
+    pthread_cond_init(&SocketHandler::_inCondition, &inCondAttr);
     pthread_cond_init(&SocketHandler::_outCondition, NULL);
+    pthread_condattr_destroy(&inCondAttr);
 
     // Thread attribute variable
     pthread_attr_t threadAttr;

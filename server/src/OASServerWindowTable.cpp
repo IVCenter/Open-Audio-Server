@@ -29,7 +29,13 @@ ServerWindowTable::ServerWindowTable(int X, int Y, int W, int H, const char *L,
     pthread_mutex_init(&_mapMutex, NULL);
 
     // Initialize condition variable
-    pthread_cond_init(&_queueCondition, NULL);
+    pthread_condattr_t queueConditionAttr;
+    pthread_condattr_init(&queueConditionAttr);
+    // Have the queueCondition use the monotonic clock, for pthread_condtimedwait()
+    pthread_condattr_setclock(&queueConditionAttr, CLOCK_MONOTONIC);
+
+    pthread_cond_init(&_queueCondition, &queueConditionAttr);
+    pthread_condattr_destroy(&queueConditionAttr);
 
     _audioUnitMapModified = false;
 }
@@ -94,7 +100,6 @@ void ServerWindowTable::audioUnitsWereModified(std::queue<const AudioUnit*> &aud
     pthread_cond_signal(&_queueCondition);
     // Unlock mutex
     pthread_mutex_unlock(&_queueMutex);
-
 }
 
 void ServerWindowTable::update()
@@ -112,12 +117,13 @@ void ServerWindowTable::update()
     pthread_mutex_lock(&_queueMutex);
 
     // Compute timeout
-    struct timeval currTime;
+    struct timespec currTime;
     struct timespec timeout;
-    gettimeofday(&currTime, NULL);
+    clock_gettime(CLOCK_MONOTONIC, &currTime);
+    unsigned long int nanoseconds = currTime.tv_nsec + 10000000; // 10,000,000 nanoseconds = 10 milliseconds
 
-    timeout.tv_sec = currTime.tv_sec + ((currTime.tv_usec + 1000) / 1000000);
-    timeout.tv_nsec = ((currTime.tv_usec + 1000) % 1000000) * 1000;
+    timeout.tv_sec = currTime.tv_sec + (nanoseconds / 1000000000);
+    timeout.tv_nsec = (nanoseconds % 1000000000);
 
     // wait (block) on the condition variable with timeout
     // this effectively waits for the queue to have some content, without spinlocking
