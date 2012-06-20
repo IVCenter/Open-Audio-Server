@@ -102,6 +102,30 @@ bool AudioSource::_wasOperationSuccessful()
     }
 }
 
+// private
+bool AudioSource::_checkIncrementalFade()
+{
+	if (!isValid() || 0 > _fadeToGainValue)
+		return false;
+
+	// Determine how much time passed since previous call to checkIncrementalFade(),
+	// using _prevIncrementalFadeTime
+
+	struct timespec currTime;
+	clock_gettime(CLOCK_MONOTONIC, &currTime);
+
+	float interval; // interval = currTime - _prevIncrementalFadeTime;
+	float elapsed;  // elapsed  = currTime - _fadeStartTime;
+	float remaining; // remaining = _fadeEndTime - currTime;
+	float gainIncrement; // gainIncrement = interval/remaining * (curr_gain - _fadeToGain)
+	// setGain(currGain - gainIncrement)
+
+	// Compare the interval to the amount of time that remains
+
+	return true;
+}
+
+
 // static, public
 void AudioSource::resetSources()
 {
@@ -139,8 +163,10 @@ bool AudioSource::update(bool forceUpdate)
             break;
     }
 
+    bool didFade = _checkIncrementalFade();
+
     // If the new state is the same as the old state, return false
-    if (newState == this->_state)
+    if (newState == this->_state && !didFade)
     {
         return false;
     }
@@ -249,6 +275,33 @@ bool AudioSource::setGain(ALfloat gain)
     }
 
     return false;
+}
+
+bool AudioSource::setFade(ALfloat fadeToGainValue, ALfloat durationInSeconds)
+{
+	if (isValid())
+	{
+		_clearError();
+
+		_fadeToGainValue = fadeToGainValue;
+
+		if (_fadeToGainValue < 0)
+			return false;
+
+		clock_gettime(CLOCK_MONOTONIC, &_fadeStartTime);
+		unsigned long int seconds, nanoseconds;
+
+		seconds = (int) durationInSeconds;
+		nanoseconds = (unsigned long int) ((durationInSeconds - seconds) * 1000000000);
+		nanoseconds += _fadeStartTime.tv_nsec;
+
+		_fadeEndTime.tv_nsec = nanoseconds % 1000000000;
+		_fadeEndTime.tv_sec = _fadeStartTime.tv_sec + seconds + (nanoseconds / 1000000000);
+
+		return true;
+	}
+
+	return false;
 }
 
 bool AudioSource::setLoop(ALint isLoop)

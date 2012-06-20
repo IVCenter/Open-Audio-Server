@@ -8,6 +8,7 @@
 #define _OAS_AUDIOSOURCE_H_
 
 #include <string>
+#include <time.h>
 #include <AL/alut.h>
 #include "OASAudioUnit.h"
 
@@ -72,6 +73,11 @@ public:
      * @brief Set the gain
      */
     virtual bool setGain(ALfloat gain);
+
+    /**
+     * @brief Set the audio source to fade in/out to a gain value, over the given duration (in seconds)
+     */
+    bool setFade(ALfloat fadeEndGainValue, ALfloat durationInSeconds);
 
     /**
      * @brief Set the position
@@ -184,6 +190,7 @@ private:
     ALuint _generateNextHandle();
     void _clearError();
     bool _wasOperationSuccessful();
+    bool _checkIncrementalFade();
 
     /*
      * 'id' is used to interact with the OpenAL library, and the values are arbitrary.
@@ -207,6 +214,11 @@ private:
     ALint _isLooping;
     bool _isDirectional;
 
+    ALfloat _fadeToGainValue;
+    struct timespec _fadeStartTime;
+    struct timespec _fadeEndTime; 	// _fadeEndTime = _fadeStartTime + fade duration
+    struct timespec _prevIncrementalFadeTime;
+    Alfloat _prevIncrementalFadeAmount;
 
     static ALuint _nextHandle;
     static const ALfloat _kConeInnerAngle = 45.0;
