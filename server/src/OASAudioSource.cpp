@@ -105,6 +105,7 @@ bool AudioSource::_wasOperationSuccessful()
 // private
 bool AudioSource::_checkIncrementalFade()
 {
+	// If the source isn't valid or the fade to gain value is negative, then we don't need to fade
 	if (!isValid() || 0 > _fadeToGainValue)
 		return false;
 
@@ -114,15 +115,46 @@ bool AudioSource::_checkIncrementalFade()
 	struct timespec currTime;
 	clock_gettime(CLOCK_MONOTONIC, &currTime);
 
-	float interval; // interval = currTime - _prevIncrementalFadeTime;
-	float elapsed;  // elapsed  = currTime - _fadeStartTime;
-	float remaining; // remaining = _fadeEndTime - currTime;
-	float gainIncrement; // gainIncrement = interval/remaining * (curr_gain - _fadeToGain)
-	// setGain(currGain - gainIncrement)
+//	if (currTime > _fadeEndTime)
+//	{
+//		setGain(_fadeToGainValue);
+//		_fadeToGainValue = -1;
+//		_prevIncrementalFadeTime = {0, 0};
+//
+//		return true;
+//	}
 
-	// Compare the interval to the amount of time that remains
+	double gainDelta;
 
-	return true;
+	// If the previous incremental fade time is 0, then we cannot compute the interval right away
+	// So shortcut the gainIncrement to +/- 0.001
+	if (_prevIncrementalFadeTime.tv_sec == 0)
+	{
+		if (_fadeToGainValue > getGain())
+			gainDelta = +0.001;
+		else
+			gainDelta = -0.001;
+	}
+	else
+	{
+		double remaining, interval, elapsed;
+		// remaining = _fadeEndTime - currTime;
+
+		// interval = currTime - _prevIncrementalFadeTime;
+		// elapsed  = currTime - _fadeStartTime;
+
+		// gainDelta = interval/remaining * (_fadeToGainValue - getGain())
+	}
+
+//	if (setGain(currTime + gainDelta))
+//	{
+//		_prevIncrementalFadeTime = currTime;
+//		return true;
+//	}
+//	else
+//	{
+//		return false;
+//	}
 }
 
 

@@ -8,10 +8,9 @@
 #define _OAS_AUDIOSOURCE_H_
 
 #include <string>
-#include <time.h>
 #include <AL/alut.h>
 #include "OASAudioUnit.h"
-
+#include "OASTime.h"
 
 namespace oas
 {
@@ -214,11 +213,11 @@ private:
     ALint _isLooping;
     bool _isDirectional;
 
-    ALfloat _fadeToGainValue;
+    double _fadeToGainValue;
     struct timespec _fadeStartTime;
     struct timespec _fadeEndTime; 	// _fadeEndTime = _fadeStartTime + fade duration
     struct timespec _prevIncrementalFadeTime;
-    Alfloat _prevIncrementalFadeAmount;
+    double _prevIncrementalFadeAmount;
 
     static ALuint _nextHandle;
     static const ALfloat _kConeInnerAngle = 45.0;

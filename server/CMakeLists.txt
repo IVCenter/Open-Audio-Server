@@ -63,6 +63,7 @@ ADD_EXECUTABLE(OAS
     src/OASServerInfo.cpp 
     src/OASServerWindowLogBrowser.cpp 
     src/OASServerWindowTable.cpp
+    src/OASTime.cpp
     )
 
 
