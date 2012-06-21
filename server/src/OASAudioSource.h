@@ -76,7 +76,7 @@ public:
     /**
      * @brief Set the audio source to fade in/out to a gain value, over the given duration (in seconds)
      */
-    bool setFade(ALfloat fadeEndGainValue, ALfloat durationInSeconds);
+    bool setFade(ALfloat fadeToGainValue, ALfloat durationInSeconds);
 
     /**
      * @brief Set the position
@@ -214,9 +214,9 @@ private:
     bool _isDirectional;
 
     double _fadeToGainValue;
-    struct timespec _fadeStartTime;
-    struct timespec _fadeEndTime; 	// _fadeEndTime = _fadeStartTime + fade duration
-    struct timespec _prevIncrementalFadeTime;
+    Time _fadeStartTime;
+    Time _fadeEndTime; 	// _fadeEndTime = _fadeStartTime + fade duration
+    Time _prevIncrementalFadeTime;
     double _prevIncrementalFadeAmount;
 
     static ALuint _nextHandle;

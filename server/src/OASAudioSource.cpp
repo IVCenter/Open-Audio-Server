@@ -106,29 +106,38 @@ bool AudioSource::_wasOperationSuccessful()
 bool AudioSource::_checkIncrementalFade()
 {
 	// If the source isn't valid or the fade to gain value is negative, then we don't need to fade
-	if (!isValid() || 0 > _fadeToGainValue)
+	if (!isValid() || 0 > _fadeToGainValue || !_fadeEndTime.hasTime())
 		return false;
 
-	// Determine how much time passed since previous call to checkIncrementalFade(),
-	// using _prevIncrementalFadeTime
+	// Check if we have already reached the desired gain value
+	if (getGain() == _fadeToGainValue)
+	{
+		_fadeToGainValue = -1;
+		_prevIncrementalFadeTime.reset();
+		_fadeEndTime.reset();
 
-	struct timespec currTime;
-	clock_gettime(CLOCK_MONOTONIC, &currTime);
+		return true;
+	}
 
-//	if (currTime > _fadeEndTime)
-//	{
-//		setGain(_fadeToGainValue);
-//		_fadeToGainValue = -1;
-//		_prevIncrementalFadeTime = {0, 0};
-//
-//		return true;
-//	}
+	Time currTime;
+	currTime.update();
+
+	// Check if we have reached the fade end time already
+	if (currTime > _fadeEndTime)
+	{
+		setGain(_fadeToGainValue);
+		_fadeToGainValue = -1;
+		_prevIncrementalFadeTime.reset();
+		_fadeEndTime.reset();
+		return true;
+	}
 
 	double gainDelta;
 
-	// If the previous incremental fade time is 0, then we cannot compute the interval right away
-	// So shortcut the gainIncrement to +/- 0.001
-	if (_prevIncrementalFadeTime.tv_sec == 0)
+	// If the previous incremental fade time is not stored, then we cannot
+	// compute the interval right away.
+	// So shortcut the gainDelta to +/- 0.001
+	if (!_prevIncrementalFadeTime.hasTime())
 	{
 		if (_fadeToGainValue > getGain())
 			gainDelta = +0.001;
@@ -137,24 +146,32 @@ bool AudioSource::_checkIncrementalFade()
 	}
 	else
 	{
-		double remaining, interval, elapsed;
-		// remaining = _fadeEndTime - currTime;
+		//std::cerr << "end: " << _fadeEndTime.asDouble() << " , curr: " << currTime.asDouble() << " , incr: " << _prevIncrementalFadeTime.asDouble() << std::endl;
+		double remaining, interval, ratioToIncrement;
 
-		// interval = currTime - _prevIncrementalFadeTime;
-		// elapsed  = currTime - _fadeStartTime;
+		remaining = (_fadeEndTime - currTime).asDouble();
+		interval = (currTime - _prevIncrementalFadeTime).asDouble();
 
-		// gainDelta = interval/remaining * (_fadeToGainValue - getGain())
+		ratioToIncrement = interval / remaining;
+		//std::cerr << "interval: " << interval << ", remaining: " << remaining << ", ratio: " << ratioToIncrement;
+
+		if (ratioToIncrement > 1)
+			ratioToIncrement = 1;
+
+		gainDelta = ratioToIncrement * (_fadeToGainValue - getGain());
 	}
 
-//	if (setGain(currTime + gainDelta))
-//	{
-//		_prevIncrementalFadeTime = currTime;
-//		return true;
-//	}
-//	else
-//	{
-//		return false;
-//	}
+	//std::cerr << ", gain: " << gainDelta << std::endl;
+
+	if (setGain(getGain() + gainDelta))
+	{
+		_prevIncrementalFadeTime = currTime;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 
@@ -320,15 +337,8 @@ bool AudioSource::setFade(ALfloat fadeToGainValue, ALfloat durationInSeconds)
 		if (_fadeToGainValue < 0)
 			return false;
 
-		clock_gettime(CLOCK_MONOTONIC, &_fadeStartTime);
-		unsigned long int seconds, nanoseconds;
-
-		seconds = (int) durationInSeconds;
-		nanoseconds = (unsigned long int) ((durationInSeconds - seconds) * 1000000000);
-		nanoseconds += _fadeStartTime.tv_nsec;
-
-		_fadeEndTime.tv_nsec = nanoseconds % 1000000000;
-		_fadeEndTime.tv_sec = _fadeStartTime.tv_sec + seconds + (nanoseconds / 1000000000);
+		_fadeStartTime.update();
+		_fadeEndTime = _fadeStartTime + Time(durationInSeconds);
 
 		return true;
 	}

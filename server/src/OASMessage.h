@@ -35,6 +35,7 @@ namespace oas
 #define M_SET_SOUND_DIRECTION_RELATIVE 	    	    "SSDR"
 #define M_SET_SOUND_DIRECTION_AND_GAIN_RELATIVE     "SSRV"
 #define M_SET_SOUND_PITCH                           "SPIT"
+#define M_FADE_SOUND								"FADE"
 #define M_GENERATE_SOUND_FROM_WAVEFORM              "WAVE"
 #define M_SET_LISTENER_POSITION                     "SLPO"
 #define M_SET_LISTENER_VELOCITY                     "SLVE"
@@ -79,6 +80,7 @@ public:
         MT_SSRV_HL_1F_1F,   // Set sound direction relative to listener and gain in one command
         MT_SSRV_HL_3F_1F,   // Set sound direction relative to listener and gain in one command
         MT_SPIT_HL_1F,      // Set pitch
+        MT_FADE_HL_1F_1F,	// Fade sound to gain value, over duration in seconds
         MT_WAVE_1I_3F,      // Generate a sound based on waveform
         MT_SLPO_3F,         // Set listener position
         MT_SLVE_3F,         // Set listener velocity

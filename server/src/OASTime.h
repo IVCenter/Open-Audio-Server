@@ -8,6 +8,7 @@
 #define _OAS_TIME_H_
 
 #include <time.h>
+#include <iostream>
 
 namespace oas
 {
@@ -17,8 +18,18 @@ namespace oas
 class Time
 {
 public:
-    double asDouble();
     void update();
+    void reset();
+
+    inline bool hasTime() const
+    {
+    	if (getSeconds() || getNanoseconds())
+    		return true;
+    	else
+    		return false;
+    }
+
+    double asDouble() const;
 
     inline long int getSeconds() const
     {
@@ -34,8 +45,10 @@ public:
     Time& operator-=(const Time &rhs);
     const Time& operator+(const Time &other) const;
     const Time& operator-(const Time &other) const;
+    bool operator>(const Time &other) const;
 
-    Time(double floatingRepresentation);
+    Time(double floatingRepresentationInSeconds);
+    Time();
     
 private:
 

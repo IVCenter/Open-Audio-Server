@@ -24,12 +24,6 @@ namespace oas
  * units.
  */
 
-//class StringComparison
-//{
-//    public:
-//        bool operator() (const char *lhs, const char *rhs) const;
-//};
-
 // Buffer Map types
 typedef std::map<std::string, AudioBuffer*>     BufferMap;
 typedef BufferMap::iterator                     BufferMapIterator;
@@ -160,6 +154,17 @@ public:
      *                    Default = 1.
      */
     static void setSourcePitch(const ALuint source, const ALfloat pitchFactor);
+
+    /**
+     * @brief Set the source to fade in or out over a period of time.
+     * @param fadeToGainValue This will be gain value that the source will fade to. For example, if a source was
+     * 						  being faded out, then fadeToGainValue should be 0. For a fade in, set this parameter
+     * 						  to be greater than what the current gain is.
+	 * @param durationInSeconds This is the amount of time over which the fade should take place.
+	 * 							If the duration is small (< 1 second), then the fade occur quickly.
+	 * 							If the duration is large, then the fade will be more gradual.
+     */
+    static void setSourceFade(const ALuint source, const ALfloat fadeToGainValue, const ALfloat durationInSeconds);
 
     /**
      * @brief Change the overall gain via the listener object

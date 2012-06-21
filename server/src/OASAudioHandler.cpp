@@ -505,6 +505,20 @@ void AudioHandler::setSourcePitch(const ALuint sourceHandle, const ALfloat pitch
     }
 }
 
+// public, static
+void AudioHandler::setSourceFade(const ALuint sourceHandle, const ALfloat fadeToGainValue, const ALfloat durationInSeconds)
+{
+	AudioSource *source = AudioHandler::_getSource(sourceHandle);
+
+	_clearRecentlyModifiedAudioUnit();
+
+	if (source)
+	{
+		if (source->setFade(fadeToGainValue, durationInSeconds))
+			_setRecentlyModifiedAudioUnit(source);
+	}
+}
+
 void AudioHandler::setListenerGain(const ALfloat gain)
 {
     _clearRecentlyModifiedAudioUnit();

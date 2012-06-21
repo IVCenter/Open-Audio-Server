@@ -4,61 +4,85 @@ using namespace oas;
 
 void Time::update()
 {
-	clock_gettime(CLOCK_MONOTONIC, &_time);
+    clock_gettime(CLOCK_MONOTONIC, &_time);
 }
 
-double Time::asDouble()
+void Time::reset()
 {
-	return (getSeconds() +  ((double) getNanoseconds() / OAS_BILLION));
+	_time.tv_sec = 0;
+	_time.tv_nsec = 0;
+}
+
+double Time::asDouble() const
+{
+    return (getSeconds() +  ((double) getNanoseconds() / OAS_BILLION));
 }
 
 Time& Time::operator=(const Time &rhs)
 {
-	if (this != &rhs)
-	{
-		_time.tv_sec = rhs.getSeconds();
-		_time.tv_nsec = rhs.getNanoseconds();
-	}
+    if (this != &rhs)
+    {
+        _time.tv_sec = rhs.getSeconds();
+        _time.tv_nsec = rhs.getNanoseconds();
+    }
 
-	return *this;
+    return *this;
 }
 
 Time& Time::operator +=(const Time &rhs)
 {
-	long int nanoseconds = _time.tv_nsec + rhs.getNanoseconds();
+    long int nanoseconds = _time.tv_nsec + rhs.getNanoseconds();
 
-	_time.tv_nsec = nanoseconds % OAS_BILLION;
-	_time.tv_sec += rhs.getSeconds() + (nanoseconds / OAS_BILLION);
+    _time.tv_nsec = nanoseconds % OAS_BILLION;
+    _time.tv_sec += rhs.getSeconds() + (nanoseconds / OAS_BILLION);
 
-	return *this;
+    return *this;
 }
 
 Time& Time::operator-=(const Time &rhs)
 {
-	if (_time.tv_nsec < rhs.getNanoseconds())
-	{
-		_time.tv_sec -= 1;
-		_time.tv_nsec += OAS_BILLION;
-	}
+	//std::cerr << "Time subtraction: " << _time.tv_sec << ", " << _time.tv_nsec << " - " << rhs.getSeconds() << ", " << rhs.getNanoseconds() << std::endl;
 
-	_time.tv_nsec -= rhs.getNanoseconds();
-	_time.tv_sec -= rhs.getSeconds();
+    if (_time.tv_nsec < rhs.getNanoseconds())
+    {
+        _time.tv_sec -= 1;
+        _time.tv_nsec += OAS_BILLION;
+    }
 
-	return *this;
+    _time.tv_nsec -= rhs.getNanoseconds();
+    _time.tv_sec -= rhs.getSeconds();
+
+    //std::cerr << "Results in: " << getSeconds() << ", " << getNanoseconds() << std::endl;
+    return *this;
 }
 
 const Time& Time::operator +(const Time &other) const
 {
-	return Time(*this) += other;
+    return Time(*this) += other;
 }
 
 const Time& Time::operator -(const Time &other) const
 {
-	return Time(*this) -= other;
+    return Time(*this) -= other;
 }
 
-Time::Time(double floatingRepresentation)
+bool Time::operator >(const Time &other) const
 {
-	_time.tv_sec = (long int) floatingRepresentation;
-	_time.tv_nsec = (long int) ((floatingRepresentation - _time.tv_sec) * OAS_BILLION);
+	if (getSeconds() > other.getSeconds()
+		|| getSeconds() == other.getSeconds() && getNanoseconds() > other.getNanoseconds())
+		return true;
+	else
+		return false;
 }
+
+Time::Time(double floatingRepresentationInSeconds)
+{
+    _time.tv_sec = (long int) floatingRepresentationInSeconds;
+    _time.tv_nsec = (long int) ((floatingRepresentationInSeconds - _time.tv_sec) * OAS_BILLION);
+}
+
+Time::Time()
+{
+	reset();
+}
+

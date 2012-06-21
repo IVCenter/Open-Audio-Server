@@ -202,8 +202,14 @@ void oas::Server::_processMessage(const Message &message)
                                               message.getFloatParam(1));
             break;
         case oas::Message::MT_SPIT_HL_1F:
-            oas::AudioHandler::setSourcePitch(message.getHandle(), message.getFloatParam(0));
+            oas::AudioHandler::setSourcePitch(	message.getHandle(),
+            									message.getFloatParam(0));
             break;
+        case oas::Message::MT_FADE_HL_1F_1F:
+        	oas::AudioHandler::setSourceFade(message.getHandle(),
+        									 message.getFloatParam(0),
+        									 message.getFloatParam(1));
+        	break;
         case oas::Message::MT_SLPO_3F:
             oas::AudioHandler::setListenerPosition(message.getFloatParam(0),
                                                    message.getFloatParam(1),

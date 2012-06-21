@@ -454,6 +454,17 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
         isSuccess =     _parseHandleParameter(tokenBuf, pEnd, maxParseAmount, totalParsed)
                     &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 0);
     }
+    // FADE
+    else if (0 == strcmp(pType, M_FADE_SOUND))
+    {
+    	// Set message type to FADE
+    	_mtype = Message::MT_FADE_HL_1F_1F;
+
+    	// Parse tokens: the handle, the final gain value, and the duration in seconds over which the fade should occur
+    	isSuccess = 	_parseHandleParameter(tokenBuf, pEnd, maxParseAmount, totalParsed)
+    				&&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 0)
+    				&&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 1);
+    }
     // WAVE
     else if (0 == strcmp(pType, M_GENERATE_SOUND_FROM_WAVEFORM))
     {
