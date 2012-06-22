@@ -41,8 +41,6 @@ Time& Time::operator +=(const Time &rhs)
 
 Time& Time::operator-=(const Time &rhs)
 {
-	//std::cerr << "Time subtraction: " << _time.tv_sec << ", " << _time.tv_nsec << " - " << rhs.getSeconds() << ", " << rhs.getNanoseconds() << std::endl;
-
     if (_time.tv_nsec < rhs.getNanoseconds())
     {
         _time.tv_sec -= 1;
@@ -52,27 +50,50 @@ Time& Time::operator-=(const Time &rhs)
     _time.tv_nsec -= rhs.getNanoseconds();
     _time.tv_sec -= rhs.getSeconds();
 
-    //std::cerr << "Results in: " << getSeconds() << ", " << getNanoseconds() << std::endl;
     return *this;
 }
 
-const Time& Time::operator +(const Time &other) const
+Time Time::operator +(const Time &other) const
 {
     return Time(*this) += other;
 }
 
-const Time& Time::operator -(const Time &other) const
+Time Time::operator -(const Time &other) const
 {
-    return Time(*this) -= other;
+	return Time(*this) -= other;
 }
 
 bool Time::operator >(const Time &other) const
 {
 	if (getSeconds() > other.getSeconds()
-		|| getSeconds() == other.getSeconds() && getNanoseconds() > other.getNanoseconds())
+		|| (getSeconds() == other.getSeconds() && getNanoseconds() > other.getNanoseconds()))
 		return true;
 	else
 		return false;
+}
+
+bool Time::operator ==(const Time &other) const
+{
+	if (getNanoseconds() == other.getNanoseconds()
+		&& getSeconds() == other.getSeconds())
+	{
+		return true;
+	}
+	else
+		return false;
+}
+
+bool Time::operator >=(const Time &other) const
+{
+	if ((*this) > other
+		|| (*this) == other)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 Time::Time(double floatingRepresentationInSeconds)

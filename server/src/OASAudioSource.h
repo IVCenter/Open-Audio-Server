@@ -213,11 +213,12 @@ private:
     ALint _isLooping;
     bool _isDirectional;
 
-    double _fadeToGainValue;
+    double _fadeFinalGain;
+    double _fadeInitialGain;
+    double _fadeGainDiff;
+    double _fadeDuration;
     Time _fadeStartTime;
-    Time _fadeEndTime; 	// _fadeEndTime = _fadeStartTime + fade duration
-    Time _prevIncrementalFadeTime;
-    double _prevIncrementalFadeAmount;
+    Time _fadeEndTime; 	// _fadeEndTime = _fadeStartTime + _fadeDuration
 
     static ALuint _nextHandle;
     static const ALfloat _kConeInnerAngle = 45.0;

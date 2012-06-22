@@ -43,9 +43,11 @@ public:
     Time& operator=(const Time &rhs);
     Time& operator+=(const Time &rhs);
     Time& operator-=(const Time &rhs);
-    const Time& operator+(const Time &other) const;
-    const Time& operator-(const Time &other) const;
+    Time operator+(const Time &other) const;
+    Time operator-(const Time &other) const;
     bool operator>(const Time &other) const;
+    bool operator==(const Time &other) const;
+    bool operator>=(const Time &other) const;
 
     Time(double floatingRepresentationInSeconds);
     Time();

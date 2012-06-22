@@ -206,6 +206,8 @@ void ServerWindowTable::_updateAudioUnitMap(std::queue<const AudioUnit*> &queue)
 
     redraw();
     Fl::unlock();
+
+    Fl::awake();
 }
 
 void ServerWindowTable::_drawHeader(const char *s, int X, int Y, int W, int H)
