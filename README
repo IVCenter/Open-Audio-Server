@@ -1,11 +1,21 @@
-Open-Audio-Server
+Open Audio Server
 =================
 
-Installation Instructions
--------------------------
+This project is separated into two components: server and client.
 
-### After downloading or cloning the repository:
 
-To install the client API, enter the client directory and follow the instructions in the [README](https://github.com/CalVR/Open-Audio-Server/tree/master/client#oas-client-api).
+The server portion contains the source code and build system necessary to 
+compile and run the Open Audio Server (OAS). See the README in the server 
+directory for more information.
 
-To install the actual server, enter the server directory and follow the instructions in the [README](https://github.com/CalVR/Open-Audio-Server/tree/master/server#open-audio-server).
+
+The client component contains a client API to help communicate with the server.
+There is also sample code that can be compiled and played to demonstrate the 
+server's functionality. See the README in the client directory for more 
+information.
+
+
+Project Author: Shree Chowkwale
+Email:          shree.chowkwale (AT) gmail.com
+Project Wiki:   http://ivl.calit2.net/wiki/index.php/OpenAL_Audio_Server
+
