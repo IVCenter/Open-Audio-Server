@@ -58,6 +58,11 @@ void AudioSource::_init()
     _isValid = false;
     _isLooping = false;
     _isDirectional = false;
+    _fadeDuration = 0;
+    _fadeFinalGain = -1;
+    _fadeEndTime.reset();
+    _fadeStartTime.reset();
+    _fadeGainDiff = 0;
     _state = ST_UNKNOWN;
 }
 
