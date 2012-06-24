@@ -63,19 +63,37 @@ Alternatively, if you want to roll your own client interface to communicate with
 the server, or if you are developing in a language other than C++, here it is:
 
 
+--------------------------------------------------------------------------------
         Message         |                      Description
-------------------------|------------------------------------------------------
+------------------------|-------------------------------------------------------
 GHDL filename           | Get a handle for a sound source for the <filename>
                         | If <filename> cannot be found in the server's cache
-                        | directory, or a sound source cannot be allocated for
+                        | directory, or a sound source cannot be created for
                         | <filename>, the server will respond with -1.
-                        | Otherwise, the response will be 0,1,2,3, etc.
+                        | Otherwise, the response will be a handle number, with
+                        | values 0,1,2,3, etc.
+------------------------|-------------------------------------------------------
 RHDL handle             | Release resources allocated for the source # <handle>
-PLAY handle             | Play the sound source. 
-STOP handle             | Stop the sound source
-SSPO handle x y z       | Set the sound's position to <x, y, z>
+------------------------|-------------------------------------------------------
+PLAY handle             | Play the source specified by <handle>. If the source
+                        | is already playing, this will do nothing. 
+------------------------|-------------------------------------------------------
+STOP handle             | Stop the source specified by <handle>. The playback
+                        | position is reset to the beginning.
+------------------------|-------------------------------------------------------
+SSPO handle x y z       | Set the sound's position to <x, y, z>. The position
+                        | values can be floating point.
+------------------------|-------------------------------------------------------
 SSVO handle gain        | Set the sound's gain (volume) to <gain>. 0 will mute, 
-                        | default is 1
+                        | default is 1. The <gain> value can be floating point.
+------------------------|-------------------------------------------------------
+SSLP handle doLoop      | Set the sound to loop or disable looping. A sound
+                        | with looping enabled will playback from the beginning
+                        | immediately after it is finished playing all the way
+                        | through. The <doLoop> value can be boolean values of 
+                        | 0 or 1, with 1 enabling looping, and 0 disabling it. 
+------------------------|-------------------------------------------------------
+
 
 
 
