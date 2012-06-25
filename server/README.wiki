@@ -1,4 +1,6 @@
-﻿==Project Overview==
+﻿
+==Project Overview==
+
 Rich, 3D environments need sound to provide the user a feeling of complete immersion. When visualization is provided by a cluster of computers, the sound processing can be handled by a dedicated machine that is in turn connected to the speakers and other audio equipment. The OpenAL Audio Server (OAS) provides this functionality via a network interface on a Linux machine. OAS is based loosely on the aging Windows DirectSound [http://www.calit2.net/~jschulze/projects/audioserver/ AudioServer] project by Marc Schreier, and is backwards compatible.
 
 ==Status==
@@ -17,8 +19,6 @@ Rich, 3D environments need sound to provide the user a feeling of complete immer
 
 * '''Client API'''
 -- Undergoing testing. <br>
-
-----
 
 ==Client-Server Communication Protocol==
 
