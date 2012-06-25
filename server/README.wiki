@@ -25,7 +25,8 @@ Rich, 3D environments need sound to provide the user a feeling of complete immer
 ===Notes on Message Format===
 The general format for each message passed from client to the server is a four letter, uppercase
 message identifier, followed by any relevant parameters. Since the protocol is in ASCII plain-text,
-even integer and floating point numbers are passed as plaintext.
+even integer and floating point numbers are passed as plaintext. Two different messages can be
+separated by a newline character.
 
 Parameters to messages can be separated by commas, semicolons, or extra spaces. The server's parser 
 is lenient with how parameters are separated. So,
@@ -33,7 +34,7 @@ is lenient with how parameters are separated. So,
 is the same as
 <pre>SSPO 4 3.5 6 2.5</pre>
 is the same as
-<pre>SSPO    4     3.5, 6, 2.5</pre>
+<pre>SSPO 4; 3.5, 6, 2.5</pre>
 is the same as
 <pre>SSPO 4;;;;;  3.5,, ;6; 2.5</pre>
 However, it is recommended that you stay true to a convention. The provided client API uses the
@@ -43,7 +44,7 @@ following convention, to minimize the number of bytes sent over the network:
 ===The Protocol===
 
 {| border="1" bgcolor="#FFFFFF"
-|-
+|- align="center"
 ! scope="col" width="25%" | Message
 ! scope="col" width="55%" | Description
 ! scope="col" width="20%" | Example
@@ -51,8 +52,8 @@ following convention, to minimize the number of bytes sent over the network:
 | 
 GHDL filename 
 |
-Get a handle for a sound source for the <filename>. If <filename> cannot be found in the server's 
-cache directory, or a sound source cannot be created for <filename>, the server will respond with
+Get a handle for a sound source for the ''filename''. If ''filename'' cannot be found in the server's 
+cache directory, or a sound source cannot be created for ''filename'', the server will respond with
 "-1". Otherwise, the response will be a handle number, with values "0", "1", "2", "3", etc.
 |
   GHDL beachsound.wav
@@ -65,11 +66,11 @@ will respond with a non-negative integer value in ASCII form on success, which w
 for the generated source. On failure, the server will respond with "-1".
 
 <type> specifies the type of the wave, as follows:
-* <type> = 1: sinusoidal wave
-* <type> = 2: square wave
-* <type> = 3: sawtooth wave 
-* <type> = 4: whitenoise
-* <type> = 5: impulse
+* ''type'' = 1: sinusoidal wave
+* ''type'' = 2: square wave
+* ''type'' = 3: sawtooth wave 
+* ''type'' = 4: whitenoise
+* ''type'' = 5: impulse
 
 <frequency> specifies the [http://en.wikipedia.org/wiki/Audio_frequency frequency] of the waveform. 
 
@@ -92,25 +93,25 @@ Release the resources allocated for the source corresponding to <handle>
 |
 PLAY handle
 |
-Play the source specified by <handle>. If the source is already playing, this will do nothing.
+Play the source specified by ''handle''. If the source is already playing, this will do nothing.
 |
  PLAY 5
 |-
 |
 STOP handle
 | 
-Stop the source specified by <handle>. The playback position is reset to the beginning.
+Stop the source specified by ''handle''. The playback position is reset to the beginning.
 |
  STOP 5
 |-
 |
 SSPO handle x y z
 |
-Set the sound's position to <x, y, z>. The position values can be floating point.
+Set the sound's position to <nowiki><x, y, z></nowiki>. The position values can be floating point.
 |
  SSPO 3 4.5 0 22.337
 
-Set sound 3's position to <4.5, 0, 22.337>.
+Set sound 3's position to <nowiki><4.5, 0, 22.337></nowiki>.
 |-
 |
 SSVE handle x y z
