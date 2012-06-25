@@ -66,17 +66,17 @@ will respond with a non-negative integer value in ASCII form on success, which w
 for the generated source. On failure, the server will respond with "-1".
 
 '''type''' specifies the type of the wave, as follows:
-* '''type''' = 1: sinusoidal wave
-* '''type''' = 2: square wave
-* '''type''' = 3: sawtooth wave 
-* '''type''' = 4: whitenoise
-* '''type''' = 5: impulse
+* type = 1: sinusoidal wave
+* type = 2: square wave
+* type = 3: sawtooth wave 
+* type = 4: whitenoise
+* type = 5: impulse
 
-<frequency> specifies the [http://en.wikipedia.org/wiki/Audio_frequency frequency] of the waveform. 
+'''frequency''' specifies the [http://en.wikipedia.org/wiki/Audio_frequency frequency] of the waveform. 
 
-<phase> specifies the phase shift of the waveform, in degrees from -180 to +180
+'''phase''' specifies the phase shift of the waveform, in degrees from -180 to +180
 
-<duration> is the duration of the sound in seconds
+'''duration''' is the duration of the sound in seconds
 |
  WAVE 1 261.3 0.0 3.5
 
