@@ -45,21 +45,20 @@ following convention, to minimize the number of bytes sent over the network:
 
 {| border="1" bgcolor="#FFFFFF"
 |- align="center"
-! scope="col" width="25%" | Message
-! scope="col" width="55%" | Description
-! scope="col" width="20%" | Example
+! scope="col" width="35%" | Message
+! scope="col" width="65%" | Description
 |-
 | 
-GHDL filename 
+GHDL filename
+  GHDL beachsound.wav
 |
 Get a handle for a sound source for the '''filename'''. If '''filename''' cannot be found in the server's 
 cache directory, or a sound source cannot be created for '''filename''', the server will respond with
 "-1". Otherwise, the response will be a handle number, with values "0", "1", "2", "3", etc.
-|
-  GHDL beachsound.wav
 |-
 | 
 WAVE type frequency phase duration
+ WAVE 1 261.3 0.0 3.5
 | 
 Generate a new sound source based on the specified simple waveform. Similar to GHDL, the server 
 will respond with a non-negative integer value in ASCII form on success, which will be the handle
@@ -77,49 +76,47 @@ for the generated source. On failure, the server will respond with "-1".
 '''phase''' specifies the phase shift of the waveform, in degrees from -180 to +180
 
 '''duration''' is the duration of the sound in seconds
-|
- WAVE 1 261.3 0.0 3.5
 
-Create a sinusoidal wave, with a frequency corresponding to middle-C, a phase shift of 0 degrees, 
-and a duration of 3.5 seconds. 
+The example creates a sinusoidal wave, with a frequency corresponding to middle-C, a phase shift of 0 
+degrees, and a duration of 3.5 seconds. 
 |-
 |
 RHDL handle
+ RHDL 1
 |
 Release the resources allocated for the source corresponding to <handle>
-|
- RHDL 1
 |-
 |
 PLAY handle
+ PLAY 5
 |
 Play the source specified by '''handle'''. If the source is already playing, this will do nothing.
-|
- PLAY 5
+
 |-
 |
 STOP handle
+ STOP 5
 | 
 Stop the source specified by '''handle'''. The playback position is reset to the beginning.
-|
- STOP 5
 |-
 |
 SSPO handle x y z
+ SSPO 3 4.5 0 22.337
 |
 Set the sound's position to <nowiki><x, y, z></nowiki>. The position values can be floating point.
-|
- SSPO 3 4.5 0 22.337
 
-Set sound 3's position to <nowiki><4.5, 0, 22.337></nowiki>.
+The example sets sound 3's position to <nowiki><4.5, 0, 22.337></nowiki>.
 |-
 |
 SSVE handle x y z
+ SSVE 2 5.0 0 0
 |
-Set the sound's velocity to <nowiki><x, y, z></nowiki>. These values are only used for doppler effect calculations.
-OpenAL does not use the velocity for updating the sound's position, and OAS conforms to this
-specification. See the doppler effect for more information on how it works in OAS and OpenAL.
+Set the sound's velocity to <nowiki><x, y, z></nowiki>. These values are only used for doppler 
+effect calculations. OpenAL does not use the velocity for updating the sound's position, and OAS 
+conforms to this specification. See the doppler effect for more information on how it works in OAS 
+and OpenAL.
 
+The example sets sound 2's velocity to 5.0 on the X axis.
 |}
 
 ----
