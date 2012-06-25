@@ -52,8 +52,8 @@ following convention, to minimize the number of bytes sent over the network:
 | 
 GHDL filename 
 |
-Get a handle for a sound source for the ''filename''. If ''filename'' cannot be found in the server's 
-cache directory, or a sound source cannot be created for ''filename'', the server will respond with
+Get a handle for a sound source for the '''filename'''. If '''filename''' cannot be found in the server's 
+cache directory, or a sound source cannot be created for '''filename''', the server will respond with
 "-1". Otherwise, the response will be a handle number, with values "0", "1", "2", "3", etc.
 |
   GHDL beachsound.wav
@@ -65,12 +65,12 @@ Generate a new sound source based on the specified simple waveform. Similar to G
 will respond with a non-negative integer value in ASCII form on success, which will be the handle
 for the generated source. On failure, the server will respond with "-1".
 
-<type> specifies the type of the wave, as follows:
-* ''type'' = 1: sinusoidal wave
-* ''type'' = 2: square wave
-* ''type'' = 3: sawtooth wave 
-* ''type'' = 4: whitenoise
-* ''type'' = 5: impulse
+'''type''' specifies the type of the wave, as follows:
+* '''type''' = 1: sinusoidal wave
+* '''type''' = 2: square wave
+* '''type''' = 3: sawtooth wave 
+* '''type''' = 4: whitenoise
+* '''type''' = 5: impulse
 
 <frequency> specifies the [http://en.wikipedia.org/wiki/Audio_frequency frequency] of the waveform. 
 
@@ -93,14 +93,14 @@ Release the resources allocated for the source corresponding to <handle>
 |
 PLAY handle
 |
-Play the source specified by ''handle''. If the source is already playing, this will do nothing.
+Play the source specified by '''handle'''. If the source is already playing, this will do nothing.
 |
  PLAY 5
 |-
 |
 STOP handle
 | 
-Stop the source specified by ''handle''. The playback position is reset to the beginning.
+Stop the source specified by '''handle'''. The playback position is reset to the beginning.
 |
  STOP 5
 |-
@@ -116,7 +116,7 @@ Set sound 3's position to <nowiki><4.5, 0, 22.337></nowiki>.
 |
 SSVE handle x y z
 |
-Set the sound's velocity to <x, y, z>. These values are only used for doppler effect calculations.
+Set the sound's velocity to <nowiki><x, y, z></nowiki>. These values are only used for doppler effect calculations.
 OpenAL does not use the velocity for updating the sound's position, and OAS conforms to this
 specification. See the doppler effect for more information on how it works in OAS and OpenAL.
 
