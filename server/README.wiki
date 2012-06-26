@@ -65,7 +65,8 @@ Generate a new sound source based on the specified simple waveform. Similar to G
 will respond with a non-negative integer value in ASCII form on success, which will be the handle
 for the generated source. On failure, the server will respond with "-1".
 
-The first parameter, '''type''', describes the shape of the wave that should be generated:
+The first parameter, '''type''', describes the shape of the wave that should be generated, and takes
+the following values:
 
 {| border="1"
 |- 
@@ -88,11 +89,11 @@ The first parameter, '''type''', describes the shape of the wave that should be 
 | Impulse
 |}
 
-''Frequency'' specifies the [http://en.wikipedia.org/wiki/Audio_frequency frequency] of the waveform. 
-
-''Phase'' specifies the phase shift of the waveform, in degrees from -180 to +180.
-
-''Duration'' specifies how long the sound should last through one playback, in seconds.
+'''Frequency''' specifies the [http://en.wikipedia.org/wiki/Audio_frequency frequency] of the waveform, and can be
+a floating point number.<br>
+'''Phase''' specifies the phase shift of the waveform, in degrees from -180 to +180, and can be a floating point.<br>
+'''Duration''' specifies how long the sound should last through one playback, in seconds, and can be a floating point.
+<br> <br>
 
 The example creates a sinusoidal wave, with a frequency corresponding to middle-C, a phase shift of
 0 degrees, and a duration of 3.5 seconds.
@@ -101,7 +102,7 @@ The example creates a sinusoidal wave, with a frequency corresponding to middle-
 RHDL handle
  RHDL 1
 |
-Release the resources allocated for the source corresponding to <handle>
+Release the resources allocated for the source corresponding to '''handle'''.
 |-
 |
 PLAY handle
@@ -120,7 +121,8 @@ Stop the source specified by '''handle'''. The playback position is reset to the
 SSPO handle x y z
  SSPO 3 4.5 0 22.337
 |
-Set the sound's position to <nowiki><x, y, z></nowiki>. The position values can be floating point.
+Set the position of the source specified by '''handle''' to <nowiki><</nowiki>'''x''', '''y''', '''z'''></nowiki>. 
+The position values can be floating point. <br> <br>
 
 The example sets sound 3's position to <nowiki><4.5, 0, 22.337></nowiki>.
 |-
@@ -132,7 +134,7 @@ Set the sound's velocity to <nowiki><x, y, z></nowiki>. These values are only us
 effect calculations. OpenAL does not use the velocity for updating the sound's position, and OAS 
 conforms to this specification. See the doppler effect for more information on how it works in OAS 
 and OpenAL.
-
+<br> <br>
 The example sets sound 2's velocity to 5.0 on the X axis.
 |}
 
