@@ -50,7 +50,7 @@ following convention, to minimize the number of bytes sent over the network:
 |-
 | 
 GHDL filename
-  GHDL beachsound.wav
+<pre>GHDL beachsound.wav</pre>
 |
 Load '''filename''' into a sound source, and return a handle for accessing the source. If 
 '''filename''' cannot be found in the server's cache directory, or a sound source cannot be
@@ -59,7 +59,7 @@ handle number, with values "0", "1", "2", "3", etc.
 |-
 |
 WAVE type frequency phase duration
- WAVE 1 261.3 0.0 3.5
+<pre>WAVE 1 261.3 0.0 3.5</pre>
 |
 Generate a new sound source based on the specified simple waveform. Similar to GHDL, the server 
 will respond with a non-negative integer value in ASCII form on success, which will be the handle
@@ -100,42 +100,77 @@ The example creates a sinusoidal wave, with a frequency corresponding to middle-
 |-
 |
 RHDL handle
- RHDL 1
+<pre>RHDL 1</pre>
 |
 Release the resources allocated for the source corresponding to '''handle'''.
 |-
 |
 PLAY handle
- PLAY 5
+<pre>PLAY 5</pre>
 |
 Play the source specified by '''handle'''. If the source is already playing, this will do nothing.
 
 |-
 |
 STOP handle
- STOP 5
+<pre>STOP 5</pre>
 |
 Stop the source specified by '''handle'''. The playback position is reset to the beginning.
 |-
 |
 SSPO handle x y z
- SSPO 3 4.5 0 22.337
+<pre>SSPO 3 4.5 0 22.337</pre>
 |
 Set the position of the source specified by '''handle''' to <nowiki><</nowiki>'''x''', '''y''', '''z'''></nowiki>. 
-The position values can be floating point. <br> <br>
+The position values can be floating point, and have a default of <nowiki><</nowiki>0, 0, 0<nowiki>></nowiki> <br> <br>
 
 The example sets sound 3's position to <nowiki><4.5, 0, 22.337></nowiki>.
 |-
 |
 SSVE handle x y z
- SSVE 2 5.0 0 0
+<pre>SSVE 2 5.0 0 0</pre>
 |
-Set the sound's velocity to <nowiki><x, y, z></nowiki>. These values are only used for doppler 
-effect calculations. OpenAL does not use the velocity for updating the sound's position, and OAS 
-conforms to this specification. See the doppler effect for more information on how it works in OAS 
-and OpenAL.
+Set the velocity of the sound specified by '''handle''' to <nowiki><x, y, z></nowiki>. These values are only used for
+doppler effect calculations. OpenAL does not use the velocity for updating the sound's position, and OAS conforms to 
+this specification. See the doppler effect for more information on how it works in OAS and OpenAL.
 <br> <br>
-The example sets sound 2's velocity to 5.0 on the X axis.
+The example sets sound 2's velocity to 5.0 in the X direction.
+|-
+|
+SSVO handle gain
+<pre>SSVO 17 0.85</pre>
+|
+Set the gain (volume) of the sound specified by '''handle''' to '''gain'''. A gain of 0 will mute the sound
+completely, and the default gain for all sounds is 1. A gain of 0.5 corresponds to an attenuation of 6 dB. A gain
+value greater than 1.0 (to amplify the sound) is possible. However, the final gain value (after source-to-listener 
+distance and orientation attentuation calculations) may be clamped by the sound card and drivers. If portability
+between systems is a key issue, it is not recommended to have widespread use of gain values greater than 1. 
+<br> <br>
+The example sets sound 17's gain to 0.85, which will be quieter than the default.
+|-
+|
+SSLP handle doLoop
+<pre>SSLP 3 1</pre>
+|
+Set the sound specified by '''handle''' to loop continuously, or to disable looping. The parameter '''doLoop''' takes
+boolean values of 0 or 1, with '''0''' disabling looping, and '''1''' enabling looping. A sound with looping enabled
+will resume playback from the beginning immediately after it is finished playing all the way through. Sounds have
+looping disabled by default. 
+<br> <br>
+The example turns looping on in sound 3.
+|-
+|
+SSDI handle x y z
+<pre>SSDI 3 0.5 0.0 2.5</pre>
+|
+Set the direction of the sound specified by '''handle'''. The sound's direction is the vector specified by 
+<nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>. If the sound does not point towards the listener,
+the listener will not hear the sound at full volume. If the sound is pointing completely away from the listener, then
+it will not be audible at all. When the direction vector is the default of <nowiki><</nowiki>0,0,0<nowiki>></nowiki>,
+the sound source has no direction associated with it. Sound is then emitted equally in all directions, similarly to
+a point light source. 
+<br> <br>
+The example sets the direction of sound 3 to <nowiki><</nowiki>0.5, 0.0, 2.5<nowiki>></nowiki>.
 |}
 
 ----
