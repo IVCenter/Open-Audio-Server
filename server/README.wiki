@@ -45,37 +45,41 @@ following convention, to minimize the number of bytes sent over the network:
 
 {| border="1" bgcolor="#FFFFFF"
 |- align="center"
-! scope="col" width="35%" | Message
+! scope="col" width="35%" | Message and Example
 ! scope="col" width="65%" | Description
 |-
 | 
 GHDL filename
   GHDL beachsound.wav
 |
-Get a handle for a sound source for the '''filename'''. If '''filename''' cannot be found in the server's 
-cache directory, or a sound source cannot be created for '''filename''', the server will respond with
-"-1". Otherwise, the response will be a handle number, with values "0", "1", "2", "3", etc.
+Load '''filename''' into a sound source, and return a handle for accessing the source. If 
+'''filename''' cannot be found in the server's cache directory, or a sound source cannot be
+created for '''filename''', the server will respond with "-1". Otherwise, the response will be a
+handle number, with values "0", "1", "2", "3", etc.
 |-
-| 
+|
 WAVE type frequency phase duration
  WAVE 1 261.3 0.0 3.5
-| 
+|
 Generate a new sound source based on the specified simple waveform. Similar to GHDL, the server 
 will respond with a non-negative integer value in ASCII form on success, which will be the handle
 for the generated source. On failure, the server will respond with "-1".
 
-'''type''' specifies the type of the wave, as follows:
-* type = 1: sinusoidal wave
-* type = 2: square wave
-* type = 3: sawtooth wave 
-* type = 4: whitenoise
-* type = 5: impulse
+;type
+: type = 1: sinusoidal wave
+: type = 2: square wave
+: type = 3: sawtooth wave 
+: type = 4: whitenoise
+: type = 5: impulse
 
-'''frequency''' specifies the [http://en.wikipedia.org/wiki/Audio_frequency frequency] of the waveform. 
+;frequency
+: specifies the [http://en.wikipedia.org/wiki/Audio_frequency frequency] of the waveform. 
 
-'''phase''' specifies the phase shift of the waveform, in degrees from -180 to +180
+;phase
+: specifies the phase shift of the waveform, in degrees from -180 to +180
 
-'''duration''' is the duration of the sound in seconds
+;duration
+: the duration of the sound in seconds
 
 The example creates a sinusoidal wave, with a frequency corresponding to middle-C, a phase shift of 0 
 degrees, and a duration of 3.5 seconds. 
@@ -96,7 +100,7 @@ Play the source specified by '''handle'''. If the source is already playing, thi
 |
 STOP handle
  STOP 5
-| 
+|
 Stop the source specified by '''handle'''. The playback position is reset to the beginning.
 |-
 |
