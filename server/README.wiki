@@ -45,7 +45,7 @@ following convention, to minimize the number of bytes sent over the network:
 
 {| border="1" bgcolor="#FFFFFF"
 |- align="center"
-! scope="col" width="35%" | Message and Example
+! scope="col" width="35%" | Message and Example(s)
 ! scope="col" width="65%" | Description
 |-
 | 
@@ -65,24 +65,37 @@ Generate a new sound source based on the specified simple waveform. Similar to G
 will respond with a non-negative integer value in ASCII form on success, which will be the handle
 for the generated source. On failure, the server will respond with "-1".
 
-;type
-: type = 1: sinusoidal wave
-: type = 2: square wave
-: type = 3: sawtooth wave 
-: type = 4: whitenoise
-: type = 5: impulse
+The first parameter, '''type''', describes the shape of the wave that should be generated:
 
-;frequency
-: specifies the [http://en.wikipedia.org/wiki/Audio_frequency frequency] of the waveform. 
+{| border="1"
+|- 
+! ''Type''
+! Wave Type
+|-
+! scope="row" | 1 
+| Sinusoidal
+|-
+! scope="row" | 2 
+| Square
+|-
+! scope="row" | 3 
+| Sawtooth
+|-
+! scope="row" | 4 
+| Whitenoise
+|-
+! scope="row" | 5 
+| Impulse
+|}
 
-;phase
-: specifies the phase shift of the waveform, in degrees from -180 to +180
+''Frequency'' specifies the [http://en.wikipedia.org/wiki/Audio_frequency frequency] of the waveform. 
 
-;duration
-: the duration of the sound in seconds
+''Phase'' specifies the phase shift of the waveform, in degrees from -180 to +180.
 
-The example creates a sinusoidal wave, with a frequency corresponding to middle-C, a phase shift of 0 
-degrees, and a duration of 3.5 seconds. 
+''Duration'' specifies how long the sound should last through one playback, in seconds.
+
+The example creates a sinusoidal wave, with a frequency corresponding to middle-C, a phase shift of
+0 degrees, and a duration of 3.5 seconds.
 |-
 |
 RHDL handle
