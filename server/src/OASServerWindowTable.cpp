@@ -52,7 +52,7 @@ void ServerWindowTable::reset()
     Fl::lock();
 
     for (AudioUnitMapConstIterator iterator = _audioUnitMap.begin();
-            iterator != _audioUnitMap.end(); iterator++)
+            iterator != _audioUnitMap.end(); ++iterator)
     {
         delete iterator->second;
     }
@@ -264,7 +264,7 @@ void ServerWindowTable::draw_cell(TableContext context, int ROW = 0, int COL = 0
         // Rebuild the vector
         _audioUnitVector.clear();
         for (AudioUnitMapConstIterator iter = _audioUnitMap.begin();
-                iter != _audioUnitMap.end(); iter++)
+                iter != _audioUnitMap.end(); ++iter)
         {
             _audioUnitVector.push_back(iter->second);
         }

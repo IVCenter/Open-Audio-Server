@@ -500,7 +500,7 @@ void SocketHandler::_addToIncomingMessages(Message *message)
 }
 
 // static, public
-void SocketHandler::populateQueueWithIncomingMessages(std::queue<Message*> &destination, struct timespec timeout)
+void SocketHandler::populateQueueWithIncomingMessages(std::queue<Message*> &destination, const Time &timeout)
 {
     // lock mutex
     pthread_mutex_lock(&SocketHandler::_inMutex);
@@ -508,8 +508,9 @@ void SocketHandler::populateQueueWithIncomingMessages(std::queue<Message*> &dest
     // while the incoming messages queue is empty
     while (SocketHandler::_incomingMessages.empty())
     {
+    	struct timespec tspecout = timeout.getTime();
         // wait (block) on condition variable for queue to have content, or until timeout occurs
-        int error = pthread_cond_timedwait(&SocketHandler::_inCondition, &SocketHandler::_inMutex, &timeout);
+        int error = pthread_cond_timedwait(&SocketHandler::_inCondition, &SocketHandler::_inMutex, &tspecout);
 
         // If some error occured (or the wait timed out)
         if (0 != error)

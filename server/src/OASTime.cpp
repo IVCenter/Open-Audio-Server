@@ -2,17 +2,6 @@
 
 using namespace oas;
 
-void Time::update()
-{
-    clock_gettime(CLOCK_MONOTONIC, &_time);
-}
-
-void Time::reset()
-{
-	_time.tv_sec = 0;
-	_time.tv_nsec = 0;
-}
-
 double Time::asDouble() const
 {
     return (getSeconds() +  ((double) getNanoseconds() / OAS_BILLION));
@@ -94,6 +83,12 @@ bool Time::operator >=(const Time &other) const
 	{
 		return false;
 	}
+}
+
+Time::Time(long int seconds, long int nanoseconds)
+{
+	_time.tv_sec = seconds;
+	_time.tv_nsec = nanoseconds;
 }
 
 Time::Time(double floatingRepresentationInSeconds)

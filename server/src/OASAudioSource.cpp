@@ -127,7 +127,7 @@ bool AudioSource::_checkIncrementalFade()
 	}
 
 	Time currTime;
-	currTime.update();
+	currTime.update(Time::OAS_CLOCK_MONOTONIC);
 
 	// Check if we have reached or passed the fade end time already
 	if (currTime >= _fadeEndTime)
@@ -316,7 +316,7 @@ bool AudioSource::setFade(ALfloat fadeToGainValue, ALfloat durationInSeconds)
 		_fadeGainDiff = _fadeFinalGain - _fadeInitialGain;
 
 		_fadeDuration = durationInSeconds;
-		_fadeStartTime.update();
+		_fadeStartTime.update(Time::OAS_CLOCK_MONOTONIC);
 		_fadeEndTime = _fadeStartTime + Time(_fadeDuration);
 
 

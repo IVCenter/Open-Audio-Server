@@ -212,7 +212,7 @@ const AudioUnit* AudioHandler::getRecentlyModifiedAudioUnit()
         if (_recentlyModifiedAudioUnit->isSoundSource())
         {
             // We create a duplicate copy of the recently modified source
-            retval = new AudioSource(*((AudioSource *) _recentlyModifiedAudioUnit));
+            retval = new AudioSource(*(static_cast<const AudioSource *>(_recentlyModifiedAudioUnit)));
         }
         else
         {

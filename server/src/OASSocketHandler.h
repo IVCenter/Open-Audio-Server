@@ -18,6 +18,8 @@
 #include <pthread.h>
 #include <AL/alut.h>
 #include <cerrno>
+#include <time.h>
+#include <OASTime.h>
 
 #include "OASFileHandler.h"
 #include "OASMessage.h"
@@ -42,7 +44,7 @@ class SocketHandler
         static bool isSocketOpen();
         static bool isConnectedToClient();
         static unsigned int numberOfIncomingMessages();
-        static void populateQueueWithIncomingMessages(std::queue<Message*> &destination, struct timespec timeout);
+        static void populateQueueWithIncomingMessages(std::queue<Message*> &destination, const Time &timeout);
         static void addOutgoingResponse(const char *response);
         static void addOutgoingResponse(const long response);
         static pthread_t getSocketThread();

@@ -1,5 +1,9 @@
 #include "OASServer.h"
 
+oas::Server::Server()
+{
+}
+
 // static
 oas::Server& oas::Server::getInstance()
 {
@@ -322,26 +326,29 @@ void* oas::Server::_serverLoop(void *parameter)
     std::queue<const AudioUnit*> sources;
     const AudioUnit *audioUnit;
 
-    struct timespec timeOut;
-    int i = 0;
+    Time timeOut;
 
-    // Add the listener to the GUI
+    // Add the listener to the GUI, before the loop even starts
     oas::ServerWindow::audioListenerWasModified(oas::AudioHandler::getRecentlyModifiedAudioUnit());
 
     while (1)
     {
+    	// Update timeOut to current time
+    	timeOut.update(oas::Time::OAS_CLOCK_MONOTONIC);
+
         // If a client is connected, use a very short timeout allowing for fast updates
         if (SocketHandler::isConnectedToClient())
-            _computeTimeout(timeOut, 0, 500000); // 500,000 nanoseconds = 500 microseconds
+        	timeOut += Time(0.0005); 	// 0.5 ms -> maximum loop rate of ~2000 loops per second
         // Else use a longer timeout to save CPU cycles
         else
-            _computeTimeout(timeOut, 5, 0);
+            timeOut += Time(2);
 
-
-        // If there are no messages, populateQueueWithIncomingMessages() will block until timeout
+        // If there are no incoming messages, populateQueueWithIncomingMessages() will block
+        // until timeout
         oas::SocketHandler::populateQueueWithIncomingMessages(messages, timeOut);
 
-        // If messages is still empty, then we timed out. Check the audio state for updates before redoing the loop
+        // If messages is still empty, then we timed out. Check the audio state for updates
+        // before redoing the loop
         if (messages.empty())
         {
             oas::AudioHandler::populateQueueWithUpdatedSources(sources);
@@ -376,13 +383,12 @@ void* oas::Server::_serverLoop(void *parameter)
 void oas::Server::_computeTimeout(struct timespec &timeout, unsigned long timeoutSeconds, unsigned long timeoutNanoseconds)
 {
     struct timespec currTime;
-    unsigned long int nanoseconds;
 
     clock_gettime(CLOCK_MONOTONIC, &currTime);
 
     if (0 != timeoutNanoseconds)
     {
-    	nanoseconds = currTime.tv_nsec + timeoutNanoseconds;
+        unsigned long int nanoseconds = currTime.tv_nsec + timeoutNanoseconds;
     	timeout.tv_sec = currTime.tv_sec + timeoutSeconds + (nanoseconds / 1000000000);
     	timeout.tv_nsec = nanoseconds % 1000000000;
     }

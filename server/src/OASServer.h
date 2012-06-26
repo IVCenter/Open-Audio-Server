@@ -32,6 +32,7 @@ public:
     ServerInfo const* getServerInfo();
 
 private:
+    Server();
     pthread_t _serverThread;
 
     ServerInfo* _serverInfo;
