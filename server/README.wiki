@@ -161,7 +161,7 @@ The example turns looping on in sound 3.
 |-
 |
 SSDI handle x y z
-<pre>SSDI 3 0.5 0.0 2.5</pre>
+<pre>SSDI 3 0.5 0.0 -2.5</pre>
 |
 Set the direction of the sound specified by '''handle'''. The sound's direction is the vector specified by 
 <nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>. If the sound does not point towards the listener,
@@ -170,7 +170,55 @@ it will not be audible at all. When the direction vector is the default of <nowi
 the sound source has no direction associated with it. Sound is then emitted equally in all directions, similarly to
 a point light source. 
 <br> <br>
-The example sets the direction of sound 3 to <nowiki><</nowiki>0.5, 0.0, 2.5<nowiki>></nowiki>.
+The example sets the direction of sound 3 to <nowiki><</nowiki>0.5, 0.0, -2.5<nowiki>></nowiki>.
+|-
+SSDI handle angle
+<pre>SSDI 3 2.944</pre>
+|
+Set the direction of the sound specified by '''handle''' using '''angle''', in radians. The angle is converted to a unit
+vector in the X-Z plane using sine and cosine. There is no default angle value, because sound sources are not
+directional by default.. Once you use this version of SSDI on a sound source, the sound source will remain directional 
+until you use "SSDI handle 0 0 0", to fully disable the directionality.
+<br> <br>
+The example has the same result as the example for SSDI with a vector parameter. The direction of sound 3 is set to 
+2.944 radians.
+|-
+|-
+SSDV handle angle gain
+<pre>SSDV 3 2.944 0.869</pre>
+|
+Set both the direction and gain of the sound given by '''handle'''. The direction is specified by '''angle''', in radians,
+and the volume is set by '''gain'''. This effectively combines two messages: SSDI with the angle parameter and SSVO.
+<br> <br>
+The example sets the direction and gain of sound 3 to 2.944 and 0.869, respectively.
+|
+SPIT handle pitch
+<pre>SPIT 3 1.25</pre>
+|
+Set the pitch of sound specified by '''handle'''. '''Pitch''' can be any floating point greater than 0. A value of 1 is
+the default. Doubling the pitch will increase the pitch of the sound by one octave, and halving the pitch will drop the
+sound by one octave. Modifying the pitch also changes the playback speed, so a sound with pitch greater than 1 will play
+at a faster speed, and a sound with a pitch less than 1 will play at a slower speed.
+<br> <br>
+The example sets the pitch of sound 3 to 1.25.
+|-
+|
+FADE handle gain time
+<pre>FADE 12 0.7 4</pre>
+|
+Gradually and linearly change the sound's current gain value to the specified '''gain''' value, over the duration
+'''time''', in seconds. This can be used to slowly fade a sound's volume in or out, such as, but not limited to, when
+introducing objects/scenes or transitioning between different objects/scenes. Both '''gain''' and '''time''' can be
+floating point.
+<br> <br>
+The example fades sound twelve's current gain value (whatever it may be) to 0.7, over the course of 4 seconds.
+|-
+|
+GAIN value
+<pre>GAIN 0.0</pre>
+|
+Change the gain (volume) for the listener to '''value'''. The default gain for the listener is 1.0. This can be useful
+especially to mute all sounds for the listener, as the example demonstrates.
 |}
 
 ----
