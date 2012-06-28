@@ -64,7 +64,7 @@ WAVE type frequency phase duration
 Generate a new sound source based on the specified simple waveform. Similar to GHDL, the server 
 will respond with a non-negative integer value in ASCII form on success, which will be the handle
 for the generated source. On failure, the server will respond with "-1".
-
+<br> <br>
 The first parameter, '''type''', describes the shape of the wave that should be generated, and takes
 the following values:
 
@@ -221,6 +221,39 @@ GAIN value
 |
 Change the gain (volume) for the listener to '''value'''. The default gain for the listener is 1.0. This can be useful
 especially to mute all sounds for the listener, as the example demonstrates.
+|-
+|
+SLPO x y z
+<pre>SLPO 20.12 0.008 -9.23</pre>
+|
+Set the listener's position to <nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>, in the same coordinate 
+system as the sound sources. The default position is <nowiki><</nowiki>0, 0, 0<nowiki>></nowiki>
+<br> <br>
+The example sets the position to <nowiki><</nowiki>20.12, 0.008, -9.23<nowiki>></nowiki>.
+|-
+|
+SLOR aX aY aZ uX uY uZ
+<pre>SLOR 1 0 0 0 1 0</pre>
+|
+Set the listener's orientation using two vectors. The first, 
+<nowiki><</nowiki>'''aX''', '''aY''', '''aZ'''<nowiki>></nowiki>, specifies the "look-at" direction. The second,
+<nowiki><</nowiki>'''uX''', '''uY''', '''uZ'''<nowiki>></nowiki>, specifies the "up" direction. If two vectors are linearly 
+dependent, the behavior is undefined. They do not need to be normalized. The defaults are 
+<nowiki><</nowiki>0, 0, -1<nowiki>></nowiki> for the look-at vector and <nowiki><</nowiki>0, -1, 0<nowiki>></nowiki> for the 
+up vector.
+<br> <br>
+The example sets the listener's orientation to <nowiki><</nowiki>1, 0, 0<nowiki>></nowiki> for the look-at vector and
+<nowiki><</nowiki>0, 1, 0<nowiki>></nowiki> for the up vector.
+|-
+|
+SLVE x y z
+<pre>SLVE -2.0 0 0</pre>
+|
+Set the listener's velocity to <nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>. Similar to setting a sound source's
+velocity, the server does not update the position of the listener based on this specified velocity. It is only used as a 
+parameter for doppler effect calculations. See the doppler effect calculations section for more information.
+<br> <br>
+The example sets the velocity of the listener to -2.0 in the X direction.
 |}
 
 ----
