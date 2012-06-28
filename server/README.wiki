@@ -172,6 +172,7 @@ a point light source.
 <br> <br>
 The example sets the direction of sound 3 to <nowiki><</nowiki>0.5, 0.0, -2.5<nowiki>></nowiki>.
 |-
+|
 SSDI handle angle
 <pre>SSDI 3 2.944</pre>
 |
@@ -183,7 +184,7 @@ until you use "SSDI handle 0 0 0", to fully disable the directionality.
 The example has the same result as the example for SSDI with a vector parameter. The direction of sound 3 is set to 
 2.944 radians.
 |-
-|-
+|
 SSDV handle angle gain
 <pre>SSDV 3 2.944 0.869</pre>
 |
@@ -191,6 +192,7 @@ Set both the direction and gain of the sound given by '''handle'''. The directio
 and the volume is set by '''gain'''. This effectively combines two messages: SSDI with the angle parameter and SSVO.
 <br> <br>
 The example sets the direction and gain of sound 3 to 2.944 and 0.869, respectively.
+|-
 |
 SPIT handle pitch
 <pre>SPIT 3 1.25</pre>
