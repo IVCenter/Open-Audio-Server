@@ -260,12 +260,23 @@ The example sets the velocity of the listener to -2.0 in the X direction.
 SSVE handle speed
 <pre>SSVE 6 3.5</pre>
 |
-('''''deprecated''''') Set the sound's speed. The sound's current direction is used to compute the effective velocity. This assumes
+('''''deprecated''''') <br>
+Set the sound's speed. The sound's current direction is used to compute the effective velocity. This assumes
 that the sound is moving in the same direction it is facing. Note that if the sound has no direction associated with it, the
 behavior is undefined. This message is leftover to support old applications that were tailored to the old Windows AudioServer
-project. New applications should use this functionality at their own risk.
+project. New applications should avoid using this functionality, or use at their own risk.
 <br> <br>
 The example sets sound 6's speed to 3.5.
+|}
+
+
+There were some messages that had inconsistent, incomplete, or altogether broken support in the old Windows AudioServer.
+This meant that in order to maintain full backwards compatibility, OAS would have had to implement these deprecated 
+messages in a similar, broken manner. Instead, support for these messages has been dropped completely, under the
+assumption that old client applications would not be dependent on something that was broken. Support may be added in
+the future as needed.
+
+{| border="1" bgcolor="#FFFFFF"
 |- align="center"
 |
 '''Messages that are no longer supported:'''
