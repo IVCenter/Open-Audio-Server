@@ -1,0 +1,313 @@
+﻿
+==Project Overview==
+
+Rich, 3D environments need sound to provide the user a feeling of complete immersion. When visualization is provided by a cluster of computers, the sound processing can be handled by a dedicated machine that is in turn connected to the speakers and other audio equipment. The OpenAL Audio Server (OAS) provides this functionality via a network interface on a Linux machine. OAS is based loosely on the aging Windows DirectSound [http://www.calit2.net/~jschulze/projects/audioserver/ AudioServer] project by Marc Schreier, and is backwards compatible.
+
+==Status==
+* '''Server Backend'''
+-- The backend of the server is functional. Connections can be made, instructions and audio files can be sent, and audio can be played, stopped, moved, etc.<br>
+-- All network input and output is handled by a dedicated thread that parses the input into discrete audio instructions and queues it up. <br>
+-- A separate thread retrieves these instructions from the queue and performs the desired action (i.e. play sound, move sound position, etc.) <br>
+-- File format support is limited only by the OpenAL extensions that are installed on the audio server.<br>
+-- Server is persistent and stable between different connections. <br>
+-- Server settings (port, cache directory, etc.) are read from an XML configuration file.
+
+* '''Server Frontend'''
+-- The frontend of the server uses FLTK and currently consists of a tabbed interface. <br>
+-- The frontend also resides in its own thread, allowing the user interface to operate independently from the backend of the server. <br>
+-- Errors are displayed in bold, warnings are displayed in italics, and informative messages contain no special formatting. <br>
+
+* '''Client API'''
+-- Undergoing testing. <br>
+
+==Client-Server Communication Protocol==
+
+===Notes on Message Format===
+The general format for each message passed from client to the server is a four letter, uppercase
+message identifier, followed by any relevant parameters. Since the protocol is in ASCII plain-text,
+even integer and floating point numbers are passed as plaintext. Two different messages can be
+separated by a newline character.
+
+Parameters to messages can be separated by commas, semicolons, or extra spaces. The server's parser 
+is lenient with how parameters are separated. So,
+<pre>SSPO 4, 3.5, 6, 2.5</pre>
+is the same as
+<pre>SSPO 4 3.5 6 2.5</pre>
+is the same as
+<pre>SSPO 4; 3.5, 6, 2.5</pre>
+is the same as
+<pre>SSPO 4;;;;;  3.5,, ;6; 2.5</pre>
+However, it is recommended that you stay true to a convention. The provided client API uses the
+following convention, to minimize the number of bytes sent over the network:
+<pre>SSPO 4 3.5 6 2.5</pre>
+
+===The Protocol===
+
+{| border="1" bgcolor="#FFFFFF"
+|- align="center"
+! scope="col" width="35%" | Message and Example(s)
+! scope="col" width="65%" | Description
+|-
+| 
+GHDL filename
+<pre>GHDL beachsound.wav</pre>
+|
+Load '''filename''' into a sound source, and return a handle for accessing the source. If 
+'''filename''' cannot be found in the server's cache directory, or a sound source cannot be
+created for '''filename''', the server will respond with "-1". Otherwise, the response will be a
+handle number, with values "0", "1", "2", "3", etc.
+|-
+|
+WAVE type frequency phase duration
+<pre>WAVE 1 261.3 0.0 3.5</pre>
+|
+Generate a new sound source based on the specified simple waveform. Similar to GHDL, the server 
+will respond with a non-negative integer value in ASCII form on success, which will be the handle
+for the generated source. On failure, the server will respond with "-1".
+<br> <br>
+The first parameter, '''type''', describes the shape of the wave that should be generated, and takes
+the following values:
+
+{| border="1"
+|- 
+! ''Type''
+! Wave Type
+|-
+! scope="row" | 1 
+| Sinusoidal
+|-
+! scope="row" | 2 
+| Square
+|-
+! scope="row" | 3 
+| Sawtooth
+|-
+! scope="row" | 4 
+| Whitenoise
+|-
+! scope="row" | 5 
+| Impulse
+|}
+
+'''Frequency''' specifies the [http://en.wikipedia.org/wiki/Audio_frequency frequency] of the waveform, and can be
+a floating point number.<br>
+'''Phase''' specifies the phase shift of the waveform, in degrees from -180 to +180, and can be a floating point.<br>
+'''Duration''' specifies how long the sound should last through one playback, in seconds, and can be a floating point.
+<br> <br>
+
+The example creates a sinusoidal wave, with a frequency corresponding to middle-C, a phase shift of
+0 degrees, and a duration of 3.5 seconds.
+|-
+|
+RHDL handle
+<pre>RHDL 1</pre>
+|
+Release the resources allocated for the source corresponding to '''handle'''.
+|-
+|
+PLAY handle
+<pre>PLAY 5</pre>
+|
+Play the source specified by '''handle'''. If the source is already playing, this will do nothing.
+
+|-
+|
+STOP handle
+<pre>STOP 5</pre>
+|
+Stop the source specified by '''handle'''. The playback position is reset to the beginning.
+|-
+|
+SSPO handle x y z
+<pre>SSPO 3 4.5 0 22.337</pre>
+|
+Set the position of the source specified by '''handle''' to <nowiki><</nowiki>'''x''', '''y''', '''z'''></nowiki>. 
+The position values can be floating point, and have a default of <nowiki><</nowiki>0, 0, 0<nowiki>></nowiki> <br> <br>
+
+The example sets sound 3's position to <nowiki><4.5, 0, 22.337></nowiki>.
+|-
+|
+SSVE handle x y z
+<pre>SSVE 2 5.0 0 0</pre>
+|
+Set the velocity of the sound specified by '''handle''' to <nowiki><x, y, z></nowiki>. These values are only used for
+doppler effect calculations. OpenAL does not use the velocity for updating the sound's position, and OAS conforms to 
+this specification. See the doppler effect for more information on how it works in OAS and OpenAL.
+<br> <br>
+The example sets sound 2's velocity to 5.0 in the X direction.
+|-
+|
+SSVO handle gain
+<pre>SSVO 17 0.85</pre>
+|
+Set the gain (volume) of the sound specified by '''handle''' to '''gain'''. A gain of 0 will mute the sound
+completely, and the default gain for all sounds is 1. A gain of 0.5 corresponds to an attenuation of 6 dB. A gain
+value greater than 1.0 (to amplify the sound) is possible. However, the final gain value (after source-to-listener 
+distance and orientation attentuation calculations) may be clamped by the sound card and drivers. If portability
+between systems is a key issue, it is not recommended to have widespread use of gain values greater than 1. 
+<br> <br>
+The example sets sound 17's gain to 0.85, which will be quieter than the default.
+|-
+|
+SSLP handle doLoop
+<pre>SSLP 3 1</pre>
+|
+Set the sound specified by '''handle''' to loop continuously, or to disable looping. The parameter '''doLoop''' takes
+boolean values of 0 or 1, with '''0''' disabling looping, and '''1''' enabling looping. A sound with looping enabled
+will resume playback from the beginning immediately after it is finished playing all the way through. Sounds have
+looping disabled by default. 
+<br> <br>
+The example turns looping on in sound 3.
+|-
+|
+SSDI handle x y z
+<pre>SSDI 3 0.5 0.0 -2.5</pre>
+|
+Set the direction of the sound specified by '''handle'''. The sound's direction is the vector specified by 
+<nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>. If the sound does not point towards the listener,
+the listener will not hear the sound at full volume. If the sound is pointing completely away from the listener, then
+it will not be audible at all. When the direction vector is the default of <nowiki><</nowiki>0,0,0<nowiki>></nowiki>,
+the sound source has no direction associated with it. Sound is then emitted equally in all directions, similarly to
+a point light source. 
+<br> <br>
+The example sets the direction of sound 3 to <nowiki><</nowiki>0.5, 0.0, -2.5<nowiki>></nowiki>.
+|-
+|
+SSDI handle angle
+<pre>SSDI 3 2.944</pre>
+|
+Set the direction of the sound specified by '''handle''' using '''angle''', in radians. The angle is converted to a unit
+vector in the X-Z plane using sine and cosine. There is no default angle value, because sound sources are not
+directional by default.. Once you use this version of SSDI on a sound source, the sound source will remain directional 
+until you use "SSDI handle 0 0 0", to fully disable the directionality.
+<br> <br>
+The example has the same result as the example for SSDI with a vector parameter. The direction of sound 3 is set to 
+2.944 radians.
+|-
+|
+SSDV handle angle gain
+<pre>SSDV 3 2.944 0.869</pre>
+|
+Set both the direction and gain of the sound given by '''handle'''. The direction is specified by '''angle''', in radians,
+and the volume is set by '''gain'''. This effectively combines two messages: SSDI with the angle parameter and SSVO.
+<br> <br>
+The example sets the direction and gain of sound 3 to 2.944 and 0.869, respectively.
+|-
+|
+SPIT handle pitch
+<pre>SPIT 3 1.25</pre>
+|
+Set the pitch of sound specified by '''handle'''. '''Pitch''' can be any floating point greater than 0. A value of 1 is
+the default. Doubling the pitch will increase the pitch of the sound by one octave, and halving the pitch will drop the
+sound by one octave. Modifying the pitch also changes the playback speed, so a sound with pitch greater than 1 will play
+at a faster speed, and a sound with a pitch less than 1 will play at a slower speed.
+<br> <br>
+The example sets the pitch of sound 3 to 1.25.
+|-
+|
+FADE handle gain time
+<pre>FADE 12 0.7 4</pre>
+|
+Gradually and linearly change the sound's current gain value to the specified '''gain''' value, over the duration
+'''time''', in seconds. This can be used to slowly fade a sound's volume in or out, such as, but not limited to, when
+introducing objects/scenes or transitioning between different objects/scenes. Both '''gain''' and '''time''' can be
+floating point.
+<br> <br>
+The example fades sound twelve's current gain value (whatever it may be) to 0.7, over the course of 4 seconds.
+|-
+|
+GAIN value
+<pre>GAIN 0.0</pre>
+|
+Change the gain (volume) for the listener to '''value'''. The default gain for the listener is 1.0. This can be useful
+especially to mute all sounds for the listener, as the example demonstrates.
+|-
+|
+SLPO x y z
+<pre>SLPO 20.12 0.008 -9.23</pre>
+|
+Set the listener's position to <nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>, in the same coordinate 
+system as the sound sources. The default position is <nowiki><</nowiki>0, 0, 0<nowiki>></nowiki>
+<br> <br>
+The example sets the position to <nowiki><</nowiki>20.12, 0.008, -9.23<nowiki>></nowiki>.
+|-
+|
+SLOR aX aY aZ uX uY uZ
+<pre>SLOR 1 0 0 0 1 0</pre>
+|
+Set the listener's orientation using two vectors. The first, 
+<nowiki><</nowiki>'''aX''', '''aY''', '''aZ'''<nowiki>></nowiki>, specifies the "look-at" direction. The second,
+<nowiki><</nowiki>'''uX''', '''uY''', '''uZ'''<nowiki>></nowiki>, specifies the "up" direction. If two vectors are linearly 
+dependent, the behavior is undefined. They do not need to be normalized. The defaults are 
+<nowiki><</nowiki>0, 0, -1<nowiki>></nowiki> for the look-at vector and <nowiki><</nowiki>0, -1, 0<nowiki>></nowiki> for the 
+up vector.
+<br> <br>
+The example sets the listener's orientation to <nowiki><</nowiki>1, 0, 0<nowiki>></nowiki> for the look-at vector and
+<nowiki><</nowiki>0, 1, 0<nowiki>></nowiki> for the up vector.
+|-
+|
+SLVE x y z
+<pre>SLVE -2.0 0 0</pre>
+|
+Set the listener's velocity to <nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>. Similar to setting a sound source's
+velocity, the server does not update the position of the listener based on this specified velocity. It is only used as a 
+parameter for doppler effect calculations. See the doppler effect calculations section for more information.
+<br> <br>
+The example sets the velocity of the listener to -2.0 in the X direction.
+|
+|-
+|
+SSVE handle speed
+<pre>SSVE 6 3.5</pre>
+|
+('''''deprecated''''') Set the sound's speed. The sound's current direction is used to compute the effective velocity. This assumes
+that the sound is moving in the same direction it is facing. Note that if the sound has no direction associated with it, the
+behavior is undefined. This message is leftover to support old applications that were tailored to the old Windows AudioServer
+project. New applications should use this functionality at their own risk.
+<br> <br>
+The example sets sound 6's speed to 3.5.
+|- align="center"
+|
+'''Messages that are no longer supported:'''
+|-
+|
+<pre>SSDR handle angle</pre>
+|-
+|
+<pre>SSRV handle angle gain</pre>
+|-
+|
+<pre>SSRV handle x y z gain</pre>
+|}
+
+----
+==To-Do==
+* Extend the [http://code.google.com/p/osgaudio/ osgAudio nodekit] to add support for the OAS client API
+* Add server support for instructions that modify listener position and orientation.
+* Add more goodies to the front-end (i.e. visual and tabular representation of sound sources)
+* Refactor threading system so that the main thread has more complete possession of other threads
+
+==Future Work==
+* Enhance sockets code to add support for multiple connected clients. Asynchronous socket I/O.
+
+==Participants==
+
+Software Developers:
+
+* [http://www.linkedin.com/in/shreec Shree Chowkwale]
+
+Project Advisors:
+
+* [http://www.calit2.net/~jschulze/ Jurgen Schulze]
+
+Misc. Development Assistance:
+
+* Philip Weber
+* Andrew Prudhomme
+
+
+Initial Concept Base:
+
+* [http://www.calit2.net/~jschulze/projects/audioserver/ AudioServer Project by Marc Schreier]
+
+
