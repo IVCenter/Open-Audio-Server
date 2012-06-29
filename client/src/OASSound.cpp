@@ -5,61 +5,74 @@
 
 #include "OASSound.h"
 
-oasclient::OASSound::OASSound(const std::string &sPath, const std::string &sFilename)
+using namespace oasclient;
+
+OASSound::OASSound(const std::string &sPath, const std::string &sFilename)
 {
     _init();
     _path = sPath;
     _filename = sFilename;
 
     _handle = _getHandleFromServer();
-    
+
     if (-1 == _handle)
     {
-        if (oasclient::OASClientInterface::sendFile(_path, _filename))
+        if (OASClientInterface::sendFile(_path, _filename))
         {
             _handle = _getHandleFromServer();
         }
     }
+
+    // If the handle is greater than or equal to 0, this sound is valid
+    if (0 <= _handle)
+        _isValid = true;
 }
 
-oasclient::OASSound::OASSound(WaveformType waveType, float frequency, float phaseShift, float durationInSeconds)
+OASSound::OASSound(WaveformType waveType, float frequency, float phaseShift, float durationInSeconds)
 {
     _init();
 
-    if (oasclient::OASClientInterface::writeToServer("WAVE %d, %f, %f, %f", waveType,
-                                                                         frequency,
-                                                                         phaseShift,
-                                                                         durationInSeconds))
+    if (OASClientInterface::writeToServer("WAVE %d, %f, %f, %f", waveType,
+            frequency,
+            phaseShift,
+            durationInSeconds))
     {
         char *handleString;
         size_t length;
 
-        if (oasclient::OASClientInterface::readFromServer(handleString, length))
+        if (OASClientInterface::readFromServer(handleString, length))
         {
             _handle = atol(handleString);
         }
     }
-
 }
 
-oasclient::OASSound::~OASSound()
+OASSound::~OASSound()
 {
     if (isValid())
     {
-        oasclient::OASClientInterface::writeToServer("RHDL %ld", _handle);
+        OASClientInterface::writeToServer("RHDL %ld", _handle);
     }
     _path.clear();
     _filename.clear();
 }
 
-void oasclient::OASSound::_init()
+void OASSound::_init()
 {
+    _isValid = false;
     _handle = -1;
+    _posX = _posY = _posZ = 0;
+    _dirX = _dirY = _dirZ = 0;
+    _velX = _velY = _velZ = 0;
+    _pitch = 1;
+    _gain = 1;
+    _wasPlaying;
+    _isLooping;
 }
 
-long oasclient::OASSound::_getHandleFromServer()
+long OASSound::_getHandleFromServer()
 {
-    if (!oasclient::OASClientInterface::writeToServer("GHDL %s", _filename.c_str()))
+    if (!OASClientInterface::writeToServer("GHDL %s", _filename.c_str()))
     {
         return -1;
     }
@@ -67,7 +80,7 @@ long oasclient::OASSound::_getHandleFromServer()
     char *handleString;
     size_t length;
 
-    if (!oasclient::OASClientInterface::readFromServer(handleString, length))
+    if (!OASClientInterface::readFromServer(handleString, length))
     {
         return -1;
     }
@@ -75,58 +88,146 @@ long oasclient::OASSound::_getHandleFromServer()
     return atol(handleString);
 }
 
-bool oasclient::OASSound::isValid()
+bool OASSound::isValid()
 {
-    return (_handle >= 0);
+    return _isValid;
 }
 
-long oasclient::OASSound::getHandle()
+long OASSound::getHandle()
 {
     return _handle;
 }
 
-bool oasclient::OASSound::play()
+
+bool OASSound::play()
 {
-    return oasclient::OASClientInterface::writeToServer("PLAY %ld", _handle);
+    if (!isValid())
+        return false;
+
+    _wasPlaying = OASClientInterface::writeToServer("PLAY %ld", _handle);
+    return _wasPlaying;
 }
 
-bool oasclient::OASSound::stop()
+bool OASSound::stop()
 {
-    return oasclient::OASClientInterface::writeToServer("STOP %ld", _handle);
+    if (!isValid())
+        return false;
+
+    return OASClientInterface::writeToServer("STOP %ld", _handle);
 }
 
-bool oasclient::OASSound::setLoop(bool loop)
+bool OASSound::setLoop(bool loop)
 {
-    return oasclient::OASClientInterface::writeToServer("SSLP %ld %ld", _handle, loop ? 1 : 0);
+    if (!isValid())
+        return false;
+
+    bool result = OASClientInterface::writeToServer("SSLP %ld %ld", _handle, loop ? 1 : 0);
+
+    if (result)
+        _isLooping = loop;
+
+    return result;
 }
 
-bool oasclient::OASSound::setGain(float gain)
+bool OASSound::setGain(float gain)
 {
-    return oasclient::OASClientInterface::writeToServer("SSVO %ld %f", _handle, gain);
+    if (!isValid())
+        return false;
+
+    bool result = OASClientInterface::writeToServer("SSVO %ld %f", _handle, gain);
+
+    if (result)
+        _gain = gain;
+
+    return result;
 }
 
-bool oasclient::OASSound::setPosition(float x, float y, float z)
+bool OASSound::setPosition(float x, float y, float z)
 {
-    return oasclient::OASClientInterface::writeToServer("SSPO %ld %f %f %f", _handle, x, y, z);
+    if (!isValid())
+        return false;
+
+    bool result = OASClientInterface::writeToServer("SSPO %ld %f %f %f", _handle, x, y, z);
+
+    if (result)
+    {
+        _posX = x;
+        _posY = y;
+        _posZ = z;
+    }
+    return result;
 }
 
-bool oasclient::OASSound::setDirection(float angle)
+bool OASSound::setDirection(float angle)
 {
-    return oasclient::OASClientInterface::writeToServer("SSDI %ld %f", _handle, angle);
+    if (!isValid())
+        return false;
+
+    bool result = OASClientInterface::writeToServer("SSDI %ld %f", _handle, angle);
+
+    if (result)
+    {
+        _dirX = sin(angle);
+        _dirY = 0;
+        _dirZ = cos(angle);
+    }
+    return result;
 }
 
-bool oasclient::OASSound::setDirection(float x, float y, float z)
+bool OASSound::setDirection(float x, float y, float z)
 {
-    return oasclient::OASClientInterface::writeToServer("SSDI %ld %f %f %f", _handle, x, y, z);
+    if (!isValid())
+        return false;
+
+    bool result = OASClientInterface::writeToServer("SSDI %ld %f %f %f", _handle, x, y, z);
+
+    if (result)
+    {
+        _dirX = x;
+        _dirY = y;
+        _dirZ = z;
+    }
+    return result;
 }
 
-bool oasclient::OASSound::setVelocity(float x, float y, float z)
+bool OASSound::setVelocity(float x, float y, float z)
 {   
-    return oasclient::OASClientInterface::writeToServer("SSVE %ld %f %f %f", _handle, x, y, z);
+    if (!isValid())
+        return false;
+
+    bool result = OASClientInterface::writeToServer("SSVE %ld %f %f %f", _handle, x, y, z);
+
+    if (result)
+    {
+        _velX = x;
+        _velY = y;
+        _velZ = z;
+    }
+    return result;
 }
 
-bool oasclient::OASSound::setPitch(float pitchFactor)
+bool OASSound::setPitch(float pitchFactor)
 {
-    return oasclient::OASClientInterface::writeToServer("SPIT %ld %f", _handle, pitchFactor);
+    if (!isValid())
+        return false;
+
+    bool result = OASClientInterface::writeToServer("SPIT %ld %f", _handle, pitchFactor);
+
+    if (result)
+    {
+        _pitch = pitchFactor;
+    }
+
+    return result;
+}
+
+bool OASSound::fade(float finalGain, float durationInSeconds)
+{
+    if (!isValid())
+        return false;
+
+    return OASClientInterface::writeToServer("FADE %ld %f %f",
+                                            _handle, finalGain, durationInSeconds);
+
 }
 
