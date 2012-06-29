@@ -66,8 +66,7 @@ void OASSound::_init()
     _velX = _velY = _velZ = 0;
     _pitch = 1;
     _gain = 1;
-    _wasPlaying;
-    _isLooping;
+    _isLooping = false;
 }
 
 long OASSound::_getHandleFromServer()
@@ -88,12 +87,12 @@ long OASSound::_getHandleFromServer()
     return atol(handleString);
 }
 
-bool OASSound::isValid()
+bool OASSound::isValid() const
 {
     return _isValid;
 }
 
-long OASSound::getHandle()
+long OASSound::getHandle() const
 {
     return _handle;
 }
@@ -104,8 +103,7 @@ bool OASSound::play()
     if (!isValid())
         return false;
 
-    _wasPlaying = OASClientInterface::writeToServer("PLAY %ld", _handle);
-    return _wasPlaying;
+    return OASClientInterface::writeToServer("PLAY %ld", _handle);
 }
 
 bool OASSound::stop()
@@ -231,3 +229,50 @@ bool OASSound::fade(float finalGain, float durationInSeconds)
 
 }
 
+std::vector<float> OASSound::getPosition() const
+{
+    std::vector<float> retvec(3);
+
+    retvec[0] = _posX;
+    retvec[1] = _posY;
+    retvec[2] = _posZ;
+
+    return retvec;
+}
+
+std::vector<float> OASSound::getDirection() const
+{
+    std::vector<float> retvec(3);
+
+    retvec[0] = _dirX;
+    retvec[1] = _dirY;
+    retvec[2] = _dirZ;
+
+    return retvec;
+}
+
+std::vector<float> OASSound::getVelocity() const
+{
+    std::vector<float> retvec(3);
+
+    retvec[0] = _velX;
+    retvec[1] = _velY;
+    retvec[2] = _velZ;
+
+    return retvec;
+}
+
+float OASSound::getPitch() const
+{
+    return _pitch;
+}
+
+float OASSound::getGain() const
+{
+    return _gain;
+}
+
+bool OASSound::isLooping() const
+{
+    return _isLooping;
+}

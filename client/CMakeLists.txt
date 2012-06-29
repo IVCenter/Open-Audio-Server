@@ -35,6 +35,7 @@ SET(TARGET_H
 SET(TARGET_SRC
     ${OAS_CLIENT_SOURCE_DIR}/src/OASClientInterface.cpp
     ${OAS_CLIENT_SOURCE_DIR}/src/OASSound.cpp
+    ${OAS_CLIENT_SOURCE_DIR}/src/OASSoundListener.cpp
     )
 
 INCLUDE_DIRECTORIES(src)

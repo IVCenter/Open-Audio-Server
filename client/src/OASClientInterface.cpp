@@ -59,7 +59,9 @@ bool oasclient::OASClientInterface::shutdown()
 }
 bool oasclient::OASClientInterface::writeToServer(const char *format, ...)
 {
-    char buf[MESSAGE_PACKET_SIZE * 4] = {0};
+    // Create a buffer that should be more than long enough to fit data
+    char buf[MESSAGE_PACKET_SIZE * 2] = {0};
+    int bufSizeAttempt, length;
     va_list args;
 
     if (!format || -1 == oasclient::OASClientInterface::_socketFD)
@@ -67,17 +69,18 @@ bool oasclient::OASClientInterface::writeToServer(const char *format, ...)
         return false;
     }
 
+    // Read var args, put the formatted string into buf
     va_start(args, format);
-    vsprintf(buf, format, args);
+    bufSizeAttempt = vsnprintf(buf, MESSAGE_PACKET_SIZE, format, args);
     va_end(args);
 
-    // Check if the formatted message is too long
-    if (MESSAGE_PACKET_SIZE < strlen(buf))
+    // If the formatted string exceeds the message packet size, then we cannot send
+    if (MESSAGE_PACKET_SIZE <= bufSizeAttempt)
     {
         return false;
     }
 
-    if (-1 == write(oasclient::OASClientInterface::_socketFD, buf, MESSAGE_PACKET_SIZE))
+    if (-1 == write(oasclient::OASClientInterface::_socketFD, buf, bufSizeAttempt + 1))
     {
         return false;
     }
@@ -133,9 +136,15 @@ bool oasclient::OASClientInterface::sendFile(const std::string &sPath, const std
     fileSize = fileInfo.st_size;
 
     // Send the PTFI message to the server
-    char buf[MESSAGE_PACKET_SIZE] = {0};
-    sprintf(buf, "PTFI %s %d", sFilename.c_str(), fileSize);
-    
+    char buf[MESSAGE_PACKET_SIZE + 1] = {0};
+    int sizeAttempt = snprintf(buf, MESSAGE_PACKET_SIZE, "PTFI %s %d", sFilename.c_str(), fileSize);
+
+    // If the amount written to buffer is greater than what we can send, return false
+    if (MESSAGE_PACKET_SIZE <= sizeAttempt)
+    {
+        return false;
+    }
+
     if (!oasclient::OASClientInterface::writeToServer(buf))
     {
         return false;
@@ -173,28 +182,5 @@ bool oasclient::OASClientInterface::sendFile(const std::string &sPath, const std
     }
    
     return true;
-}
-
-bool oasclient::OASClientInterface::setListenerGain(float gain)
-{
-    return writeToServer("GAIN %f", gain);
-}
-
-
-bool oasclient::OASClientInterface::setListenerPosition(float x, float y, float z)
-{
-    return writeToServer("SLPO %f %f %f", x, y, z);
-}
-
-
-bool oasclient::OASClientInterface::setListenerVelocity(float x, float y, float z)
-{
-    return writeToServer("SLVE %f %f %f", x, y, z);
-}
-
-bool oasclient::OASClientInterface::setListenerOrientation(float atX, float atY, float atZ,
-                                                           float upX, float upY, float upZ)
-{
-    return writeToServer("SLOR %f %f %f %f %f %f", atX, atY, atZ, upX, upY, upZ);
 }
 
