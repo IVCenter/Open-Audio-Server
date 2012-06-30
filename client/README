@@ -12,6 +12,6 @@ Installation and Set-Up
     Otherwise, if you want to go with default options you can just type `cmake ..`
     Default options will install the library and include files to `/usr/local/`
 4.  Then, you can compile with `make` and install the library with `make install`
-5.  To generate documentation with Doxygen, use `make docs`
+5.  To generate documentation with Doxygen, use `make docs`.
 
 

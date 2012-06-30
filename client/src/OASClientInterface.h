@@ -21,10 +21,18 @@
 namespace oasclient
 {
 
+/**
+ * @class OASClientInterface
+ * This class provides the network interface for the client to connect to the server.
+ */
 class OASClientInterface
 {
 public:
-    enum { MESSAGE_PACKET_SIZE = 1024, DATA_PACKET_SIZE = 1024};
+
+    /**
+     * Define an anonymous enum to hold this PACKET_SIZE constant value.
+     */
+    enum { PACKET_SIZE = 1024};
 
     /**
      * Initialize the connection to the audio server with the specified host location and port.

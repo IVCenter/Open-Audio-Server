@@ -51,8 +51,14 @@ public:
     OASSound(WaveformType waveType, float frequency, float phaseShift, float durationInSeconds);
     ~OASSound();
 
+    /**
+     * Determine whether or not this sound object is valid.
+     */
     bool isValid() const;
 
+    /**
+     * Get the internal handle corresponding to this sound source.
+     */
     long getHandle() const;
 
     /**
@@ -124,15 +130,33 @@ public:
 
 
     /**
-     * Accessor functions
+     * @brief Get the position of this sound source as a std::vector
      */
-
     std::vector<float> getPosition() const;
+
+    /**
+     * @brief Get the direction of this sound source as a std::vector
+     */
     std::vector<float> getDirection() const;
+
+    /**
+     * @brief Get the velocity of this sound source as a std::vector
+     */
     std::vector<float> getVelocity() const;
 
+    /**
+     * @brief Get the pitch of this sound source
+     */
     float getPitch() const;
+
+    /**
+     * @brief Get the gain (volume) of this sound source
+     */
     float getGain() const;
+
+    /**
+     * @brief Check if this sound source is set to loop or not
+     */
     bool isLooping() const;
 
 private:
@@ -162,6 +186,10 @@ class OASSoundListener
 {
 public:
 
+    /**
+     * Retrieve a reference to the singleton OASSoundListener object, which
+     * can then be used to modify listener attributes.
+     */
     static OASSoundListener& getInstance();
 
     /**
@@ -189,26 +217,32 @@ public:
     bool setListenerOrientation(float atX, float atY, float atZ,
                                 float upX, float upY, float upZ);
 
+
     /**
-     * Accessor functions
+     * @brief Get the current position of the listener as a std::vector
      */
-
-
     std::vector<float> getPosition() const;
 
     /**
      * Get the orientation as one vector, containing first the three "look-at" vector
-     * coordinates, and then the three "up" vector coordinates
-     *
+     * coordinates, and then the three "up" vector coordinates.
      */
     std::vector<float> getOrientation() const;
 
-
+    /**
+     * @brief Get the velocity as a std::vector
+     */
     std::vector<float> getVelocity() const;
 
+    /**
+     * @brief Get the gain set for the listener
+     */
     float getGain() const;
 
 private:
+    /**
+     * @brief Private constructor, for singleton
+     */
     OASSoundListener();
 
     float _posX, _posY, _posZ;

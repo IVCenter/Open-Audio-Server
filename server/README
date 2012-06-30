@@ -18,6 +18,7 @@ Dependencies:
 * Optional, but highly recommended: FLTK (v1.3.0) for the GUI 
   http://www.fltk.org/
 
+* Optional: Doxygen (minimum 1.4.7) for documentation generation
 
 Installation:
 -------------
