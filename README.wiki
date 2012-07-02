@@ -52,6 +52,56 @@ Pass the path to your XML configuration file as a command line argument to your 
 <pre>OAS ~/oas_config.xml</pre>
 
 
+==Getting Started with the Client==
+
+===Building and Installing===
+
+# Get the OAS source code from the [https://github.com/CalVR/Open-Audio-Server GitHub repository:]<pre>git clone git://github.com/CalVR/Open-Audio-Server.git</pre>
+# Go to the <code>client/build</code> directory
+# If you want to configure build options yourself, do <pre>ccmake ..</pre> Otherwise, to go with the default options, you can do        <pre>cmake ..</pre>
+# Assuming everything went okay with configuration, you can then compile with <pre>make</pre>
+#* With sudo priviledges, you can install with <pre>make install</pre>
+#* To generate documentation using Doxygen, use <pre>make docs</pre>
+
+==Features==
+
+===Sound Rendering===
+
+All of the low level sound rendering is handled by OpenAL. There are two basic components to rendering
+sound: the listener, and the set of all individual sound sources.
+
+====The Listener====
+The Listener represents the end-user inside the client application. For 3-D virtual environments, this
+is typically associated with the camera. The ''position'', ''orientation'', and ''velocity'' of the 
+Listener will usually map to their corresponding counterparts for the camera.
+
+====Sound Sources====
+Each sound source is associated with a particular sound file, and multiple sources can share the 
+same sound file. These sound sources can also be moved around in the 3-D world. They all have 
+their own ''position'', ''velocity'', and ''directionality'', as well as other properties like gain or
+pitch. OAS does not set a hard limit to the number of sound sources that can be allocated at the
+same time. However, the underlying OpenAL implementation and sound card will most likely have a limit,
+(usually around ~250). As long as the client application releases unneeded sound sources in a timely 
+manner, this limit should not be an issue.
+
+====The Doppler Effect====
+The doppler effect is when the pitch (frequency) of a sound source changes due to the sound source 
+and the listener having a relative velocity to each other. In OpenAL and OAS, the ''velocity'' 
+properties of both sound sources and the listener contribute only to the doppler shift calculations.
+As per the OpenAL specification, setting the ''velocity'' for the listener or sound sources will not
+cause the respective ''position'' property to be updated. 
+
+====The 3-D Coordinate System, and Units====
+The ''position'' properties of the listener and sound sources are specified in terms of 3-D world 
+coordinates, <nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>. ''Orientation'' of the 
+and listener and ''direction'' of sound sources are also vectors in the same world coordinate system.
+The units used for ''position'' can be arbitrary, as long as they are consistent between different
+sound sources and the listener. Although the ''velocity'' property is also a vector in the 3D world 
+coordinate system, the units are completely independent from the units used for ''position''. 
+''Velocity'', as mentioned above, is only used for the Doppler Effect, and its units are constrained
+to the units used to define the speed of sound. By default, the speed of sound is defined as 343.3
+meters per second, so by default, velocities need to be specified in terms of meters per second. 
+
 ==Client-Server Communication Protocol==
 
 ===Notes on Message Format===
@@ -322,12 +372,8 @@ the future as needed.
 <pre>SSRV handle x y z gain</pre>
 |}
 
-----
 ==To-Do==
 * Extend the [http://code.google.com/p/osgaudio/ osgAudio nodekit] to add support for the OAS client API
-* Add server support for instructions that modify listener position and orientation.
-* Add more goodies to the front-end (i.e. visual and tabular representation of sound sources)
-* Refactor threading system so that the main thread has more complete possession of other threads
 
 ==Future Work==
 * Enhance sockets code to add support for multiple connected clients. Asynchronous socket I/O.
@@ -348,7 +394,7 @@ Misc. Development Assistance:
 * Andrew Prudhomme
 
 
-Initial Concept Base:
+Initial Base Concept:
 
 * [http://www.calit2.net/~jschulze/projects/audioserver/ AudioServer Project by Marc Schreier]
 
