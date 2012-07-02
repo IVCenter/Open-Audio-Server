@@ -208,7 +208,7 @@ Stop the source specified by '''handle'''. The playback position is reset to the
 SSPO handle x y z
 <pre>SSPO 3 4.5 0 22.337</pre>
 |
-Set the position of the source specified by '''handle''' to <nowiki><</nowiki>'''x''', '''y''', '''z'''></nowiki>. 
+Set the position of the source specified by '''handle''' to <nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>. 
 The position values can be floating point, and have a default of <nowiki><</nowiki>0, 0, 0<nowiki>></nowiki> <br /> <br />
 
 The example sets sound 3's position to <nowiki><4.5, 0, 22.337></nowiki>.
@@ -217,9 +217,10 @@ The example sets sound 3's position to <nowiki><4.5, 0, 22.337></nowiki>.
 SSVE handle x y z
 <pre>SSVE 2 5.0 0 0</pre>
 |
-Set the velocity of the sound specified by '''handle''' to <nowiki><x, y, z></nowiki>. These values are only used for
-doppler effect calculations. OpenAL does not use the velocity for updating the sound's position, and OAS conforms to 
-this specification. See the doppler effect for more information on how it works in OAS and OpenAL.
+Set the velocity of the sound specified by '''handle''' to <nowiki><x, y, z></nowiki>. These values
+are only used for doppler effect calculations. OpenAL does not use the velocity for updating the 
+sound's position, and OAS conforms to this specification. See [[#The_Doppler_Effect|the doppler effect]]
+section for more information on how it works in OAS and OpenAL.
 <br /> <br />
 The example sets sound 2's velocity to 5.0 in the X direction.
 |-
@@ -338,7 +339,7 @@ SLVE x y z
 |
 Set the listener's velocity to <nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>. Similar to setting a sound source's
 velocity, the server does not update the position of the listener based on this specified velocity. It is only used as a 
-parameter for doppler effect calculations. See the doppler effect calculations section for more information.
+parameter for doppler effect calculations. See [[#The_Doppler_Effect|the doppler effect]] section for more information.
 <br /> <br />
 The example sets the velocity of the listener to -2.0 in the X direction.
 |-
