@@ -1,7 +1,7 @@
 ﻿
 ==Project Overview==
 
-Rich, 3D environments need sound to provide the user a feeling of complete immersion. When 
+Rich, 3D environments need sound to give the user a feeling of complete immersion. When 
 visualization is provided by a cluster of computers, the sound processing can be handled by a 
 dedicated machine that is in turn connected to the speakers and other audio equipment. The 
 OpenAL Audio Server (OAS) provides this functionality via a network interface on a Linux machine.
@@ -356,6 +356,7 @@ project. New applications should avoid using this functionality, or use at their
 The example sets sound 6's speed to 3.5.
 |}
 
+===Unsupported Messages===
 
 There were some messages that had inconsistent, incomplete, or altogether broken support in the old Windows AudioServer.
 This meant that in order to maintain full backwards compatibility, OAS would have had to implement these deprecated 
