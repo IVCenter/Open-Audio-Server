@@ -1,24 +1,56 @@
 ﻿
 ==Project Overview==
 
-Rich, 3D environments need sound to provide the user a feeling of complete immersion. When visualization is provided by a cluster of computers, the sound processing can be handled by a dedicated machine that is in turn connected to the speakers and other audio equipment. The OpenAL Audio Server (OAS) provides this functionality via a network interface on a Linux machine. OAS is based loosely on the aging Windows DirectSound [http://www.calit2.net/~jschulze/projects/audioserver/ AudioServer] project by Marc Schreier, and is backwards compatible.
+Rich, 3D environments need sound to provide the user a feeling of complete immersion. When 
+visualization is provided by a cluster of computers, the sound processing can be handled by a 
+dedicated machine that is in turn connected to the speakers and other audio equipment. The 
+OpenAL Audio Server (OAS) provides this functionality via a network interface on a Linux machine.
+OAS is based loosely on the aging Windows DirectSound [http://www.calit2.net/~jschulze/projects/audioserver/ AudioServer]
+project by Marc Schreier, and is backwards compatible with all known client applications.
 
-==Status==
-* '''Server Backend'''
--- The backend of the server is functional. Connections can be made, instructions and audio files can be sent, and audio can be played, stopped, moved, etc.<br>
--- All network input and output is handled by a dedicated thread that parses the input into discrete audio instructions and queues it up. <br>
--- A separate thread retrieves these instructions from the queue and performs the desired action (i.e. play sound, move sound position, etc.) <br>
--- File format support is limited only by the OpenAL extensions that are installed on the audio server.<br>
--- Server is persistent and stable between different connections. <br>
--- Server settings (port, cache directory, etc.) are read from an XML configuration file.
+The OAS project is separated into two components: server and client. The server component contains
+the source code and build system necessary to compile and run the actual audio server. The client
+component contains a client API to help applications communicate with the server. There is also
+sample code that can be compiled and played to demonstrate the server's functionality.
 
-* '''Server Frontend'''
--- The frontend of the server uses FLTK and currently consists of a tabbed interface. <br>
--- The frontend also resides in its own thread, allowing the user interface to operate independently from the backend of the server. <br>
--- Errors are displayed in bold, warnings are displayed in italics, and informative messages contain no special formatting. <br>
+==Getting Started with the Server==
 
-* '''Client API'''
--- Undergoing testing. <br>
+===Dependencies===
+
+* [http://www.cmake.org/ CMake] (minimum v2.8) for the build system
+
+* [http://kcat.strangesoft.net/openal.html OpenAL] for the backend audio processing
+
+* [http://connect.creativelabs.com/openal/Downloads/ALUT/ ALUT] for file loading and OpenAL context management
+
+* [http://www.minixml.org/ MXML (Minimal XML)] library for XML parsing
+
+* Optional, but highly recommended: [http://www.fltk.org/ FLTK (v1.3.0)] for the GUI
+
+* Optional: [http://www.stack.nl/~dimitri/doxygen/ Doxygen] (minimum 1.4.7) for documentation generation
+
+===Building and Installing===
+
+# Install the dependencies above, if you have not already done so
+# Get the OAS source code from the [https://github.com/CalVR/Open-Audio-Server GitHub repository:]<pre>git clone git://github.com/CalVR/Open-Audio-Server.git</pre>
+# Go to the <code>server/build</code> directory
+# If you want to configure build options yourself, do <pre>ccmake ..</pre> Otherwise, to go with the default options, you can do <pre>cmake ..</pre>
+# Assuming everything went okay with configuration, you can then compile with <pre>make</pre>
+#* With sudo priviledges, you can install with <pre>make install</pre>
+#* To generate documentation using Doxygen, use <pre>make docs</pre>
+
+===Set-Up===
+
+Before running the server, you will want to set some runtime options, such as which port you want
+the server to listen for connections on. Look at the sample configuration file `sample_oas_config.xml`
+to view this and other server options.
+
+
+===Running===
+
+Pass the path to your XML configuration file as a command line argument to your OAS binary executable.
+<pre>OAS ~/oas_config.xml</pre>
+
 
 ==Client-Server Communication Protocol==
 
@@ -64,7 +96,7 @@ WAVE type frequency phase duration
 Generate a new sound source based on the specified simple waveform. Similar to GHDL, the server 
 will respond with a non-negative integer value in ASCII form on success, which will be the handle
 for the generated source. On failure, the server will respond with "-1".
-<br> <br>
+<br /> <br />
 The first parameter, '''type''', describes the shape of the wave that should be generated, and takes
 the following values:
 
@@ -73,10 +105,10 @@ the following values:
 ! ''Type''
 ! Wave Type
 |-
-! scope="row" | 1 
+! scope="row" align="center"| 1 
 | Sinusoidal
 |-
-! scope="row" | 2 
+! scope="row" align="center"| 2 
 | Square
 |-
 ! scope="row" | 3 
@@ -90,10 +122,10 @@ the following values:
 |}
 
 '''Frequency''' specifies the [http://en.wikipedia.org/wiki/Audio_frequency frequency] of the waveform, and can be
-a floating point number.<br>
-'''Phase''' specifies the phase shift of the waveform, in degrees from -180 to +180, and can be a floating point.<br>
+a floating point number.<br />
+'''Phase''' specifies the phase shift of the waveform, in degrees from -180 to +180, and can be a floating point.<br />
 '''Duration''' specifies how long the sound should last through one playback, in seconds, and can be a floating point.
-<br> <br>
+<br /> <br />
 
 The example creates a sinusoidal wave, with a frequency corresponding to middle-C, a phase shift of
 0 degrees, and a duration of 3.5 seconds.
@@ -122,7 +154,7 @@ SSPO handle x y z
 <pre>SSPO 3 4.5 0 22.337</pre>
 |
 Set the position of the source specified by '''handle''' to <nowiki><</nowiki>'''x''', '''y''', '''z'''></nowiki>. 
-The position values can be floating point, and have a default of <nowiki><</nowiki>0, 0, 0<nowiki>></nowiki> <br> <br>
+The position values can be floating point, and have a default of <nowiki><</nowiki>0, 0, 0<nowiki>></nowiki> <br /> <br />
 
 The example sets sound 3's position to <nowiki><4.5, 0, 22.337></nowiki>.
 |-
@@ -133,7 +165,7 @@ SSVE handle x y z
 Set the velocity of the sound specified by '''handle''' to <nowiki><x, y, z></nowiki>. These values are only used for
 doppler effect calculations. OpenAL does not use the velocity for updating the sound's position, and OAS conforms to 
 this specification. See the doppler effect for more information on how it works in OAS and OpenAL.
-<br> <br>
+<br /> <br />
 The example sets sound 2's velocity to 5.0 in the X direction.
 |-
 |
@@ -145,7 +177,7 @@ completely, and the default gain for all sounds is 1. A gain of 0.5 corresponds 
 value greater than 1.0 (to amplify the sound) is possible. However, the final gain value (after source-to-listener 
 distance and orientation attentuation calculations) may be clamped by the sound card and drivers. If portability
 between systems is a key issue, it is not recommended to have widespread use of gain values greater than 1. 
-<br> <br>
+<br /> <br />
 The example sets sound 17's gain to 0.85, which will be quieter than the default.
 |-
 |
@@ -156,7 +188,7 @@ Set the sound specified by '''handle''' to loop continuously, or to disable loop
 boolean values of 0 or 1, with '''0''' disabling looping, and '''1''' enabling looping. A sound with looping enabled
 will resume playback from the beginning immediately after it is finished playing all the way through. Sounds have
 looping disabled by default. 
-<br> <br>
+<br /> <br />
 The example turns looping on in sound 3.
 |-
 |
@@ -169,7 +201,7 @@ the listener will not hear the sound at full volume. If the sound is pointing co
 it will not be audible at all. When the direction vector is the default of <nowiki><</nowiki>0,0,0<nowiki>></nowiki>,
 the sound source has no direction associated with it. Sound is then emitted equally in all directions, similarly to
 a point light source. 
-<br> <br>
+<br /> <br />
 The example sets the direction of sound 3 to <nowiki><</nowiki>0.5, 0.0, -2.5<nowiki>></nowiki>.
 |-
 |
@@ -180,7 +212,7 @@ Set the direction of the sound specified by '''handle''' using '''angle''', in r
 vector in the X-Z plane using sine and cosine. There is no default angle value, because sound sources are not
 directional by default.. Once you use this version of SSDI on a sound source, the sound source will remain directional 
 until you use "SSDI handle 0 0 0", to fully disable the directionality.
-<br> <br>
+<br /> <br />
 The example has the same result as the example for SSDI with a vector parameter. The direction of sound 3 is set to 
 2.944 radians.
 |-
@@ -190,7 +222,7 @@ SSDV handle angle gain
 |
 Set both the direction and gain of the sound given by '''handle'''. The direction is specified by '''angle''', in radians,
 and the volume is set by '''gain'''. This effectively combines two messages: SSDI with the angle parameter and SSVO.
-<br> <br>
+<br /> <br />
 The example sets the direction and gain of sound 3 to 2.944 and 0.869, respectively.
 |-
 |
@@ -201,7 +233,7 @@ Set the pitch of sound specified by '''handle'''. '''Pitch''' can be any floatin
 the default. Doubling the pitch will increase the pitch of the sound by one octave, and halving the pitch will drop the
 sound by one octave. Modifying the pitch also changes the playback speed, so a sound with pitch greater than 1 will play
 at a faster speed, and a sound with a pitch less than 1 will play at a slower speed.
-<br> <br>
+<br /> <br />
 The example sets the pitch of sound 3 to 1.25.
 |-
 |
@@ -212,7 +244,7 @@ Gradually and linearly change the sound's current gain value to the specified ''
 '''time''', in seconds. This can be used to slowly fade a sound's volume in or out, such as, but not limited to, when
 introducing objects/scenes or transitioning between different objects/scenes. Both '''gain''' and '''time''' can be
 floating point.
-<br> <br>
+<br /> <br />
 The example fades sound twelve's current gain value (whatever it may be) to 0.7, over the course of 4 seconds.
 |-
 |
@@ -228,7 +260,7 @@ SLPO x y z
 |
 Set the listener's position to <nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>, in the same coordinate 
 system as the sound sources. The default position is <nowiki><</nowiki>0, 0, 0<nowiki>></nowiki>
-<br> <br>
+<br /> <br />
 The example sets the position to <nowiki><</nowiki>20.12, 0.008, -9.23<nowiki>></nowiki>.
 |-
 |
@@ -241,7 +273,7 @@ Set the listener's orientation using two vectors. The first,
 dependent, the behavior is undefined. They do not need to be normalized. The defaults are 
 <nowiki><</nowiki>0, 0, -1<nowiki>></nowiki> for the look-at vector and <nowiki><</nowiki>0, -1, 0<nowiki>></nowiki> for the 
 up vector.
-<br> <br>
+<br /> <br />
 The example sets the listener's orientation to <nowiki><</nowiki>1, 0, 0<nowiki>></nowiki> for the look-at vector and
 <nowiki><</nowiki>0, 1, 0<nowiki>></nowiki> for the up vector.
 |-
@@ -252,20 +284,19 @@ SLVE x y z
 Set the listener's velocity to <nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>. Similar to setting a sound source's
 velocity, the server does not update the position of the listener based on this specified velocity. It is only used as a 
 parameter for doppler effect calculations. See the doppler effect calculations section for more information.
-<br> <br>
+<br /> <br />
 The example sets the velocity of the listener to -2.0 in the X direction.
-|
 |-
 |
 SSVE handle speed
 <pre>SSVE 6 3.5</pre>
 |
-('''''deprecated''''') <br>
+('''''deprecated''''') <br />
 Set the sound's speed. The sound's current direction is used to compute the effective velocity. This assumes
 that the sound is moving in the same direction it is facing. Note that if the sound has no direction associated with it, the
 behavior is undefined. This message is leftover to support old applications that were tailored to the old Windows AudioServer
 project. New applications should avoid using this functionality, or use at their own risk.
-<br> <br>
+<br /> <br />
 The example sets sound 6's speed to 3.5.
 |}
 

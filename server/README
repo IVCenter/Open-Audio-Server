@@ -20,8 +20,8 @@ Dependencies:
 
 * Optional: Doxygen (minimum 1.4.7) for documentation generation
 
-Installation:
--------------
+Building and Installing:
+------------------------
 
 1.  Change to the build directory, with `cd build`
 2.  If you want to configure build options yourself, type `ccmake ..`
@@ -44,7 +44,7 @@ Running:
 --------
 
 Pass the path to your XML configuration file as a command line argument to your
-OAS binary executable (i.e. "OAS ~/oas_config.xml")
+OAS binary executable (e.g. "OAS ~/oas_config.xml")
 
 
 Usage:
