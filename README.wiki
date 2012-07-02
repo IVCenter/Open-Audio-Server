@@ -108,10 +108,12 @@ per second.
 ==Client-Server Communication Protocol==
 
 ===Notes on Message Format===
-The general format for each message passed from client to the server is a four letter, uppercase
-message identifier, followed by any relevant parameters. Since the protocol is in ASCII plain-text,
-even integer and floating point numbers are passed as plaintext. Two different messages can be
-separated by a newline character.
+
+The server uses a plain-text (ASCII) based communication protocol to receive instructions from the
+client. This allows the client to be even a simple telnet connection, if desired. The general format
+for each message passed from client to the server is a four letter, uppercase message identifier,
+followed by any relevant parameters. Integer and floating point numbers are also passed as ASCII
+plaintext.
 
 Parameters to messages can be separated by commas, semicolons, or extra spaces. The server's parser 
 is lenient with how parameters are separated. So,
@@ -133,7 +135,7 @@ following convention, to minimize the number of bytes sent over the network:
 ! scope="col" width="35%" | Message and Example(s)
 ! scope="col" width="65%" | Description
 |-
-| 
+|
 GHDL filename
 <pre>GHDL beachsound.wav</pre>
 |
