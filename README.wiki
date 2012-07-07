@@ -327,7 +327,7 @@ Set the listener's orientation using two vectors. The first,
 <nowiki><</nowiki>'''aX''', '''aY''', '''aZ'''<nowiki>></nowiki>, specifies the "look-at" direction. The second,
 <nowiki><</nowiki>'''uX''', '''uY''', '''uZ'''<nowiki>></nowiki>, specifies the "up" direction. If two vectors are linearly 
 dependent, the behavior is undefined. They do not need to be normalized. The defaults are 
-<nowiki><</nowiki>0, 0, -1<nowiki>></nowiki> for the look-at vector and <nowiki><</nowiki>0, -1, 0<nowiki>></nowiki> for the 
+<nowiki><</nowiki>0, 0, -1<nowiki>></nowiki> for the look-at vector and <nowiki><</nowiki>0, 1, 0<nowiki>></nowiki> for the 
 up vector.
 <br /> <br />
 The example sets the listener's orientation to <nowiki><</nowiki>1, 0, 0<nowiki>></nowiki> for the look-at vector and
