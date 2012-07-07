@@ -109,3 +109,26 @@ float OASSoundListener::getGain() const
 {
     return _gain;
 }
+
+// private constructor
+OASSoundListener::OASSoundListener()
+{
+    _gain = 1.0;
+
+    _posX = 0;
+    _posY = 0;
+    _posZ = 0;
+
+    _velX = 0;
+    _velY = 0;
+    _velZ = 0;
+
+    _upX = 0;
+    _upY = -1;
+    _upZ = 0;
+
+    _atX = 0;
+    _atY = 0;
+    _atZ = -1;
+}
+
