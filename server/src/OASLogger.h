@@ -4,9 +4,12 @@
 #include <cstdio>
 #include <cstdarg>
 #include <cerrno>
-#include "OASServerWindow.h"
 #include "OASFileHandler.h"
+#include "config.h"
 
+#ifdef FLTK_FOUND
+#include "OASServerWindow.h"
+#endif
 
 namespace oas
 {

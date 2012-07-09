@@ -14,8 +14,14 @@ void Logger::logf(const char *message, ...)
     va_list args;
 
     va_start(args, message);
+
+#ifdef FLTK_FOUND
     sprintf(buf, "%s%s", ServerWindow::getNullBrowserFormatter(),
                          message ? message : "(null)");
+#else
+    sprintf(buf, "%s", message ? message : "(null)");
+#endif
+
     Logger::_sendFormattedOutput(buf, args);
     va_end(args);
     
@@ -28,9 +34,15 @@ void Logger::warnf(const char *message, ...)
     va_list args;
 
     va_start(args, message);
+
+#ifdef FLTK_FOUND
     sprintf(buf, "%s%sWARNING: %s", ServerWindow::getItalicsBrowserFormatter(),
                                     ServerWindow::getNullBrowserFormatter(),
                                     message ? message : "(null)");
+#else
+    sprintf(buf, "WARNING: %s", message ? message : "(null)");
+#endif
+
     Logger::_sendFormattedOutput(buf, args);
     va_end(args);   
 }
@@ -42,9 +54,15 @@ void Logger::errorf(const char *message, ...)
     va_list args;
 
     va_start(args, message);
+
+#ifdef FLTK_FOUND
     sprintf(buf, "%s%sERROR: %s", ServerWindow::getBoldBrowserFormatter(),
                                   ServerWindow::getNullBrowserFormatter(),
                                   message ? message : "(null)");
+#else
+    sprintf(buf, "ERROR: %s", message ? message : "(null)");
+#endif
+
     Logger::_sendFormattedOutput(buf, args);
     va_end(args);
     
@@ -68,8 +86,12 @@ void Logger::logReplaceBottomLine(const char *message, ...)
     va_list args;
     
     va_start(args, message);
+#ifdef FLTK_FOUND
     sprintf(buf, "%s%s", ServerWindow::getNullBrowserFormatter(),
                          message ? message : "(null)");
+#else
+    sprintf(buf, "%s", message ? message : "(null)");
+#endif
 
     Logger::_replaceBottomLineFormattedOutput(buf, args);
     va_end(args);
@@ -82,6 +104,7 @@ void Logger::_sendFormattedOutput(const char *format, va_list args)
 
     vsprintf(buf, format, args);
 
+#ifdef FLTK_FOUND
     // If the server window is initialized, output to it
     if (ServerWindow::isInitialized())
     {
@@ -91,6 +114,9 @@ void Logger::_sendFormattedOutput(const char *format, va_list args)
     {
         Logger::_sendToConsole(buf);
     }
+#else
+    Logger::_sendToConsole(buf);
+#endif
 }
 
 // private, static
@@ -100,6 +126,7 @@ void Logger::_replaceBottomLineFormattedOutput(const char *format, va_list args)
     
     vsprintf(buf, format, args);
     
+#ifdef FLTK_FOUND
     if (ServerWindow::isInitialized())
     {
         ServerWindow::replaceBottomLine(buf);
@@ -108,6 +135,9 @@ void Logger::_replaceBottomLineFormattedOutput(const char *format, va_list args)
     {
         Logger::_sendToConsole(buf);
     }
+#else
+    Logger::_sendToConsole(buf);
+#endif
 }
 
 // private, static
@@ -115,7 +145,10 @@ void Logger::_sendToConsole(const char *buf)
 {
     if (!buf)
         return;
-   
+
+#ifndef FLTK_FOUND
+    std::cerr << buf << std::endl;
+#else
     // We have to skip over the formatting characters, if any
     // We assume that the formatters are terminated by a null formatter
     const char *ptr = strstr(buf, ServerWindow::getNullBrowserFormatter());
@@ -125,5 +158,6 @@ void Logger::_sendToConsole(const char *buf)
         std::cerr << buf << std::endl;
     else
         std::cerr << (ptr + ServerWindow::getBrowserFormatterLength()) << std::endl;
+#endif
 }
 

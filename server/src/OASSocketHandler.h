@@ -41,6 +41,7 @@ class SocketHandler
     public:
         static bool initialize(long int listeningPort);
         static void terminate();
+        static void waitForSocketHandlerToTerminate();
         static bool isSocketOpen();
         static bool isConnectedToClient();
         static unsigned int numberOfIncomingMessages();

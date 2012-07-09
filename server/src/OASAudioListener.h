@@ -88,6 +88,8 @@ public:
      */
     static int getIndexCount();
 
+    ~AudioListener();
+
 protected:
 
     /**
@@ -101,7 +103,6 @@ protected:
 
 private:
     AudioListener();
-    ~AudioListener();
     void _init();
     void _clearError();
     bool _wasOperationSuccessful();

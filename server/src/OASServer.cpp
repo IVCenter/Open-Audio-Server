@@ -2,14 +2,20 @@
 
 oas::Server::Server()
 {
+	_serverInfo = NULL;
 }
 
 // static
 oas::Server& oas::Server::getInstance()
 {
-    static oas::Server instance;
+    static oas::Server *instance = new Server();
 
-    return instance;
+    return *instance;
+}
+
+const oas::ServerInfo* oas::Server::getServerInfo() const
+{
+	return _serverInfo;
 }
 
 // private
@@ -253,9 +259,11 @@ void oas::Server::_processMessage(const Message &message)
         case oas::Message::MT_QUIT:
             // Will need to release all audio resources and then re-initialize them
             oas::AudioHandler::release();
+#ifdef FLTK_FOUND
             oas::ServerWindow::reset();
+#endif
             // If for some reason initialization fails, try again
-            while (!oas::AudioHandler::initialize(this->_serverInfo->getAudioDeviceString()))
+            while (!oas::AudioHandler::initialize(getServerInfo()->getAudioDeviceString()))
             {
                 oas::Logger::errorf("Failed to reset audio resources. Trying again in %d seconds.", delay);
                 sleep(delay);
@@ -276,13 +284,13 @@ void oas::Server::initialize(int argc, char **argv)
     	// Exit if failed
     	exit(1);
     }
-
-    if (this->_serverInfo->useGUI() 
+#ifdef FLTK_FOUND
+    if (getServerInfo()->useGUI()
         && !oas::ServerWindow::initialize(argc, argv, &oas::Server::_atExit))
     {
         _fatalError("Could not initialize the windowed user interface!");
     }
-    
+#endif
     if (!oas::FileHandler::initialize(this->_serverInfo->getCacheDirectory()))
     {
         _fatalError("Could not initialize the File Handler!");
@@ -308,8 +316,13 @@ void oas::Server::initialize(int argc, char **argv)
     pthread_attr_setdetachstate(&threadAttr, PTHREAD_CREATE_JOINABLE);
 
     // Spawn thread to run the core server loop
+#ifdef FLTK_FOUND
+    // With the GUI
     int threadError = pthread_create(&this->_serverThread, &threadAttr, &this->_serverLoop, NULL);
-    
+#else
+    // Without the GUI
+    int threadError = pthread_create(&this->_serverThread, &threadAttr, &this->_serverLoopNoGUI, NULL);
+#endif
     // Destroy thread attribute
     pthread_attr_destroy(&threadAttr);
 
@@ -319,6 +332,7 @@ void oas::Server::initialize(int argc, char **argv)
     }
 }
 
+#ifdef FLTK_FOUND
 // private, static
 void* oas::Server::_serverLoop(void *parameter)
 {
@@ -329,7 +343,7 @@ void* oas::Server::_serverLoop(void *parameter)
     Time timeOut;
 
     // Add the listener to the GUI, before the loop even starts
-    oas::ServerWindow::audioListenerWasModified(oas::AudioHandler::getRecentlyModifiedAudioUnit());
+    oas::ServerWindow::audioListenerWasModified(oas::AudioHandler::getListenerCopy());
 
     while (1)
     {
@@ -378,25 +392,31 @@ void* oas::Server::_serverLoop(void *parameter)
 
     return NULL;
 }
+#endif
 
 // private, static
-void oas::Server::_computeTimeout(struct timespec &timeout, unsigned long timeoutSeconds, unsigned long timeoutNanoseconds)
+void* oas::Server::_serverLoopNoGUI(void *parameter)
 {
-    struct timespec currTime;
+    std::queue<Message*> messages;
+    Time timeOut;
 
-    clock_gettime(CLOCK_MONOTONIC, &currTime);
+    while (1)
+    {
+        // If there are no incoming messages, populateQueueWithIncomingMessages() will block
+        // until timeout
+        oas::SocketHandler::populateQueueWithIncomingMessages(messages, timeOut);
 
-    if (0 != timeoutNanoseconds)
-    {
-        unsigned long int nanoseconds = currTime.tv_nsec + timeoutNanoseconds;
-    	timeout.tv_sec = currTime.tv_sec + timeoutSeconds + (nanoseconds / 1000000000);
-    	timeout.tv_nsec = nanoseconds % 1000000000;
+        while (!messages.empty())
+        {
+            Message *nextMessage = messages.front();
+            oas::Server::getInstance()._processMessage(*nextMessage);
+            //oas::Logger::logf("Server processed message \"%s\"", nextMessage->getOriginalString().c_str());
+            delete nextMessage;
+            messages.pop();
+        }
     }
-    else
-    {
-    	timeout.tv_sec = currTime.tv_sec + timeoutSeconds;
-    	timeout.tv_nsec = currTime.tv_nsec;
-    }
+
+    return NULL;
 }
 
 // private, static
@@ -422,11 +442,27 @@ int main(int argc, char **argv)
 {
     oas::Logger::logf("Starting up the OpenAL Audio Server...");
 
-    // Initialize all of the components of the server
-    oas::Server::getInstance().initialize(argc, argv);
+    oas::Server &server = oas::Server::getInstance();
 
+    // Initialize all of the components of the server
+    server.initialize(argc, argv);
+
+
+#ifdef FLTK_FOUND
     // Fl::run() puts all of the FLTK window rendering on this current thread (main thread)
     // It will only return when program execution is meant to terminate
-    return Fl::run();
+    if (server.getServerInfo()->useGUI())
+    {
+    	return Fl::run();
+    }
+    else
+    {
+    	oas::SocketHandler::waitForSocketHandlerToTerminate();
+    	return 0;
+    }
+#else
+    oas::SocketHandler::waitForSocketHandlerToTerminate();
+    return 0;
+#endif
 }
 

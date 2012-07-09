@@ -27,6 +27,7 @@ bool AudioHandler::initialize(std::string const& deviceString)
             return false;
         }
 
+        oas::Logger::logf("Length of device string is %d, contents are \"%s\"", deviceString.length(), deviceString.c_str());
         // Try to open the device
         AudioHandler::_device = alcOpenDevice(deviceString.c_str());
         if (!AudioHandler::_device)
@@ -228,6 +229,15 @@ const AudioUnit* AudioHandler::getRecentlyModifiedAudioUnit()
     }
     
     return retval;
+}
+
+// public, static
+const AudioListener* AudioHandler::getListenerCopy()
+{
+	AudioListener *copy = new AudioListener(AudioListener::getInstance());
+	copy->invalidate();
+
+	return copy;
 }
 
 void AudioHandler::populateQueueWithUpdatedSources(std::queue <const AudioUnit*> &sources)

@@ -23,22 +23,29 @@ SET(CMAKE_MODULE_PATH "${OAS_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 # Set the location of the binary output directory
 SET(EXECUTABLE_OUTPUT_PATH "${OAS_SOURCE_DIR}/build/bin")
 
+# Set the location of input files that CMake should configure
+SET(OAS_CMAKEFILES_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles)
+
+OPTION(BUILD_GUI "Look for FLTK library, to build GUI components of server" ON)
+
 # Find relevant packages
 FIND_PACKAGE(OPENAL REQUIRED)
 FIND_PACKAGE(ALUT REQUIRED)
 FIND_PACKAGE(MXML REQUIRED)
 
-SET(FLTK_SKIP_FORMS TRUE)
-SET(FLTK_SKIP_IMAGES TRUE)
-SET(FLTK_SKIP_FLUID TRUE)
-FIND_PACKAGE(FLTK 1.3.0)
+IF(BUILD_GUI)
+    SET(FLTK_SKIP_FORMS TRUE)
+    SET(FLTK_SKIP_IMAGES TRUE)
+    SET(FLTK_SKIP_FLUID TRUE)
+    FIND_PACKAGE(FLTK 1.3.0)
+ENDIF(BUILD_GUI)
 
 FIND_PACKAGE(DOXYGEN)
 
 IF(DOXYGEN_FOUND)
     SET(OAS_DOCUMENTATION_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs)
 
-    CONFIGURE_FILE(${OAS_DOCUMENTATION_DIRECTORY}/Doxyfile.in
+    CONFIGURE_FILE(${OAS_CMAKEFILES_DIRECTORY}/Doxyfile.in
         ${OAS_DOCUMENTATION_DIRECTORY}/Doxyfile @ONLY
     )
 
@@ -49,22 +56,41 @@ IF(DOXYGEN_FOUND)
     )
 ENDIF(DOXYGEN_FOUND)
 
-ADD_EXECUTABLE(OAS
-    src/OASServer.cpp 
-    src/OASSocketHandler.cpp
-    src/OASAudioHandler.cpp 
-    src/OASAudioBuffer.cpp 
-    src/OASAudioSource.cpp 
-    src/OASAudioListener.cpp 
-    src/OASLogger.cpp 
-    src/OASServerWindow.cpp 
-    src/OASFileHandler.cpp 
-    src/OASMessage.cpp 
-    src/OASServerInfo.cpp 
-    src/OASServerWindowLogBrowser.cpp 
-    src/OASServerWindowTable.cpp
-    src/OASTime.cpp
-    )
+# Generate the config file, to resolve dependencies at compile-time
+CONFIGURE_FILE(${OAS_CMAKEFILES_DIRECTORY}/config.h.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/config.h)
+
+IF(FLTK_FOUND)
+    ADD_EXECUTABLE(OAS
+        src/OASServer.cpp 
+        src/OASSocketHandler.cpp
+        src/OASAudioHandler.cpp 
+        src/OASAudioBuffer.cpp 
+        src/OASAudioSource.cpp 
+        src/OASAudioListener.cpp 
+        src/OASLogger.cpp 
+        src/OASServerWindow.cpp 
+        src/OASFileHandler.cpp 
+        src/OASMessage.cpp 
+        src/OASServerInfo.cpp 
+        src/OASServerWindowLogBrowser.cpp 
+        src/OASServerWindowTable.cpp
+        src/OASTime.cpp)
+ELSE(FLTK_FOUND)
+    ADD_EXECUTABLE(OAS
+        src/OASServer.cpp 
+        src/OASSocketHandler.cpp
+        src/OASAudioHandler.cpp 
+        src/OASAudioBuffer.cpp 
+        src/OASAudioSource.cpp 
+        src/OASAudioListener.cpp 
+        src/OASLogger.cpp 
+        src/OASFileHandler.cpp 
+        src/OASMessage.cpp 
+        src/OASServerInfo.cpp 
+        src/OASTime.cpp)
+ENDIF(FLTK_FOUND)
+
 
 
 INCLUDE_DIRECTORIES(src)

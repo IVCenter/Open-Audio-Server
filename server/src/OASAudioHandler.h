@@ -81,6 +81,12 @@ public:
     static const AudioUnit* getRecentlyModifiedAudioUnit();
 
     /**
+     * @brief Retrieve a const copy of the listener
+     * @retval NULL if some error occured
+     */
+    static const AudioListener* getListenerCopy();
+
+    /**
      * @brief Retrieve copies of all updated sources inside the given queue
      * @param sources
      */

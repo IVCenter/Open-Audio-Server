@@ -17,6 +17,7 @@
 #include "OASLogger.h"
 #include "OASServerWindowLogBrowser.h"
 #include "OASServerWindowTable.h"
+#include "OASAudioListener.h"
 
 namespace oas
 {
@@ -57,7 +58,7 @@ public:
             ServerWindow::_sourcesTable->audioUnitsWereModified(audioUnits);
     }
 
-    static inline void audioListenerWasModified(const AudioUnit* listener)
+    static inline void audioListenerWasModified(const AudioListener* listener)
     {
         if (isInitialized() && listener && !listener->isSoundSource())
             ServerWindow::_listenerTable->audioUnitWasModified(listener);

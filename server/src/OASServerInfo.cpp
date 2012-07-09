@@ -2,15 +2,20 @@
 
 using namespace oas;
 
-ServerInfo::ServerInfo()
+ServerInfo::ServerInfo():
+	_cacheDirectory(""),
+	_port(0),
+	_audioDeviceString(""),
+	_useGUI(true)
 {
 
 }
 
-ServerInfo::ServerInfo( std::string const& cacheDirectory, 
-                        long int port):
+ServerInfo::ServerInfo( std::string const& cacheDirectory, long int port):
                         _cacheDirectory(cacheDirectory),
-                        _port(port)
+                        _port(port),
+                        _audioDeviceString(""),
+                        _useGUI(true)
 {
     
 }

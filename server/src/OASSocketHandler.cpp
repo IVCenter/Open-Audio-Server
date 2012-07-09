@@ -91,6 +91,11 @@ void SocketHandler::terminate()
     SocketHandler::_closeSocket();
 }
 
+void SocketHandler::waitForSocketHandlerToTerminate()
+{
+	pthread_join(SocketHandler::_socketThread, NULL);
+}
+
 // static, public
 bool SocketHandler::isConnectedToClient()
 {
