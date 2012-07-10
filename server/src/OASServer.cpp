@@ -164,12 +164,13 @@ void oas::Server::_processMessage(const Message &message)
             // Shouldn't need to do anything!
             break;
         case oas::Message::MT_PLAY_HL:
-            oas::Logger::logf("Playing sound #%d", message.getHandle());
             oas::AudioHandler::playSource(message.getHandle());
             break;
         case oas::Message::MT_STOP_HL:
-            oas::Logger::logf("Stopping sound #%d", message.getHandle());
             oas::AudioHandler::stopSource(message.getHandle());
+            break;
+        case oas::Message::MT_PAUS_HL:
+            oas::AudioHandler::pauseSource(message.getHandle());
             break;
         case oas::Message::MT_SSPO_HL_3F:
             oas::AudioHandler::setSourcePosition( message.getHandle(), 

@@ -400,6 +400,20 @@ void AudioHandler::stopSource(const ALuint sourceHandle)
 }
 
 // public, static
+void AudioHandler::pauseSource(const ALuint sourceHandle)
+{
+    AudioSource *source = AudioHandler::_getSource(sourceHandle);
+
+    _clearRecentlyModifiedAudioUnit();
+
+    if (source)
+    {
+        if (source->pause())
+            _setRecentlyModifiedAudioUnit(source);
+    }
+}
+
+// public, static
 void AudioHandler::setSourcePosition(const ALuint sourceHandle, const ALfloat x, const ALfloat y, const ALfloat z)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);

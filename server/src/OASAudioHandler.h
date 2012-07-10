@@ -117,6 +117,11 @@ public:
     static void stopSource(const ALuint source);
 
     /**
+     * @brief Pause the playback of the source with the given handle.
+     */
+    static void pauseSource(const ALuint source);
+
+    /**
      * @brief Set the source's position.
      */
     static void setSourcePosition(const ALuint source, const ALfloat x, const ALfloat y, const ALfloat z);

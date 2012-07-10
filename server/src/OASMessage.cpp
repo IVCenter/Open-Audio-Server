@@ -330,6 +330,15 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
         // Parse token: the handle
         isSuccess = _parseHandleParameter(tokenBuf, pEnd, maxParseAmount, totalParsed);
 	}
+    // PAUS
+    else if (0 == strcmp(pType, M_PAUSE))
+    {
+        // Set message type
+        _mtype = Message::MT_PAUS_HL;
+
+        // Parse token: the handle
+        isSuccess = _parseHandleParameter(tokenBuf, pEnd, maxParseAmount, totalParsed);
+    }
     // SSPO
     else if (0 == strcmp(pType, M_SET_SOUND_POSITION))
     {

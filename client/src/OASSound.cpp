@@ -114,6 +114,14 @@ bool OASSound::stop()
     return OASClientInterface::writeToServer("STOP %ld", _handle);
 }
 
+bool OASSound::pause()
+{
+    if (!isValid())
+        return false;
+
+    return OASClientInterface::writeToServer("PAUS %ld", _handle);
+}
+
 bool OASSound::setLoop(bool loop)
 {
     if (!isValid())

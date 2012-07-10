@@ -262,6 +262,26 @@ bool AudioSource::stop()
     return false;
 }
 
+bool AudioSource::pause()
+{
+    if (isValid())
+    {
+        // Clear OpenAL error state
+        _clearError();
+
+        alSourcePause(_id);
+
+        // Change state and return true iff operation successful
+        if (_wasOperationSuccessful())
+        {
+            _state = ST_STOPPED;
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool AudioSource::setPosition(ALfloat x, ALfloat y, ALfloat z)
 {
     if (isValid())

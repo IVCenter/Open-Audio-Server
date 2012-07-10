@@ -205,6 +205,13 @@ STOP handle
 Stop the source specified by '''handle'''. The playback position is reset to the beginning.
 |-
 |
+PAUS handle
+<pre>PAUS 5</pre>
+|
+Pause the source specified by '''handle'''. The current playback position is saved. To resume playback, PLAY must be used.
+Pausing a source that is already paused has no effect.
+|-
+|
 SSPO handle x y z
 <pre>SSPO 3 4.5 0 22.337</pre>
 |

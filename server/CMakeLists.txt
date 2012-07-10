@@ -24,7 +24,7 @@ SET(CMAKE_MODULE_PATH "${OAS_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 SET(EXECUTABLE_OUTPUT_PATH "${OAS_SOURCE_DIR}/build/bin")
 
 # Set the location of input files that CMake should configure
-SET(OAS_CMAKEFILES_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles)
+SET(OAS_CMAKEFILES_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
 OPTION(BUILD_GUI "Look for FLTK library, to build GUI components of server" ON)
 

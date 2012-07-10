@@ -38,7 +38,7 @@ SET(TARGET_SRC
     ${OAS_CLIENT_SOURCE_DIR}/src/OASSoundListener.cpp
     )
 
-OPTION(BUILD_EXAMPLES "Build examples that use the OASClient library" ON)
+OPTION(BUILD_EXAMPLES "Build examples that use the OASClient library" OFF)
 
 INCLUDE_DIRECTORIES(src)
 
@@ -61,7 +61,6 @@ IF(DOXYGEN_FOUND)
         COMMENT "Generating API documentation with Doxygen" VERBATIM
     )
 ENDIF(DOXYGEN_FOUND)
-
 
 ADD_LIBRARY(oasclient SHARED ${TARGET_SRC} ${TARGET_H})
 

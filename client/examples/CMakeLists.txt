@@ -1,8 +1,8 @@
 
 FIND_PACKAGE(OASCLIENT REQUIRED)
 
-OPTION(BUILD_DOPPLER "Build the doppler effect example" ON)
-OPTION(BUILD_TEST "Build a basic test example" ON)
+OPTION(BUILD_DOPPLER "Build the doppler effect example" OFF)
+OPTION(BUILD_TEST "Build a basic test example" OFF)
 
 IF(BUILD_DOPPLER)
     ADD_EXECUTABLE(doppler doppler.cpp)

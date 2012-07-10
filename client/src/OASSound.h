@@ -69,9 +69,16 @@ public:
 
     /**
      * Stop playing the sound source. If the source is already stopped, this will have
-     * no effect.
+     * no effect. Playback will resume from the beginning the next time play() is used.
      */
     bool stop();
+
+    /**
+     * Pause the sound source. The current playback position is saved. Playback will resume
+     * from this location ONLY when play() is called on this sound source. Pausing a source
+     * that is already paused will have no effect.
+     */
+    bool pause();
 
     /**
      * Set the sound source to loop or stop looping. By default, sound sources do not loop.

@@ -69,6 +69,13 @@ public:
     bool stop();
 
     /**
+     * Pause the playback of the source, saving the current playback position. To resume playback,
+     * play() must be used. Pausing a source that is already paused has no effect. Stopping a
+     * paused source resets the playback position to the beginning, as expected.
+     */
+    bool pause();
+
+    /**
      * @brief Set the gain
      */
     virtual bool setGain(ALfloat gain);

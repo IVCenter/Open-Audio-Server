@@ -26,6 +26,7 @@ namespace oas
 #define M_PREPARE_FILE_TRANSFER 				    "PTFI"
 #define M_PLAY									    "PLAY"
 #define M_STOP									    "STOP"
+#define M_PAUSE                                     "PAUS"
 #define M_SET_SOUND_POSITION					    "SSPO"
 #define M_SET_SOUND_GAIN						    "SSVO"
 #define M_SET_SOUND_LOOP						    "SSLP"
@@ -68,6 +69,7 @@ public:
         MT_PTFI_FN_1I,      // Prepare for file transmission, with the given filename & file size
         MT_PLAY_HL,         // Play handle
         MT_STOP_HL,         // Stop handle
+        MT_PAUS_HL,
         MT_SSPO_HL_3F,      // Set sound position
         MT_SSVO_HL_1F,      // Set sound gain
         MT_SSLP_HL_1I,      // Set sound loop
