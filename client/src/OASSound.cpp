@@ -45,6 +45,10 @@ OASSound::OASSound(WaveformType waveType, float frequency, float phaseShift, flo
             _handle = atol(handleString);
         }
     }
+
+    // If the handle is greater than or equal to 0, this sound is valid
+    if (0 <= _handle)
+        _isValid = true;
 }
 
 OASSound::~OASSound()

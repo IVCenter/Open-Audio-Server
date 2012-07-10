@@ -40,6 +40,11 @@ public:
     static bool initialize(const std::string &host, const unsigned short port);
 
     /**
+     * Shutdown the connection to the server and clean up any allocated resources.
+     */
+    static bool shutdown();
+
+    /**
      * Write data to the server, using a format similar to the printf() family of functions.
      * NOTE: Client applications should not need to call this function.
      */
@@ -57,11 +62,6 @@ public:
      * NOTE: Client applications should not need to call this function.
      */
     static bool sendFile(const std::string &sPath, const std::string &sFilename);
-
-    /**
-     * Shutdown the connection to the server and clean up any allocated resources.
-     */
-    static bool shutdown();
 
 private:
     static int _socketFD;
