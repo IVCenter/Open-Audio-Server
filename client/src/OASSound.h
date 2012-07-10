@@ -42,8 +42,19 @@ public:
 
     /**
      * Create a new sound source based on a file with the given path and filename.
+     * The full path that will be used is "path/filename".
+     * @param path This is the full path to the folder containing the file.
+     *              (e.g. "/home/user/data")
+     * @param filename This is the actual name of the file. (e.g. "funnysound.wav")
      */
-    OASSound(const std::string &sPath, const std::string &sFilename);
+    OASSound(const std::string &path, const std::string &filename);
+
+    /**
+     * Create a new sound source based on the given filepath. The filename will be extracted from
+     * the filepath automatically.
+     * @param filepath This is the full path to the file. (e.g. "/home/user/data/funnysound.wav")
+     */
+    OASSound(const std::string &filepath);
 
     /**
      * Create a new sound source based on the specified wavetype, frequency and phaseshift.
@@ -169,6 +180,7 @@ public:
 private:
     void _init();
     long _getHandleFromServer();
+    void _splitFilename(const std::string &joinedFilepath);
 
     long _handle;
     std::string _filename;

@@ -28,6 +28,28 @@ OASSound::OASSound(const std::string &sPath, const std::string &sFilename)
         _isValid = true;
 }
 
+OASSound::OASSound(const std::string &filepath)
+{
+    _init();
+
+    _splitFilename(filepath);
+
+    _handle = _getHandleFromServer();
+
+    if (-1 == _handle)
+    {
+        if (OASClientInterface::sendFile(_path, _filename))
+        {
+            _handle = _getHandleFromServer();
+        }
+    }
+
+    // If the handle is greater than or equal to 0, this sound is valid
+    if (0 <= _handle)
+        _isValid = true;
+
+}
+
 OASSound::OASSound(WaveformType waveType, float frequency, float phaseShift, float durationInSeconds)
 {
     _init();
@@ -89,6 +111,23 @@ long OASSound::_getHandleFromServer()
     }
 
     return atol(handleString);
+}
+
+void OASSound::_splitFilename(const std::string &joinedFilePath)
+{
+    size_t pathPos = joinedFilePath.find_last_of('/');
+
+    // If the forward slash wasn't found, use empty path field
+    if (pathPos == joinedFilePath.npos)
+    {
+        _path = "";
+        _filename = joinedFilePath;
+    }
+    else
+    {
+        _path = joinedFilePath.substr(0, pathPos);
+        _filename = joinedFilePath.substr(pathPos + 1);
+    }
 }
 
 bool OASSound::isValid() const
