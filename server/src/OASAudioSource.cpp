@@ -229,6 +229,13 @@ bool AudioSource::play()
         // Clear OpenAL error state
         _clearError();
 
+        // Force an update to check the current state of the source
+        update(true);
+
+        // If the source is already playing, then do nothing, and return true
+        if (_state == ST_PLAYING)
+            return true;
+
         alSourcePlay(_id);
 
         // Change state and return true iff operation successful
