@@ -5,13 +5,18 @@
 
 #include "OASClientInterface.h"
 
-// statics
-int oasclient::OASClientInterface::_socketFD = -1;
+using namespace oasclient;
 
-bool oasclient::OASClientInterface::initialize(const std::string &host, unsigned short port)
+// statics
+int OASClientInterface::_socketFD = -1;
+
+bool OASClientInterface::initialize(const std::string &host, unsigned short port)
 {
     struct sockaddr_in stSockAddr;
     int socketFD;
+
+    // Set the internal socketFD to -1
+    _socketFD = -1;
 
     // Set the address info struct to 0
     memset(&stSockAddr, 0, sizeof(stSockAddr));
@@ -46,15 +51,17 @@ bool oasclient::OASClientInterface::initialize(const std::string &host, unsigned
         return false;
     }
 
-    oasclient::OASClientInterface::_socketFD = socketFD;
+    OASClientInterface::_socketFD = socketFD;
     return true;
 }
 
-bool oasclient::OASClientInterface::shutdown()
+bool OASClientInterface::shutdown()
 {
-    if (oasclient::OASClientInterface::writeToServer("QUIT")
-        && 0 == close(oasclient::OASClientInterface::_socketFD))
+    if ((-1 == OASClientInterface::_socketFD)
+        || (OASClientInterface::writeToServer("QUIT")
+            && (0 == close(OASClientInterface::_socketFD))))
     {
+        OASClientInterface::_socketFD = -1;
         return true;
     }
     else
@@ -62,14 +69,15 @@ bool oasclient::OASClientInterface::shutdown()
         return false;
     }
 }
-bool oasclient::OASClientInterface::writeToServer(const char *format, ...)
+
+bool OASClientInterface::writeToServer(const char *format, ...)
 {
     // Create a buffer that should be more than long enough to fit data
     char buf[PACKET_SIZE * 2] = {0};
     int bufSizeAttempt, length;
     va_list args;
 
-    if (!format || -1 == oasclient::OASClientInterface::_socketFD)
+    if (!format || -1 == OASClientInterface::_socketFD)
     {
         return false;
     }
@@ -85,7 +93,7 @@ bool oasclient::OASClientInterface::writeToServer(const char *format, ...)
         return false;
     }
 
-    if (-1 == write(oasclient::OASClientInterface::_socketFD, buf, bufSizeAttempt + 1))
+    if (-1 == write(OASClientInterface::_socketFD, buf, bufSizeAttempt + 1))
     {
         return false;
     }
@@ -93,19 +101,19 @@ bool oasclient::OASClientInterface::writeToServer(const char *format, ...)
     return true;
 }
 
-bool oasclient::OASClientInterface::readFromServer(char *&data, size_t &count)
+bool OASClientInterface::readFromServer(char *&data, size_t &count)
 {
     char buf[PACKET_SIZE] = {0};
     int retval;
 
-    if (-1 == oasclient::OASClientInterface::_socketFD)
+    if (-1 == OASClientInterface::_socketFD)
     {
         return false;
     }
 
-    retval = read(oasclient::OASClientInterface::_socketFD,
+    retval = read(OASClientInterface::_socketFD,
                   buf,
-                  oasclient::OASClientInterface::PACKET_SIZE);
+                  OASClientInterface::PACKET_SIZE);
 
     if (-1 == retval || 0 == retval)
     {
@@ -121,12 +129,18 @@ bool oasclient::OASClientInterface::readFromServer(char *&data, size_t &count)
     return true;
 }
 
-bool oasclient::OASClientInterface::sendFile(const std::string &sPath, const std::string &sFilename)
+bool OASClientInterface::sendFile(const std::string &sPath, const std::string &sFilename)
 {
     int fileSize;
     struct stat fileInfo;
     char *data;
     const char *filePath;
+
+    // If the connection to the server is not established, fail early
+    if (-1 == OASClientInterface::_socketFD)
+    {
+        return false;
+    }
 
     // Append the path and filename together, and assign the filePath pointer to the appended string
     std::string sFilePath = sPath + "/" + sFilename;
@@ -150,7 +164,7 @@ bool oasclient::OASClientInterface::sendFile(const std::string &sPath, const std
         return false;
     }
 
-    if (!oasclient::OASClientInterface::writeToServer(buf))
+    if (!OASClientInterface::writeToServer(buf))
     {
         return false;
     }
@@ -171,7 +185,7 @@ bool oasclient::OASClientInterface::sendFile(const std::string &sPath, const std
     while (bytesLeft > 0)
     {
         // Write a chunk of data out to the socket
-        bytesWritten = write(oasclient::OASClientInterface::_socketFD, dataPtr, bytesLeft);
+        bytesWritten = write(OASClientInterface::_socketFD, dataPtr, bytesLeft);
 
         // If an error occured, return failure
         if (bytesWritten == 0 || bytesWritten == -1)

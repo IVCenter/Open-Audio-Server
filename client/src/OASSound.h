@@ -41,6 +41,25 @@ public:
     };
 
     /**
+     * The state is defined as follows:
+     * UNKNOWN: state is unknown, or the source does not exist
+     * INITIAL: source has a buffer allocated to it, but it has never been used
+     * PLAYING: source is playing or has finished playing all the way through
+     * PAUSED:  source is paused at a specific point, and playback will resume from here
+     * STOPPED: source is stopped and playback will resume from the beginning
+     * DELETED: source is in the process of being deleted, or was just deleted
+     */
+    enum SoundState
+    {
+        ST_UNKNOWN = 0,
+        ST_INITIAL = 1,
+        ST_PLAYING = 2,
+        ST_PAUSED =  3,
+        ST_STOPPED = 4,
+        ST_DELETED = 5
+    };
+
+    /**
      * Create a new sound source based on a file with the given path and filename.
      * The full path that will be used is "path/filename".
      * @param path This is the full path to the folder containing the file.
@@ -146,6 +165,17 @@ public:
      */
     bool fade(float finalGain, float durationInSeconds);
 
+    /**
+     * Update the current state of the sound source by asking the server.
+     */
+    bool updateState();
+
+    /**
+     * Get the state of the sound source, as stored locally in this object.
+     * NOTE: This does not communicate with the server to check the state.
+     *       Use updateState() first to retrieve the most current state.
+     */
+    SoundState getState() const;
 
     /**
      * @brief Get the position of this sound source as a std::vector
@@ -185,6 +215,8 @@ private:
     long _handle;
     std::string _filename;
     std::string _path;
+
+    SoundState _state;
 
     float _posX, _posY, _posZ;
     float _dirX, _dirY, _dirZ;

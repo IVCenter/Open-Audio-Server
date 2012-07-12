@@ -487,6 +487,17 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
                     &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 2);
         _needsResponse = true;
     }
+    // STAT
+    else if (0 == strcmp(pType, M_GET_SOUND_STATE))
+    {
+        // Set the message type to STAT
+        _mtype = Message::MT_STAT_HL;
+
+        // Parse tokens: the handle
+        isSuccess =     _parseHandleParameter(tokenBuf, pEnd, maxParseAmount, totalParsed);
+        // This message requires a response from the server
+        _needsResponse = true;
+    }
     // SLPO
     else if (0 == strcmp(pType, M_SET_LISTENER_POSITION))
     {

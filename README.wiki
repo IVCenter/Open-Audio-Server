@@ -311,6 +311,46 @@ floating point.
 The example fades sound twelve's current gain value (whatever it may be) to 0.7, over the course of 4 seconds.
 |-
 |
+STAT handle
+<pre>STAT 4</pre>
+|
+Retrieve the current state of the sound specified by '''handle'''. The server responds with an integer ranging from 
+'''0''' to '''5'''. Here are the possible values for the state:
+<br />
+
+{| border="1"
+|-
+! ''Value''
+! ''State''
+! ''Description''
+|-
+! scope="row" align="center"| 0 
+| Unknown/Error
+| The sound does not exist, or is invalid.
+|-
+! scope="row" align="center"| 1
+| Initial
+| The sound has a buffer associated with it, but the sound has never been played or used.
+|-
+! scope="row" | 2
+| Playing
+| The sound is currently playing.
+|-
+! scope="row" | 3 
+| Paused
+| The sound is paused.
+|-
+! scope="row" | 4 
+| Stopped
+| The sound is stopped.
+|-
+! scope="row" | 5
+| Deleted
+| The sound is being deleted, and will be invalid soon.
+|}
+
+|-
+|
 GAIN value
 <pre>GAIN 0.0</pre>
 |

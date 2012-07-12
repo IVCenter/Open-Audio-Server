@@ -1,3 +1,24 @@
+/**
+ * @file doppler.cpp
+ * @author Shree Chowkwale
+ *
+ * This client example for OAS takes a file as a command line argument, and 
+ * demonstrates the audio server's rendering of the doppler effect.
+ * 
+ * The listener's position, velocity, and orientation stay constant, at their
+ * default values, for the duration of this example.
+ *
+ * The sound is initially placed at <-10, 3, 0>, so that it is to the left and
+ * slightly above the listener.
+ *
+ * The sound has an initial velocity of <30, 0, 0>, so that it is moving to the
+ * right, relative to the listener.
+ *
+ * The sound moves along its velocity vector, slows down, reverses direction,
+ * and then moves backwards, returning to where it originally was.
+ *
+ */
+
 #include <OASSound.h>
 #include <iostream>
 #include <unistd.h>
@@ -9,8 +30,7 @@ int main(int argc, char **argv)
 {
     const std::string &filepath = processArgsAndInitConnection(argc, argv);
 
-    // Create a test sound that is a simple sine wave corresponding to Middle-C (261.63 hz)
-    // and 0 phase shift, with a 2 second duration
+    // Create a sound using the file specified by filepath
     oasclient::OASSound sound = oasclient::OASSound(filepath);
 
     if (!sound.isValid())
@@ -33,53 +53,56 @@ void runExample(oasclient::OASSound &sound)
 
     float x, y, z, r, theta, velocityX, gain;
     x = y = z = r = theta = 0;
+
+    // This resolution controls the rate at which the demo should run.
+    // Increasing the resolution results in a finer "grain" of position and
+    // velocity updates, and increases the load on the server and network.
     const int RESOLUTION = 5;
 
+    // Setup the sound with initial values
     velocityX = 30;
     sound.setPosition(-10, 3, 0);
-    if (!sound.setVelocity(velocityX, 0, 0))
-        std::cerr << "set vel failed" << std::endl;
-    else
-        std::cerr << "set vel success" << std::endl;
-    if (!sound.setLoop(true))
-        std::cerr << "set loop success" << std::endl;
-    else
-        std::cerr << "set vel success" << std::endl;
-    if (!sound.play())
-        std::cerr << "play failed" << std::endl;
-    else
-        std::cerr << "play success" << std::endl;
+    sound.setVelocity(velocityX, 0, 0);
+    sound.setLoop(true);
+    sound.play();
 
+    // Move the sound in the sam direction as the velocity
     for (x = -10; x < 10; x += 0.25 / RESOLUTION)
     {
         sound.setPosition(x, 3, 0);
         usleep(150000 / RESOLUTION);
     }
 
+    // Slow the sound down
+    // NOTE: For the sake of simplicity, the position is not updated with
+    //       complete accuracy, in terms of the changing velocity
     for (; x < 17.5; x += 0.25 / RESOLUTION)
     {
         velocityX -= 1.0 / RESOLUTION;
         sound.setVelocity(velocityX, 0, 0);
         sound.setPosition(x, 3, 0);
         usleep(150000 / RESOLUTION);
-
     }
 
+    // Move the sound back in the other direciton
+    // NOTE: For the sake of simplicity, the position is not updated with
+    //       complete accuracy, in terms of the changing velocity
     for (; x > 10; x -= 0.25 / RESOLUTION)
     {
         velocityX -= 1.0 / RESOLUTION;
         sound.setVelocity(velocityX, 0, 0);
         sound.setPosition(x, 3, 0);
         usleep(150000 / RESOLUTION);
-
     }
 
+    // Once the velocity has reached desired value, keep updating the position
     for (; x > -10; x -= 0.25 / RESOLUTION)
     {
         sound.setPosition(x, 3, 0);
         usleep(150000 / RESOLUTION);
     }
 
+    // End the example
     sound.setVelocity(0, 0, 0);
     sound.stop();
 }
@@ -121,3 +144,4 @@ std::string processArgsAndInitConnection(int argc, char **argv)
 
     return filepath;
 }
+

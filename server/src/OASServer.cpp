@@ -117,7 +117,7 @@ void oas::Server::_processMessage(const Message &message)
         return;
     }
     
-    int newSource;
+    int newSource, state;
     unsigned int delay = 5;
 
     switch(message.getMessageType())
@@ -221,6 +221,10 @@ void oas::Server::_processMessage(const Message &message)
         									 message.getFloatParam(0),
         									 message.getFloatParam(1));
         	break;
+        case oas::Message::MT_STAT_HL:
+            state = oas::AudioHandler::getSourceState(message.getHandle());
+            oas::SocketHandler::addOutgoingResponse(state);
+            break;
         case oas::Message::MT_SLPO_3F:
             oas::AudioHandler::setListenerPosition(message.getFloatParam(0),
                                                    message.getFloatParam(1),

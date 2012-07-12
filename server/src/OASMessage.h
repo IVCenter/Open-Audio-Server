@@ -38,6 +38,7 @@ namespace oas
 #define M_SET_SOUND_PITCH                           "SPIT"
 #define M_FADE_SOUND								"FADE"
 #define M_GENERATE_SOUND_FROM_WAVEFORM              "WAVE"
+#define M_GET_SOUND_STATE                           "STAT"
 #define M_SET_LISTENER_POSITION                     "SLPO"
 #define M_SET_LISTENER_VELOCITY                     "SLVE"
 #define M_SET_LISTENER_GAIN                         "GAIN"
@@ -84,6 +85,7 @@ public:
         MT_SPIT_HL_1F,      // Set pitch
         MT_FADE_HL_1F_1F,	// Fade sound to gain value, over duration in seconds
         MT_WAVE_1I_3F,      // Generate a sound based on waveform
+        MT_STAT_HL,         // Get the state of the sound source
         MT_SLPO_3F,         // Set listener position
         MT_SLVE_3F,         // Set listener velocity
         MT_GAIN_1F,         // Set global (listener) gain

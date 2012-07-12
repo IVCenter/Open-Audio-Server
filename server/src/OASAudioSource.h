@@ -33,11 +33,11 @@ public:
     enum SourceState
     {
         ST_UNKNOWN = 0,
-        ST_INITIAL,
-        ST_PLAYING,
-        ST_PAUSED,
-        ST_STOPPED,
-        ST_DELETED
+        ST_INITIAL = 1,
+        ST_PLAYING = 2,
+        ST_PAUSED =  3,
+        ST_STOPPED = 4,
+        ST_DELETED = 5
     };
 
     /**
@@ -51,7 +51,7 @@ public:
     unsigned int getBuffer() const;
 
     /**
-     * @brief Update the state of the sound source
+     * @brief Update the state of the sound source, and perform automated operations (e.g. fade)
      * @param forceUpdate If true, it will force the state to be checked and updated via OpenAL,
      *                    else it will only update the state if the sound source was playing.
      * @return True if something changed, false if nothing changed

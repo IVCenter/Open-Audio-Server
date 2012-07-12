@@ -280,6 +280,42 @@ bool OASSound::fade(float finalGain, float durationInSeconds)
 
 }
 
+bool OASSound::updateState()
+{
+    if (!isValid())
+        return false;
+
+    bool result = OASClientInterface::writeToServer("STAT %ld", _handle);
+    
+    if (result)
+    {
+        char *string;
+        size_t length;
+        long int state;
+
+        result = OASClientInterface::readFromServer(string, length);
+        if (result)
+        {
+            state = atol(string);
+            if (state < ST_UNKNOWN || state > ST_DELETED)
+            {
+                _state = ST_UNKNOWN;
+            }
+            else
+            {
+                _state = (OASSound::SoundState) state;
+            }
+        }
+    }
+
+    return result;
+}
+
+OASSound::SoundState OASSound::getState() const
+{
+    return _state;
+}
+
 std::vector<float> OASSound::getPosition() const
 {
     std::vector<float> retvec(3);
@@ -327,3 +363,4 @@ bool OASSound::isLooping() const
 {
     return _isLooping;
 }
+

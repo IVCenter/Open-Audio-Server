@@ -543,6 +543,24 @@ void AudioHandler::setSourceFade(const ALuint sourceHandle, const ALfloat fadeTo
 	}
 }
 
+// public, static
+int AudioHandler::getSourceState(const ALuint sourceHandle)
+{
+    AudioSource *source = AudioHandler::_getSource(sourceHandle);
+    int state = 0;
+
+    _clearRecentlyModifiedAudioUnit();
+
+    if (source)
+    {
+        source->update(true);
+        state = source->getState();
+        _setRecentlyModifiedAudioUnit(source);
+    }
+
+    return state;
+}
+
 void AudioHandler::setListenerGain(const ALfloat gain)
 {
     _clearRecentlyModifiedAudioUnit();

@@ -178,6 +178,17 @@ public:
     static void setSourceFade(const ALuint source, const ALfloat fadeToGainValue, const ALfloat durationInSeconds);
 
     /**
+     * @brief Get the current state of the source.
+     * @retval 0 = Error/Unknown
+     * @retval 1 = Initialized
+     * @retval 2 = Playing
+     * @retval 3 = Paused
+     * @retval 4 = Stopped
+     * @retval 5 = Deleted
+     */
+    static int getSourceState(const ALuint source);
+
+    /**
      * @brief Change the overall gain via the listener object
      */
     static void setListenerGain(const ALfloat gain);
