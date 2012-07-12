@@ -128,6 +128,18 @@ However, it is recommended that you stay true to a convention. The provided clie
 following convention, to minimize the number of bytes sent over the network:
 <pre>SSPO 4 3.5 6 2.5</pre>
 
+===Multiple Messages per Packet===
+
+The server can receive multiple messages per network packet. Each message should be separated by
+either a null character ('\0') or a whitespace character (' ', '\n', '\t').
+
+'''Disclaimer''':
+Clients should not attempt to fill up network packets before transmitting them to the server,
+especially if the different messages all modify the same sound sources. There are two reasons:
+# The contents of each packet are processed very quickly, and many of the instructions in the packet may have no audible effect. For example, if the packet contains multiple instructions to change a sound source's position, only the very last of these instructions would have any kind of lasting effect that may be heard.
+# Attempting to fill up packets before transmission can introduce a potentially noticeable delay between the client application and the server. This is why the provided client API explicitly sets the TCP_NODELAY option on the socket.
+
+
 ===The Protocol===
 
 {| border="1" bgcolor="#FFFFFF"
@@ -226,7 +238,7 @@ SSVE handle x y z
 |
 Set the velocity of the sound specified by '''handle''' to <nowiki><x, y, z></nowiki>. These values
 are only used for doppler effect calculations. OpenAL does not use the velocity for updating the 
-sound's position, and OAS conforms to this specification. See [[#The_Doppler_Effect|the doppler effect]]
+sound's position, and OAS conforms to this specification. See [[#The_Doppler_Effect|the doppler effect]] 
 section for more information on how it works in OAS and OpenAL.
 <br /> <br />
 The example sets sound 2's velocity to 5.0 in the X direction.
