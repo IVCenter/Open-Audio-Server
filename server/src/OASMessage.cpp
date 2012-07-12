@@ -235,7 +235,7 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
     char *pType, *pEnd, *pChar;
     bool isSuccess = false;
 
-    totalParsed = 0;
+//    totalParsed = 0;
     _errorType = MERROR_NONE;
 
     // Skip any leading non-alphabetic characters
@@ -567,6 +567,14 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
 
     // Parsing was successful. Advance the message string by the amount that was parsed
     messageString = messageString + totalParsed;
+
+    // Skip any terminating non-alphabetic characters
+    while (!isalpha(*messageString) && totalParsed < maxParseAmount)
+    {
+        *messageString = '\0';
+        messageString++;
+        totalParsed++;
+    }
 
     return MERROR_NONE;
 }

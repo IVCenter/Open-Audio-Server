@@ -45,7 +45,7 @@ void processArgsAndInitConnection(int argc, char **argv)
     }
     else
     {
-        std::cerr << "Usage: " << argv[0] << "  <ip address of server>   <port>" << std::endl;
+        std::cerr << "Usage: " << argv[0] << " [<ip addr> <port>]" << std::endl;
         exit(3);
     }
 

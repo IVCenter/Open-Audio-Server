@@ -34,6 +34,11 @@ bool oasclient::OASClientInterface::initialize(const std::string &host, unsigned
         return false;
     }
 
+    int one = 1;
+
+    setsockopt(socketFD, IPPROTO_TCP, TCP_NODELAY, &one, sizeof(one));
+
+
     // Connect to the established socket
     if (-1 == connect(socketFD, (struct sockaddr *) &stSockAddr, sizeof(stSockAddr)))
     {

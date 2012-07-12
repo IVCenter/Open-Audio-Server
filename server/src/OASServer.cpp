@@ -317,12 +317,18 @@ void oas::Server::initialize(int argc, char **argv)
     pthread_attr_setdetachstate(&threadAttr, PTHREAD_CREATE_JOINABLE);
 
     // Spawn thread to run the core server loop
+    int threadError;
+
 #ifdef FLTK_FOUND
     // With the GUI
-    int threadError = pthread_create(&this->_serverThread, &threadAttr, &this->_serverLoop, NULL);
+    if (getServerInfo()->useGUI())
+        threadError = pthread_create(&this->_serverThread, &threadAttr, &this->_serverLoop, NULL);
+    // Without the GUI
+    else
+        threadError = pthread_create(&this->_serverThread, &threadAttr, &this->_serverLoopNoGUI, NULL);
 #else
     // Without the GUI
-    int threadError = pthread_create(&this->_serverThread, &threadAttr, &this->_serverLoopNoGUI, NULL);
+    threadError = pthread_create(&this->_serverThread, &threadAttr, &this->_serverLoopNoGUI, NULL);
 #endif
     // Destroy thread attribute
     pthread_attr_destroy(&threadAttr);
@@ -378,7 +384,7 @@ void* oas::Server::_serverLoop(void *parameter)
         {
             Message *nextMessage = messages.front();
             oas::Server::getInstance()._processMessage(*nextMessage);
-            //oas::Logger::logf("Server processed message \"%s\"", nextMessage->getOriginalString().c_str());
+//            oas::Logger::logf("Server processed message \"%s\"", nextMessage->getOriginalString().c_str());
             delete nextMessage;
             messages.pop();
 

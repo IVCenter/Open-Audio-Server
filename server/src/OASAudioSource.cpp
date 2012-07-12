@@ -274,7 +274,7 @@ bool AudioSource::pause()
         // Change state and return true iff operation successful
         if (_wasOperationSuccessful())
         {
-            _state = ST_STOPPED;
+            _state = ST_PAUSED;
             return true;
         }
     }

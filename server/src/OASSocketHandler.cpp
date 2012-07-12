@@ -343,6 +343,8 @@ void* SocketHandler::_socketLoop(void* parameter)
              *              for a more robust implementation.
              */
 
+            amountParsed = 0;
+
             // Keep parsing the current input data until the amount parsed is equal to the amount read 
             while (amountParsed < amountRead)
             {
@@ -351,6 +353,7 @@ void* SocketHandler::_socketLoop(void* parameter)
                 Message::MessageError parseError;
 
                 parseError = newMessage->parseString(bufPtr, amountRead, amountParsed);
+
 
                 // check parseError to keep track as necessary
                 if (Message::MERROR_NONE != parseError)
@@ -373,6 +376,7 @@ void* SocketHandler::_socketLoop(void* parameter)
                 // Else, there was no error in parsing
                 else
                 {
+//                    oas::Logger::logf("SocketHandler - \"%s\"", newMessage->getOriginalString().c_str());
                     // If the message is to quit
                     if (Message::MT_QUIT == newMessage->getMessageType())
                     {
