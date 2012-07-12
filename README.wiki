@@ -138,7 +138,9 @@ Clients should not attempt to fill up network packets before transmitting them t
 especially if the different messages all modify the same sound sources. There are two reasons:
 # The contents of each packet are processed very quickly, and many of the instructions in the packet may have no audible effect. For example, if the packet contains multiple instructions to change a sound source's position, only the very last of these instructions would have any kind of lasting effect that may be heard.
 # Attempting to fill up packets before transmission can introduce a potentially noticeable delay between the client application and the server. This is why the provided client API explicitly sets the TCP_NODELAY option on the socket.
+It is ultimately the client application's responsibility to find the balance between audio accuracy and network performance/congestion. The provided client API places a low priority on network congestion control, and will happily consume as much bandwidth as it needs to in order to keep up with the client application's demands. 
 
+It should be noted that even with TCP_NODELAY enabled, the network layer of the client API will automatically buffer multiple messages into one packet if the messages are being added faster than they can be transmitted.
 
 ===The Protocol===
 
