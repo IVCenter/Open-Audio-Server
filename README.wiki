@@ -144,8 +144,10 @@ It should be noted that even with TCP_NODELAY enabled, the network layer of the 
 
 ===The Protocol===
 
+====Creating and Releasing Sound Sources====
+
 {| border="1" bgcolor="#FFFFFF"
-|- align="center"
+|-
 ! scope="col" width="35%" | Message and Example(s)
 ! scope="col" width="65%" | Description
 |-
@@ -204,13 +206,19 @@ RHDL handle
 <pre>RHDL 1</pre>
 |
 Release the resources allocated for the source corresponding to '''handle'''.
+|}
+
+====Controlling Playback====
+{| border="1" bgcolor="#FFFFFF"
+|-
+! scope="col" width="35%" | Message and Example(s)
+! scope="col" width="65%" | Description
 |-
 |
 PLAY handle
 <pre>PLAY 5</pre>
 |
 Play the source specified by '''handle'''. If the source is already playing, this will do nothing.
-
 |-
 |
 STOP handle
@@ -224,6 +232,55 @@ PAUS handle
 |
 Pause the source specified by '''handle'''. The current playback position is saved. To resume playback, PLAY must be used.
 Pausing a source that is already paused has no effect.
+
+|-
+|
+STAT handle
+<pre>STAT 4</pre>
+|
+Retrieve the current state of the sound specified by '''handle'''. The server responds with an integer ranging from
+'''0''' to '''5'''. Here are the possible values for the state:
+<br />
+
+{| border="1"
+|-
+! ''Value''
+! ''State''
+! ''Description''
+|-
+! scope="row" align="center"| 0 
+| Unknown/Error
+| The sound does not exist, or is invalid.
+|-
+! scope="row" align="center"| 1
+| Initial
+| The sound has a buffer associated with it, but the sound has never been played or used.
+|-
+! scope="row" | 2
+| Playing
+| The sound is currently playing.
+|-
+! scope="row" | 3 
+| Paused
+| The sound is paused.
+|-
+! scope="row" | 4 
+| Stopped
+| The sound is stopped.
+|-
+! scope="row" | 5
+| Deleted
+| The sound is being deleted, and will be invalid soon.
+|}
+|}
+
+====Modifying Properties of Sound Sources====
+
+{| border="1" bgcolor="#FFFFFF"
+|-
+! scope="col" width="35%" | Message and Example(s)
+! scope="col" width="65%" | Description
+
 |-
 |
 SSPO handle x y z
@@ -323,46 +380,14 @@ introducing objects/scenes or transitioning between different objects/scenes. Bo
 floating point.
 <br /> <br />
 The example fades sound twelve's current gain value (whatever it may be) to 0.7, over the course of 4 seconds.
-|-
-|
-STAT handle
-<pre>STAT 4</pre>
-|
-Retrieve the current state of the sound specified by '''handle'''. The server responds with an integer ranging from 
-'''0''' to '''5'''. Here are the possible values for the state:
-<br />
-
-{| border="1"
-|-
-! ''Value''
-! ''State''
-! ''Description''
-|-
-! scope="row" align="center"| 0 
-| Unknown/Error
-| The sound does not exist, or is invalid.
-|-
-! scope="row" align="center"| 1
-| Initial
-| The sound has a buffer associated with it, but the sound has never been played or used.
-|-
-! scope="row" | 2
-| Playing
-| The sound is currently playing.
-|-
-! scope="row" | 3 
-| Paused
-| The sound is paused.
-|-
-! scope="row" | 4 
-| Stopped
-| The sound is stopped.
-|-
-! scope="row" | 5
-| Deleted
-| The sound is being deleted, and will be invalid soon.
 |}
 
+====Modifying Properties of the Listener====
+
+{| border="1" bgcolor="#FFFFFF"
+|-
+! scope="col" width="35%" | Message and Example(s)
+! scope="col" width="65%" | Description
 |-
 |
 GAIN value
@@ -403,6 +428,13 @@ velocity, the server does not update the position of the listener based on this 
 parameter for doppler effect calculations. See [[#The_Doppler_Effect|the doppler effect]] section for more information.
 <br /> <br />
 The example sets the velocity of the listener to -2.0 in the X direction.
+
+
+====Deprecated Messages====
+{| border="1" bgcolor="#FFFFFF"
+|-
+! scope="col" width="35%" | Message and Example(s)
+! scope="col" width="65%" | Description
 |-
 |
 SSVE handle speed
@@ -418,7 +450,7 @@ The example sets sound 6's speed to 3.5.
 
 |}
 
-===Unsupported Messages===
+====Unsupported Messages====
 
 There were some messages that had inconsistent, incomplete, or altogether broken support in the old Windows AudioServer.
 This meant that in order to maintain full backwards compatibility, OAS would have had to implement these deprecated 
