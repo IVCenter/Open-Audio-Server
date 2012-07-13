@@ -209,6 +209,7 @@ Release the resources allocated for the source corresponding to '''handle'''.
 |}
 
 ====Controlling Playback====
+
 {| border="1" bgcolor="#FFFFFF"
 |-
 ! scope="col" width="35%" | Message and Example(s)
@@ -216,7 +217,7 @@ Release the resources allocated for the source corresponding to '''handle'''.
 |-
 |
 PLAY handle
-<pre>PLAY 5</pre>
+<pre>PLAY 5              </pre>
 |
 Play the source specified by '''handle'''. If the source is already playing, this will do nothing.
 |-
@@ -284,7 +285,7 @@ Retrieve the current state of the sound specified by '''handle'''. The server re
 |-
 |
 SSPO handle x y z
-<pre>SSPO 3 4.5 0 22.337</pre>
+<pre>SSPO 3 4.5 0 22.337 </pre>
 |
 Set the position of the source specified by '''handle''' to <nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>. 
 The position values can be floating point, and have a default of <nowiki><</nowiki>0, 0, 0<nowiki>></nowiki> <br /> <br />
@@ -398,12 +399,12 @@ especially to mute all sounds for the listener, as the example demonstrates.
 |-
 |
 SLPO x y z
-<pre>SLPO 20.12 0.008 -9.23</pre>
+<pre>SLPO 20.1 0.08 -9.23</pre>
 |
 Set the listener's position to <nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>, in the same coordinate 
 system as the sound sources. The default position is <nowiki><</nowiki>0, 0, 0<nowiki>></nowiki>
 <br /> <br />
-The example sets the position to <nowiki><</nowiki>20.12, 0.008, -9.23<nowiki>></nowiki>.
+The example sets the position to <nowiki><</nowiki>20.1, 0.08, -9.23<nowiki>></nowiki>.
 |-
 |
 SLOR aX aY aZ uX uY uZ
@@ -428,7 +429,7 @@ velocity, the server does not update the position of the listener based on this 
 parameter for doppler effect calculations. See [[#The_Doppler_Effect|the doppler effect]] section for more information.
 <br /> <br />
 The example sets the velocity of the listener to -2.0 in the X direction.
-
+|}
 
 ====Deprecated Messages====
 {| border="1" bgcolor="#FFFFFF"
@@ -438,7 +439,7 @@ The example sets the velocity of the listener to -2.0 in the X direction.
 |-
 |
 SSVE handle speed
-<pre>SSVE 6 3.5</pre>
+<pre>SSVE 6 3.5          </pre>
 |
 ('''''deprecated''''') <br />
 Set the sound's speed. The sound's current direction is used to compute the effective velocity. This assumes
