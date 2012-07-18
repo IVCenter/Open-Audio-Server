@@ -14,7 +14,6 @@
 #include <sys/stat.h>
 #include <cstring>
 #include <cstdlib>
-#include <AL/alut.h>
 #include <mxml.h>
 #include "OASLogger.h"
 

@@ -66,12 +66,17 @@ void runExample(oasclient::OASSound &sound)
     sound.setLoop(true);
     sound.play();
 
+    std::cerr << "Your sound should be playing now." << std::endl;
+    std::cerr << "It will first pan from left to right." << std::endl;
+
     // Move the sound in the sam direction as the velocity
     for (x = -10; x < 10; x += 0.25 / RESOLUTION)
     {
         sound.setPosition(x, 3, 0);
         usleep(150000 / RESOLUTION);
     }
+
+    std::cerr << "Then, it will slow down." << std::endl;
 
     // Slow the sound down
     // NOTE: For the sake of simplicity, the position is not updated with
@@ -83,6 +88,8 @@ void runExample(oasclient::OASSound &sound)
         sound.setPosition(x, 3, 0);
         usleep(150000 / RESOLUTION);
     }
+
+    std::cerr << "Now, it will reverse direction, and begin moving from right to left." << std::endl;
 
     // Move the sound back in the other direciton
     // NOTE: For the sake of simplicity, the position is not updated with
@@ -105,6 +112,9 @@ void runExample(oasclient::OASSound &sound)
     // End the example
     sound.setVelocity(0, 0, 0);
     sound.stop();
+
+    std::cerr << "And we're done!" << std::endl;
+    usleep(100000);
 }
 
 

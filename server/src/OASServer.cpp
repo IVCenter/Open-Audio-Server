@@ -264,6 +264,7 @@ void oas::Server::_processMessage(const Message &message)
             oas::SocketHandler::addOutgoingResponse("SYNC");
             break;
         case oas::Message::MT_QUIT:
+            oas::Logger::logf("Terminating current session.");
             // Will need to release all audio resources and then re-initialize them
             oas::AudioHandler::release();
 #ifdef FLTK_FOUND
