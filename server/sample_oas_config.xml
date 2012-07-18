@@ -1,9 +1,28 @@
 <?xml version="1.0"?>
 
 <OAS>
+    <!-- REQUIRED SETTINGS -->
+    <cache_directory>/home/user/cache</cache_directory>
 
-    <audio_device></audio_device>
-    <cache_directory>/home/schowkwa/OAS/cache</cache_directory>
     <port>31231</port>
+    <!-- END REQUIRED SETTINGS -->
+
+   <audio_device></audio_device> 
+   <!-- (use default audio device) -->
+   <!-- 
+         Audio Device information can be retrieved using the 'openal-info'
+         program in your terminal. You can directly copy one of the lines
+         from the list of available playback devices for the audio_device
+         setting.
+         
+         For example, if you wanted to use the external SoundBlaster X-Fi card:
+         <audio_device>ALSA Software on SB X-Fi Surround 5.1 Pro [USB Audio] (hw:1,0)</audio_device>
+
+         If your desired audio device is not listed when you use 'openal-info',
+         make sure drivers are correctly installed and the device is set-up.
+      -->
+
     <gui></gui>
+    <!-- GUI is enabled by default. -->
+
 </OAS>
