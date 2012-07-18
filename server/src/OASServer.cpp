@@ -157,7 +157,6 @@ void oas::Server::_processMessage(const Message &message)
             oas::SocketHandler::addOutgoingResponse(newSource);
             break;
         case oas::Message::MT_RHDL_HL:
-            // Look through sources to see if handle exists. If exists, delete source. Else, do nothing
             oas::AudioHandler::deleteSource(message.getHandle());
             break;
         case oas::Message::MT_PTFI_FN_1I:
@@ -171,6 +170,9 @@ void oas::Server::_processMessage(const Message &message)
             break;
         case oas::Message::MT_PAUS_HL:
             oas::AudioHandler::pauseSource(message.getHandle());
+            break;
+        case oas::Message::MT_SSEC_HL_1F:
+            oas::AudioHandler::setSourcePlaybackPosition(message.getHandle(), message.getFloatParam(0));
             break;
         case oas::Message::MT_SSPO_HL_3F:
             oas::AudioHandler::setSourcePosition( message.getHandle(), 

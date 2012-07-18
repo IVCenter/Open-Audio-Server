@@ -233,7 +233,16 @@ PAUS handle
 |
 Pause the source specified by '''handle'''. The current playback position is saved. To resume playback, PLAY must be used.
 Pausing a source that is already paused has no effect.
-
+|-
+|
+SSEC handle seconds
+<pre>SSEC 7 2.95</pre>
+|
+Set the '''playback position''', in seconds, of the source specified by '''handle'''. If the source is already playing, 
+playback will skip to the desired location. Otherwise, the playback position will be applied next time the source is 
+played. If the specified position is outside the bounds of the sound source, this will have no effect.
+<br /> <br />
+The example sets sound 7's play position to 2.95 seconds.
 |-
 |
 STAT handle
@@ -316,6 +325,17 @@ between systems is a key issue, it is not recommended to have widespread use of 
 The example sets sound 17's gain to 0.85, which will be quieter than the default.
 |-
 |
+FADE handle gain time
+<pre>FADE 12 0.7 4</pre>
+|
+Gradually and linearly change the sound's current gain value to the specified '''gain''' value, over the duration
+'''time''', in seconds. This can be used to slowly fade a sound's volume in or out, such as, but not limited to, when
+introducing objects/scenes or transitioning between different objects/scenes. Both '''gain''' and '''time''' can be
+floating point.
+<br /> <br />
+The example fades sound twelve's current gain value (whatever it may be) to 0.7, over the course of 4 seconds.
+|-
+|
 SSLP handle doLoop
 <pre>SSLP 3 1</pre>
 |
@@ -370,17 +390,6 @@ sound by one octave. Modifying the pitch also changes the playback speed, so a s
 at a faster speed, and a sound with a pitch less than 1 will play at a slower speed.
 <br /> <br />
 The example sets the pitch of sound 3 to 1.25.
-|-
-|
-FADE handle gain time
-<pre>FADE 12 0.7 4</pre>
-|
-Gradually and linearly change the sound's current gain value to the specified '''gain''' value, over the duration
-'''time''', in seconds. This can be used to slowly fade a sound's volume in or out, such as, but not limited to, when
-introducing objects/scenes or transitioning between different objects/scenes. Both '''gain''' and '''time''' can be
-floating point.
-<br /> <br />
-The example fades sound twelve's current gain value (whatever it may be) to 0.7, over the course of 4 seconds.
 |}
 
 ====Modifying Properties of the Listener====

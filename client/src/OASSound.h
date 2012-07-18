@@ -111,6 +111,14 @@ public:
     bool pause();
 
     /**
+     * Set the sound source's playback position, in seconds. If the source is already playing,
+     * playback will skip to the desired location. Otherwise, the playback position will be
+     * applied next time the source is played. If the specified value is outside the bounds
+     * of the sound source, this will have no effect.
+     */
+    bool setPlaybackPosition(float seconds);
+
+    /**
      * Set the sound source to loop or stop looping. By default, sound sources do not loop.
      */
     bool setLoop(bool loop);

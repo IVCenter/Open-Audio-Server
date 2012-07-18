@@ -76,6 +76,14 @@ public:
     bool pause();
 
     /**
+     * Set the playback position of the source, in seconds. If the source is already playing,
+     * playback will skip to the desired location. Otherwise, the playback position will be applied
+     * next time the source is played. If the specified position is outside the bounds of the
+     * sound source, this will have no effect.
+     */
+    bool setPlaybackPosition(ALfloat seconds);
+
+    /**
      * @brief Set the gain
      */
     virtual bool setGain(ALfloat gain);

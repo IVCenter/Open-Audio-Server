@@ -414,6 +414,21 @@ void AudioHandler::pauseSource(const ALuint sourceHandle)
 }
 
 // public, static
+void AudioHandler::setSourcePlaybackPosition(const ALuint sourceHandle, const ALfloat seconds)
+{
+    AudioSource *source = AudioHandler::_getSource(sourceHandle);
+
+    _clearRecentlyModifiedAudioUnit();
+
+    if (source)
+    {
+        if (source->setPlaybackPosition(seconds))
+            _setRecentlyModifiedAudioUnit(source);
+    }
+
+}
+
+// public, static
 void AudioHandler::setSourcePosition(const ALuint sourceHandle, const ALfloat x, const ALfloat y, const ALfloat z)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
