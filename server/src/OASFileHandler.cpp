@@ -128,7 +128,7 @@ bool FileHandler::loadXML(const std::string& filename, const std::string& root)
     this->unloadXML();
 
     // Generate XML tree from file contents
-    mxml_node_t *tree = mxmlLoadFile(NULL, fp, MXML_TEXT_CALLBACK);
+    mxml_node_t *tree = mxmlLoadFile(NULL, fp, MXML_OPAQUE_CALLBACK);
 
     if (!tree)
     {
@@ -188,8 +188,8 @@ bool FileHandler::findXML(const char *name, const char *attr, const char *value,
 
     if (node)
     {
-        if (node->child && node->child->value.text.string)
-            output = node->child->value.text.string;
+        if (node->child && node->child->value.opaque)
+            output = node->child->value.opaque;
 
         return true;
     }

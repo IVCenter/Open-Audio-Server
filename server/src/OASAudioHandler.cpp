@@ -27,7 +27,7 @@ bool AudioHandler::initialize(std::string const& deviceString)
             return false;
         }
 
-        oas::Logger::logf("Length of device string is %d, contents are \"%s\"", deviceString.length(), deviceString.c_str());
+        oas::Logger::logf("AudioHandler - Opening audio device \"%s\"", deviceString.c_str());
         // Try to open the device
         AudioHandler::_device = alcOpenDevice(deviceString.c_str());
         if (!AudioHandler::_device)
@@ -88,7 +88,8 @@ void AudioHandler::release()
 
     for (sIter = _sourceMap.begin(); sIter != _sourceMap.end(); sIter++)
     {
-        delete sIter->second;
+        if (sIter->second)
+            delete sIter->second;
     }
     
     _sourceMap.clear();
@@ -99,7 +100,8 @@ void AudioHandler::release()
 
     for (bIter = _bufferMap.begin(); bIter != _bufferMap.end(); bIter++)
     {
-        delete bIter->second;
+        if (bIter->second)
+            delete bIter->second;
     }
 
     _bufferMap.clear();
@@ -411,6 +413,21 @@ void AudioHandler::pauseSource(const ALuint sourceHandle)
         if (source->pause())
             _setRecentlyModifiedAudioUnit(source);
     }
+}
+
+// public, static
+void AudioHandler::setSourcePlaybackPosition(const ALuint sourceHandle, const ALfloat seconds)
+{
+    AudioSource *source = AudioHandler::_getSource(sourceHandle);
+
+    _clearRecentlyModifiedAudioUnit();
+
+    if (source)
+    {
+        if (source->setPlaybackPosition(seconds))
+            _setRecentlyModifiedAudioUnit(source);
+    }
+
 }
 
 // public, static

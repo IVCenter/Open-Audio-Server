@@ -289,6 +289,25 @@ bool AudioSource::pause()
     return false;
 }
 
+bool AudioSource::setPlaybackPosition(ALfloat seconds)
+{
+    if (isValid() && seconds >= 0)
+    {
+        // Clear OpenAL error state
+        _clearError();
+
+        alSourcef(_id, AL_SEC_OFFSET, seconds);
+
+        if (_wasOperationSuccessful())
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 bool AudioSource::setPosition(ALfloat x, ALfloat y, ALfloat z)
 {
     if (isValid())

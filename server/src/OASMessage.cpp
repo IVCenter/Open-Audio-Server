@@ -339,6 +339,15 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
         // Parse token: the handle
         isSuccess = _parseHandleParameter(tokenBuf, pEnd, maxParseAmount, totalParsed);
     }
+    // SSEC
+    else if (0 == strcmp(pType, M_SET_SOUND_PLAYBACK_POSITION_SECONDS))
+    {
+        _mtype = Message::MT_SSEC_HL_1F;
+
+        // Parse tokens: the handle and the playback position value
+        isSuccess = _parseHandleParameter(tokenBuf, pEnd, maxParseAmount, totalParsed)
+                    && _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 0);
+    }
     // SSPO
     else if (0 == strcmp(pType, M_SET_SOUND_POSITION))
     {

@@ -122,6 +122,11 @@ public:
     static void pauseSource(const ALuint source);
 
     /**
+     * @brief Set the playback position of the source, in seconds.
+     */
+    static void setSourcePlaybackPosition(const ALuint source, const ALfloat seconds);
+
+    /**
      * @brief Set the source's position.
      */
     static void setSourcePosition(const ALuint source, const ALfloat x, const ALfloat y, const ALfloat z);

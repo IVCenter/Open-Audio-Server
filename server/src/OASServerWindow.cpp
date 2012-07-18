@@ -29,7 +29,7 @@ bool                        ServerWindow::_isInitialized = false;
 
 void                      (*ServerWindow::_atExitCallback)(void) = NULL;
 
-const unsigned int          ServerWindow::_kWindowWidth = 900;
+const unsigned int          ServerWindow::_kWindowWidth = 1082;
 const unsigned int          ServerWindow::_kWindowHeight = 700;
 const unsigned int          ServerWindow::_kTabHeight = 25;
 const unsigned int          ServerWindow::_kButtonHeight = 25;
@@ -105,7 +105,7 @@ bool ServerWindow::initialize(int argc, char **argv, void (*atExitCallback) (voi
 	ServerWindow::_clearButton->callback(ServerWindow::_clearButtonCallback, 0);
 
     ServerWindow::_tabGroup1->end();
-    Fl_Group::current()->resizable(ServerWindow::_tabGroup1);
+//    Fl_Group::current()->resizable(ServerWindow::_tabGroup1);
 
     // Create the second tab group
     ServerWindow::_tabGroup2 = new Fl_Group(10,
@@ -147,11 +147,12 @@ bool ServerWindow::initialize(int argc, char **argv, void (*atExitCallback) (voi
 
     // Finalize the tabs
     ServerWindow::_tabs->end();
-
+    Fl_Group::current()->resizable(ServerWindow::_tabs);
     // Finalize the window
 	// ServerWindow::_browser->position(0);
     ServerWindow::_window->callback(ServerWindow::_confirmExitCallback);
     ServerWindow::_window->end();
+    
 	ServerWindow::_window->show();
 
     // This lock() should be the first Fl::lock() called during initialization.

@@ -165,6 +165,14 @@ bool OASSound::pause()
     return OASClientInterface::writeToServer("PAUS %ld", _handle);
 }
 
+bool OASSound::setPlaybackPosition(float seconds)
+{
+    if (!isValid())
+        return false;
+
+    return OASClientInterface::writeToServer("SSEC %ld %f", _handle, seconds);
+}
+
 bool OASSound::setLoop(bool loop)
 {
     if (!isValid())
