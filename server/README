@@ -5,6 +5,7 @@ Dependencies:
 -------------
 
 * CMake (minimum v2.8) for the build system
+  http://www.cmake.org/
 
 * OpenAL for the backend audio processing 
   http://kcat.strangesoft.net/openal.html
@@ -19,6 +20,8 @@ Dependencies:
   http://www.fltk.org/
 
 * Optional: Doxygen (minimum 1.4.7) for documentation generation
+  http://www.stack.nl/~dimitri/doxygen/
+
 
 Building and Installing:
 ------------------------
@@ -47,13 +50,10 @@ Pass the path to your XML configuration file as a command line argument to your
 OAS binary executable (e.g. "OAS ~/oas_config.xml")
 
 
-Usage:
-------
+More Information:
+-----------------
 
-The server uses a plain-text (ASCII) based communication protocol to receive
-instructions from the client. This allows the client to be even a simple telnet
-connection, if desired. To make the client application developer's life easier,
-a client API for C++ has also been created. See the ../client/ directory of this 
-project for more information.
+Project Wiki:   http://ivl.calit2.net/wiki/index.php/OpenAL_Audio_Server
+Github:         https://github.com/CalVR/Open-Audio-Server
 
 

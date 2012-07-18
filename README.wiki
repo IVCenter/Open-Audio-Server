@@ -58,10 +58,25 @@ Pass the path to your XML configuration file as a command line argument to your 
 
 # Get the OAS source code from the [https://github.com/CalVR/Open-Audio-Server GitHub repository:]<pre>git clone git://github.com/CalVR/Open-Audio-Server.git</pre>
 # Go to the <code>client/build</code> directory
-# If you want to configure build options yourself, do <pre>ccmake ..</pre> Otherwise, to go with the default options, you can do        <pre>cmake ..</pre>
+# If you want to configure build options yourself (such as compiling examples), do <pre>ccmake ..</pre> Otherwise, to go with the default options, you can do        <pre>cmake ..</pre>
 # Assuming everything went okay with configuration, you can then compile with <pre>make</pre>
 #* With sudo priviledges, you can install with <pre>make install</pre>
 #* To generate documentation using Doxygen, use <pre>make docs</pre>
+
+===Examples===
+
+There is a directory with source code containing basic examples that demonstrate the server's functionality.
+They are not compiled by default. The examples take various command line arguments, such as the IP address
+and port of the server the examples should connect to. By default, the examples will try to connect to 
+the localhost, 127.0.0.1, at port 31231.
+
+To enable compilation of the examples:
+# Go to the <code>client/build</code> directory
+# Configure build options using <pre>ccmake ..</pre>
+# Enable the <code>BUILD_EXAMPLES</code> option, and then reconfigure by pressing <code>'c'</code>
+# Enable the examples you want, and then reconfigure and generate the makefiles
+# Compile with <pre>make</pre>
+# Your examples should compile into the <code>client/build/examples</code> directory.
 
 ==Features==
 
