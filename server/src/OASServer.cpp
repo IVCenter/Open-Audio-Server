@@ -189,6 +189,7 @@ void oas::Server::_processMessage(const Message &message)
                                               message.getIntegerParam());
             break;
         case oas::Message::MT_SSVE_HL_1F:
+            oas::Logger::warnf("SSVE using speed instead of velocity is deprecated!");
             oas::AudioHandler::setSourceSpeed( message.getHandle(),
                                                message.getFloatParam(0));
             break;
