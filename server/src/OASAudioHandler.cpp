@@ -610,3 +610,26 @@ void AudioHandler::setListenerOrientation(const ALfloat atX, const ALfloat atY, 
     if (AudioListener::getInstance().setOrientation(atX, atY, atZ, upX, upY, upZ))
         _setRecentlyModifiedAudioUnit(&AudioListener::getInstance());
 }
+
+void AudioHandler::setSoundRenderingParameters(const ALuint whichParameter, ALfloat value)
+{
+    _clearRecentlyModifiedAudioUnit();
+
+    bool result = false;
+
+    switch (whichParameter)
+    {
+        case SPEED_OF_SOUND:
+            result = AudioListener::getInstance().setSpeedOfSound(value);
+            break;
+        case DOPPLER_FACTOR:
+            result = AudioListener::getInstance().setDopplerFactor(value);
+            break;
+        default:
+            oas::Logger::warnf("AudioHandler - Unknown sound rendering parameter %d was specified", whichParameter);
+            break;
+    }
+
+    if (result)
+        _setRecentlyModifiedAudioUnit(&AudioListener::getInstance());
+}

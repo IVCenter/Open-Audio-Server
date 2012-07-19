@@ -53,10 +53,25 @@ public:
     virtual bool setVelocity(ALfloat x, ALfloat y, ALfloat z);
 
     /**
-     * @brief Set the orientation vectors
+     * @brief Set the orientation vectors (look-at and up)
      */
     bool setOrientation(ALfloat atX, ALfloat atY, ALfloat atZ,
                         ALfloat upX, ALfloat upY, ALfloat upZ);
+
+    /**
+     * Set the speed of sound. This is used for doppler effect calculations, and
+     * must be in the same units as the velocities of the listener and all sound
+     * sources. The default is 343.3 meters per second, appropriate for the
+     * speed of sound through air.
+     */
+    bool setSpeedOfSound(ALfloat speedOfSound);
+
+    /**
+     * Set the doppler factor, which can be used to emphasize or de-emphasize the
+     * pitch shifts due to the doppler effect. The default value is 1.0. A value
+     * of 0 will effectively disable any pitch shift due to the doppler effect.
+     */
+    bool setDopplerFactor(ALfloat doppler);
 
     /**
      * @brief Override AudioUnit method
@@ -72,6 +87,16 @@ public:
     float getOrientationUpX() const;
     float getOrientationUpY() const;
     float getOrientationUpZ() const;
+
+    /**
+     * @brief Get the speed of sound
+     */
+    float getSpeedOfSound() const;
+
+    /**
+     * @brief Get the doppler factor
+     */
+    float getDopplerFactor() const;
 
     /**
      * @brief Get the label for the data entry for the given index
@@ -112,6 +137,9 @@ private:
      * The first three entries are the "at" vector, and second three entries are the "up" vector
      */
     ALfloat _orientation[6];
+
+    ALfloat _speedOfSound;
+    ALfloat _dopplerFactor;
 };
 }
 

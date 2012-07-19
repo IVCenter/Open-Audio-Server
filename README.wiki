@@ -455,6 +455,42 @@ parameter for doppler effect calculations. See [[#The_Doppler_Effect|the doppler
 The example sets the velocity of the listener to -2.0 in the X direction.
 |}
 
+====Changing Parameters of Sound Rendering====
+{| border="1" bgcolor="#FFFFFF"
+|-
+! scope="col" width="35%" | Message and Example(s)
+! scope="col" width="65%" | Description
+|-
+|
+PARA parameter value
+<pre>PARA 1 343300       </pre>
+|
+This instruction can be used to set various global sound rendering parameters. Currently, the following parameters are available:
+<br />
+
+{| border="1"
+|-
+! ''Parameter''
+! ''Value''
+! ''Description''
+|- 
+! scope="row" align="center"| Speed of Sound 
+| style="text-align: center;" | 1
+|
+The speed of sound is used for doppler effect calculations, and must be in the same units as the velocities of listener and
+sound sources. The default value is 343.3 meters per second, appropriate for the speed of sound through air.
+|-
+! scope="row" align="center"| Doppler Factor
+| style="text-align: center;" | 2
+| 
+The doppler factor can be used to emphasize or de-emphasize the pitch shifts due to the doppler effect. The default value
+is 1.0, and a value of 0 will effectively disable any pitch shifts due to the doppler effect.
+|}
+<br /> <br />
+
+The example sets the speed of sound to 343300, corresponding to the units of millimeters per second, through air.
+|}
+
 ====Deprecated Messages====
 {| border="1" bgcolor="#FFFFFF"
 |-

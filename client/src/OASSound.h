@@ -278,6 +278,20 @@ public:
 
 
     /**
+     * These constants are used to designate which parameter to modify.
+     */
+    enum SoundRenderingParameter
+    {
+        SPEED_OF_SOUND = 1,
+        DOPPLER_FACTOR = 2,
+    };
+
+    /**
+     * Set sound rendering parameters
+     */
+    bool setSoundRenderingParameters(SoundRenderingParameter whichParameter, float value);
+
+    /**
      * @brief Get the current position of the listener as a std::vector
      */
     std::vector<float> getPosition() const;

@@ -107,6 +107,42 @@ bool AudioListener::setOrientation(ALfloat atX, ALfloat atY, ALfloat atZ,
     return false;
 }
 
+bool AudioListener::setSpeedOfSound(ALfloat speedOfSound)
+{
+    if (isValid())
+    {
+        _clearError();
+
+        alSpeedOfSound(speedOfSound);
+
+        if (_wasOperationSuccessful())
+        {
+            _speedOfSound = speedOfSound;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool AudioListener::setDopplerFactor(ALfloat doppler)
+{
+    if (isValid())
+    {
+        _clearError();
+
+        alDopplerFactor(doppler);
+
+        if (_wasOperationSuccessful())
+        {
+            _dopplerFactor = doppler;
+            return true;
+        }
+    }
+
+    return false;
+}
+
 float AudioListener::getOrientationLookAtX() const
 {
     return _orientation[0];

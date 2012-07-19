@@ -69,6 +69,11 @@ bool OASSoundListener::setListenerOrientation(float atX, float atY, float atZ,
     return result;
 }
 
+bool OASSoundListener::setSoundRenderingParameters(SoundRenderingParameter whichParameter, float value)
+{
+    return OASClientInterface::writeToServer("PARA %d %f", whichParameter, value);
+}
+
 std::vector<float> OASSoundListener::getPosition() const
 {
     std::vector<float> retvec(3);

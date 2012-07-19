@@ -20,32 +20,33 @@ namespace oas
 #define MAX_MESSAGE_SIZE 1024
 
 // Message Type Strings
-#define M_TEST									    "TEST"
-#define M_GET_HANDLE            				    "GHDL"
-#define M_RELEASE_HANDLE        				    "RHDL"
-#define M_PREPARE_FILE_TRANSFER 				    "PTFI"
-#define M_PLAY									    "PLAY"
-#define M_STOP									    "STOP"
+#define M_TEST                                      "TEST"
+#define M_GET_HANDLE                                "GHDL"
+#define M_RELEASE_HANDLE                            "RHDL"
+#define M_PREPARE_FILE_TRANSFER                     "PTFI"
+#define M_PLAY                                      "PLAY"
+#define M_STOP                                      "STOP"
 #define M_PAUSE                                     "PAUS"
 #define M_SET_SOUND_PLAYBACK_POSITION_SECONDS       "SSEC"
-#define M_SET_SOUND_POSITION					    "SSPO"
-#define M_SET_SOUND_GAIN						    "SSVO"
-#define M_SET_SOUND_LOOP						    "SSLP"
-#define M_SET_SOUND_VELOCITY					    "SSVE"
-#define M_SET_SOUND_DIRECTION					    "SSDI"
-#define M_SET_SOUND_DIRECTION_AND_GAIN 			    "SSDV"
-#define M_SET_SOUND_DIRECTION_RELATIVE 	    	    "SSDR"
+#define M_SET_SOUND_POSITION                        "SSPO"
+#define M_SET_SOUND_GAIN                            "SSVO"
+#define M_SET_SOUND_LOOP                            "SSLP"
+#define M_SET_SOUND_VELOCITY                        "SSVE"
+#define M_SET_SOUND_DIRECTION                       "SSDI"
+#define M_SET_SOUND_DIRECTION_AND_GAIN              "SSDV"
+#define M_SET_SOUND_DIRECTION_RELATIVE              "SSDR"
 #define M_SET_SOUND_DIRECTION_AND_GAIN_RELATIVE     "SSRV"
 #define M_SET_SOUND_PITCH                           "SPIT"
-#define M_FADE_SOUND								"FADE"
+#define M_FADE_SOUND                                "FADE"
 #define M_GENERATE_SOUND_FROM_WAVEFORM              "WAVE"
 #define M_GET_SOUND_STATE                           "STAT"
 #define M_SET_LISTENER_POSITION                     "SLPO"
 #define M_SET_LISTENER_VELOCITY                     "SLVE"
 #define M_SET_LISTENER_GAIN                         "GAIN"
 #define M_SET_LISTENER_ORIENTATION                  "SLOR"
-#define M_SYNC									    "SYNC"
-#define M_QUIT									    "QUIT"
+#define M_SET_PARAMETERS                            "PARA"
+#define M_SYNC                                      "SYNC"
+#define M_QUIT                                      "QUIT"
 
 // Maximum number of float parameters
 #define MAX_NUMBER_FLOAT_PARAM    6
@@ -85,13 +86,14 @@ public:
         MT_SSRV_HL_1F_1F,   // Set sound direction relative to listener and gain in one command
         MT_SSRV_HL_3F_1F,   // Set sound direction relative to listener and gain in one command
         MT_SPIT_HL_1F,      // Set pitch
-        MT_FADE_HL_1F_1F,	// Fade sound to gain value, over duration in seconds
+        MT_FADE_HL_1F_1F,   // Fade sound to gain value, over duration in seconds
         MT_WAVE_1I_3F,      // Generate a sound based on waveform
         MT_STAT_HL,         // Get the state of the sound source
         MT_SLPO_3F,         // Set listener position
         MT_SLVE_3F,         // Set listener velocity
         MT_GAIN_1F,         // Set global (listener) gain
         MT_SLOR_3F_3F,      // Set listener orientation
+        MT_PARA_1I_1F,      // Set global parameters
         MT_SYNC,
         MT_QUIT,
         MT_UNKNOWN

@@ -248,14 +248,18 @@ void oas::Server::_processMessage(const Message &message)
                                                        message.getFloatParam(4),
                                                        message.getFloatParam(5));
             break;
+        case oas::Message::MT_PARA_1I_1F:
+            oas::AudioHandler::setSoundRenderingParameters(message.getIntegerParam(),
+                                                           message.getFloatParam(0));
+            break;
         case oas::Message::MT_SSDR_HL_1F:
-            oas::Logger::warnf("SSDR is deprecated! Ignoring instruction.");
+            oas::Logger::warnf("SSDR is unsupported! Ignoring instruction.");
             break;
         case oas::Message::MT_SSRV_HL_1F_1F:
-            oas::Logger::warnf("SSRV is deprecated! Ignoring instruction.");
+            oas::Logger::warnf("SSRV is unsupported! Ignoring instruction.");
             break;
         case Message::MT_SSRV_HL_3F_1F:
-            oas::Logger::warnf("SSRV is deprecated! Ignoring instruction.");
+            oas::Logger::warnf("SSRV is unsupported! Ignoring instruction.");
             break;
         case oas::Message::MT_TEST:
             break;

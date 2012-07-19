@@ -152,13 +152,13 @@ bool Message::_validateParseAmounts(char *startBuf, char *pEnd, const int maxPar
 // private
 bool Message::_parseHandleParameter(char *startBuf, char*& pEnd, const int maxParseAmount, int& totalParsed)
 {
-	long longVal;
-	
-	if (_parseStringGetLong(NULL, pEnd, longVal) 
+    long longVal;
+    
+    if (_parseStringGetLong(NULL, pEnd, longVal) 
         && _validateParseAmounts(startBuf, pEnd, maxParseAmount, totalParsed))
     {
         _handle = (ALuint) longVal;
-    	return true;
+        return true;
     }
    
     return false;
@@ -167,8 +167,8 @@ bool Message::_parseHandleParameter(char *startBuf, char*& pEnd, const int maxPa
 // private
 bool Message::_parseFilenameParameter(char *startBuf, char*& pEnd, const int maxParseAmount, int& totalParsed)
 {
-	char *pChar;
-	
+    char *pChar;
+    
     if (_parseStringGetString(NULL, pEnd, pChar)
         && _validateParseAmounts(startBuf, pEnd, maxParseAmount, totalParsed))
     {
@@ -189,13 +189,13 @@ bool Message::_parseFilenameParameter(char *startBuf, char*& pEnd, const int max
 // private
 bool Message::_parseIntegerParameter(char *startBuf, char*& pEnd, const int maxParseAmount, int& totalParsed)
 {
-	long longVal;
-	
-	if (_parseStringGetLong(NULL, pEnd, longVal)
+    long longVal;
+    
+    if (_parseStringGetLong(NULL, pEnd, longVal)
         && _validateParseAmounts(startBuf, pEnd, maxParseAmount, totalParsed))
     {
         _iParam = longVal;
-    	return true;
+        return true;
     }
 
     return false;
@@ -227,7 +227,7 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
     // Perform preliminary validation of the input string
     if (!messageString)
     {
-    	_errorType = MERROR_BAD_FORMAT;
+        _errorType = MERROR_BAD_FORMAT;
         return _errorType;
     }
 
@@ -290,7 +290,7 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
         // We need to send a response after processing this message
         _needsResponse = true;
 
-		// Parse token: the filename
+        // Parse token: the filename
         isSuccess = _parseFilenameParameter(tokenBuf, pEnd, maxParseAmount, totalParsed);
     }
     // RHDL
@@ -299,7 +299,7 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
         // Set message type
         _mtype = Message::MT_RHDL_HL;
 
-		// Parse token: the handle 
+        // Parse token: the handle 
         isSuccess = _parseHandleParameter(tokenBuf, pEnd, maxParseAmount, totalParsed);
     }
     // PTFI
@@ -308,7 +308,7 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
         // Set message type
         _mtype = Message::MT_PTFI_FN_1I;
 
-		// Parse tokens: the filename and the filesize
+        // Parse tokens: the filename and the filesize
         isSuccess =    _parseFilenameParameter(tokenBuf, pEnd, maxParseAmount, totalParsed) 
                     && _parseIntegerParameter(tokenBuf, pEnd, maxParseAmount, totalParsed);
     }    
@@ -320,8 +320,8 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
         
         // Parse token: the handle
         isSuccess = _parseHandleParameter(tokenBuf, pEnd, maxParseAmount, totalParsed);
-	}
-	// STOP
+    }
+    // STOP
     else if (0 == strcmp(pType, M_STOP))
     {
         // Set message type
@@ -329,7 +329,7 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
         
         // Parse token: the handle
         isSuccess = _parseHandleParameter(tokenBuf, pEnd, maxParseAmount, totalParsed);
-	}
+    }
     // PAUS
     else if (0 == strcmp(pType, M_PAUSE))
     {
@@ -475,13 +475,13 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
     // FADE
     else if (0 == strcmp(pType, M_FADE_SOUND))
     {
-    	// Set message type to FADE
-    	_mtype = Message::MT_FADE_HL_1F_1F;
+        // Set message type to FADE
+        _mtype = Message::MT_FADE_HL_1F_1F;
 
-    	// Parse tokens: the handle, the final gain value, and the duration in seconds over which the fade should occur
-    	isSuccess = 	_parseHandleParameter(tokenBuf, pEnd, maxParseAmount, totalParsed)
-    				&&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 0)
-    				&&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 1);
+        // Parse tokens: the handle, the final gain value, and the duration in seconds over which the fade should occur
+        isSuccess =     _parseHandleParameter(tokenBuf, pEnd, maxParseAmount, totalParsed)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 0)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 1);
     }
     // WAVE
     else if (0 == strcmp(pType, M_GENERATE_SOUND_FROM_WAVEFORM))
@@ -551,6 +551,16 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
                     &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 3)
                     &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 4)
                     &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 5);
+    }
+    // PARA
+    else if (0 == strcmp(pType, M_SET_PARAMETERS))
+    {
+        // Set message type to PARA
+        _mtype = Message::MT_PARA_1I_1F;
+
+        // Parse tokens: the parameter specifier, and the desired value
+        isSuccess =     _parseIntegerParameter(tokenBuf, pEnd, maxParseAmount, totalParsed)
+                    && _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 0);
     }
     // SYNC
     else if (0 == strcmp(pType, M_SYNC))

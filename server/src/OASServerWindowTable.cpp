@@ -117,19 +117,18 @@ void ServerWindowTable::update()
     pthread_mutex_lock(&_queueMutex);
 
     // Compute timeout
-    struct timespec currTime;
-    struct timespec timeout;
-    clock_gettime(CLOCK_MONOTONIC, &currTime);
-    unsigned long int nanoseconds = currTime.tv_nsec + 10000000; // 10,000,000 nanoseconds = 10 milliseconds
+    Time timeOut;
 
-    timeout.tv_sec = currTime.tv_sec + (nanoseconds / 1000000000);
-    timeout.tv_nsec = (nanoseconds % 1000000000);
+    timeOut.update(Time::OAS_CLOCK_MONOTONIC);
+    timeOut += Time(0.01); // Set the timeout time to be 10 milliseconds from now
+
+    struct timespec tspec = timeOut.getTime();
 
     // wait (block) on the condition variable with timeout
     // this effectively waits for the queue to have some content, without spinlocking
     while (_audioUnitProcessingQueue.empty())
     {
-        int error = pthread_cond_timedwait(&_queueCondition, &_queueMutex, &timeout);
+        int error = pthread_cond_timedwait(&_queueCondition, &_queueMutex, &tspec);
 
         // If some error occured (or the wait timed out), return
         if (0 != error)

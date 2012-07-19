@@ -39,6 +39,16 @@ typedef std::pair<ALuint, AudioSource*>         SourcePair;
 class AudioHandler
 {
 public:
+
+    /**
+     * These constants are used to designate which parameter to modify.
+     */
+    enum SoundRenderingParameter
+    {
+        SPEED_OF_SOUND = 1,
+        DOPPLER_FACTOR = 2,
+    };
+
     static bool initialize(std::string const& deviceString);
     static void release();
 
@@ -213,6 +223,11 @@ public:
      */
     static void setListenerOrientation(const ALfloat atX, const ALfloat atY, const ALfloat atZ,
                                        const ALfloat upX, const ALfloat upY, const ALfloat upZ);
+
+    /**
+     * @brief Set sound rendering parameters
+     */
+    static void setSoundRenderingParameters(const ALuint whichParameter, ALfloat value);
 
 private:
     static AudioSource* _getSource(const ALuint source);
