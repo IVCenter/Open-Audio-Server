@@ -41,6 +41,11 @@ public:
     static bool initialize(const std::string &host, const unsigned short port);
 
     /**
+     * Returns true if the client interface is initialized and connected to the server.
+     */
+    static bool isInitialized();
+
+    /**
      * Shutdown the connection to the server and clean up any allocated resources.
      */
     static bool shutdown();

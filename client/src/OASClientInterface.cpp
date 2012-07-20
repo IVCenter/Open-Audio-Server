@@ -55,6 +55,14 @@ bool OASClientInterface::initialize(const std::string &host, unsigned short port
     return true;
 }
 
+bool OASClientInterface::isInitialized()
+{
+    if (-1 == _socketFD)
+        return false;
+    else
+        return true;
+}
+
 bool OASClientInterface::shutdown()
 {
     if ((-1 == OASClientInterface::_socketFD)
