@@ -7,6 +7,7 @@
 #define _OAS_CLIENT_INTERFACE_H_
 
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <string>
 #include <cstdarg>
@@ -35,6 +36,9 @@ public:
      */
     enum { PACKET_SIZE = 1024};
 
+    friend class OASSound;
+    friend class OASSoundListener;
+
     /**
      * Initialize the connection to the audio server with the specified host location and port.
      */
@@ -50,22 +54,26 @@ public:
      */
     static bool shutdown();
 
+protected:
     /**
      * Write data to the server, using a format similar to the printf() family of functions.
-     * NOTE: Client applications should not need to call this function.
      */
     static bool writeToServer(const char *format, ...);
 
     /**
      * Read data from the server. Data and number of bytes are returned by reference via the
-     * function parameters.
-     * NOTE: Client applications should not need to call this function.
+     * function parameters. If successful, the caller is responsible for freeing the data that
+     * has been dynamically allocated!
      */
     static bool readFromServer(char *&data, size_t &count);
 
     /**
+     * Read an integer from the server. If it fails, the value is set to -1.
+     */
+    static bool readIntegerFromServer(int &value);
+
+    /**
      * Transfer the file with the given path and filename to the server.
-     * NOTE: Client applications should not need to call this function.
      */
     static bool sendFile(const std::string &sPath, const std::string &sFilename);
 

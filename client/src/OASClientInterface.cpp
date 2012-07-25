@@ -12,6 +12,9 @@ int OASClientInterface::_socketFD = -1;
 
 bool OASClientInterface::initialize(const std::string &host, unsigned short port)
 {
+    if (isInitialized())
+        return true;
+
     struct sockaddr_in stSockAddr;
     int socketFD;
 
@@ -57,10 +60,8 @@ bool OASClientInterface::initialize(const std::string &host, unsigned short port
 
 bool OASClientInterface::isInitialized()
 {
-    if (-1 == _socketFD)
-        return false;
-    else
-        return true;
+    // Initialized only if socketFD
+    return (-1 != _socketFD);
 }
 
 bool OASClientInterface::shutdown()
@@ -80,15 +81,15 @@ bool OASClientInterface::shutdown()
 
 bool OASClientInterface::writeToServer(const char *format, ...)
 {
+    if (!format || !isInitialized())
+    {
+        return false;
+    }
+
     // Create a buffer that should be more than long enough to fit data
     char buf[PACKET_SIZE * 2] = {0};
     int bufSizeAttempt, length;
     va_list args;
-
-    if (!format || -1 == OASClientInterface::_socketFD)
-    {
-        return false;
-    }
 
     // Read var args, put the formatted string into buf
     va_start(args, format);
@@ -114,6 +115,9 @@ bool OASClientInterface::readFromServer(char *&data, size_t &count)
     char buf[PACKET_SIZE] = {0};
     int retval;
 
+    data = NULL;
+    count = 0;
+
     if (-1 == OASClientInterface::_socketFD)
     {
         return false;
@@ -134,6 +138,32 @@ bool OASClientInterface::readFromServer(char *&data, size_t &count)
     memcpy(newData, buf, count);
     
     data = newData;
+    return true;
+}
+
+bool OASClientInterface::readIntegerFromServer(int &value)
+{
+    char *data;
+    size_t bytesRead;
+    bool success;
+
+    value = -1;
+    if (!readFromServer(data, bytesRead))
+        return false;
+
+    if (!data)
+        return false;
+
+    std::string tempString = data;
+    delete[] data;
+
+    std::istringstream converter(tempString);
+    int result = -1;
+
+    if (!(converter >> result))
+        return false;
+
+    value = result;
     return true;
 }
 
@@ -195,7 +225,7 @@ bool OASClientInterface::sendFile(const std::string &sPath, const std::string &s
         // Write a chunk of data out to the socket
         bytesWritten = write(OASClientInterface::_socketFD, dataPtr, bytesLeft);
 
-        // If an error occured, return failure
+        // If an error occurred, return failure
         if (bytesWritten == 0 || bytesWritten == -1)
         {
             return false;
@@ -208,6 +238,8 @@ bool OASClientInterface::sendFile(const std::string &sPath, const std::string &s
         bytesLeft -= bytesWritten;
     }
    
+    delete[] data;
+
     return true;
 }
 

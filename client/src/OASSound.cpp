@@ -7,40 +7,50 @@
 
 using namespace oasclient;
 
-OASSound::OASSound(const std::string &sPath, const std::string &sFilename)
+OASSound::OASSound(const std::string &path, const std::string &filename)
 {
-    _init();
-    _path = sPath;
-    _filename = sFilename;
-
-    _handle = _getHandleFromServer();
-
-    if (-1 == _handle)
-    {
-        if (OASClientInterface::sendFile(_path, _filename))
-        {
-            _handle = _getHandleFromServer();
-        }
-    }
-
-    // If the handle is greater than or equal to 0, this sound is valid
-    if (0 <= _handle)
-        _isValid = true;
+    initialize(path, filename);
 }
 
 OASSound::OASSound(const std::string &filepath)
 {
-    _init();
+    initialize(filepath);
+}
 
-    _splitFilename(filepath);
+OASSound::OASSound(WaveformType waveType, float frequency, float phaseShift, float durationInSeconds)
+{
+    initialize(waveType, frequency, phaseShift, durationInSeconds);
+}
 
-    _handle = _getHandleFromServer();
+OASSound::~OASSound()
+{
+    _reset();
+}
+
+bool OASSound::initialize(const std::string &path, const std::string &filename)
+{
+    _reset();
+
+    if (0 == filename.length())
+    {
+        if (0 == path.length())
+            return false;
+
+        _splitFilename(path);
+    }
+    else
+    {
+        _path = path;
+        _filename = filename;
+    }
+
+    _getHandleFromServer();
 
     if (-1 == _handle)
     {
         if (OASClientInterface::sendFile(_path, _filename))
         {
-            _handle = _getHandleFromServer();
+            _getHandleFromServer();
         }
     }
 
@@ -48,86 +58,26 @@ OASSound::OASSound(const std::string &filepath)
     if (0 <= _handle)
         _isValid = true;
 
+    return isValid();
 }
 
-OASSound::OASSound(WaveformType waveType, float frequency, float phaseShift, float durationInSeconds)
+bool OASSound::initialize(enum WaveformType waveType, float frequency, float phaseShift, float durationInSeconds)
 {
-    _init();
+    _reset();
 
     if (OASClientInterface::writeToServer("WAVE %d, %f, %f, %f", waveType,
             frequency,
             phaseShift,
             durationInSeconds))
     {
-        char *handleString;
-        size_t length;
-
-        if (OASClientInterface::readFromServer(handleString, length))
-        {
-            _handle = atol(handleString);
-        }
+        OASClientInterface::readIntegerFromServer(_handle);
     }
 
     // If the handle is greater than or equal to 0, this sound is valid
     if (0 <= _handle)
         _isValid = true;
-}
 
-OASSound::~OASSound()
-{
-    if (isValid())
-    {
-        OASClientInterface::writeToServer("RHDL %ld", _handle);
-    }
-    _path.clear();
-    _filename.clear();
-}
-
-void OASSound::_init()
-{
-    _isValid = false;
-    _handle = -1;
-    _posX = _posY = _posZ = 0;
-    _dirX = _dirY = _dirZ = 0;
-    _velX = _velY = _velZ = 0;
-    _pitch = 1;
-    _gain = 1;
-    _isLooping = false;
-}
-
-long OASSound::_getHandleFromServer()
-{
-    if (!OASClientInterface::writeToServer("GHDL %s", _filename.c_str()))
-    {
-        return -1;
-    }
-
-    char *handleString;
-    size_t length;
-
-    if (!OASClientInterface::readFromServer(handleString, length))
-    {
-        return -1;
-    }
-
-    return atol(handleString);
-}
-
-void OASSound::_splitFilename(const std::string &joinedFilePath)
-{
-    size_t pathPos = joinedFilePath.find_last_of('/');
-
-    // If the forward slash wasn't found, use empty path field
-    if (pathPos == joinedFilePath.npos)
-    {
-        _path = "";
-        _filename = joinedFilePath;
-    }
-    else
-    {
-        _path = joinedFilePath.substr(0, pathPos);
-        _filename = joinedFilePath.substr(pathPos + 1);
-    }
+    return isValid();
 }
 
 bool OASSound::isValid() const
@@ -146,7 +96,11 @@ bool OASSound::play()
     if (!isValid())
         return false;
 
-    return OASClientInterface::writeToServer("PLAY %ld", _handle);
+    bool result = OASClientInterface::writeToServer("PLAY %ld", _handle);
+    if (result)
+        _state = ST_PLAYING;
+
+    return result;
 }
 
 bool OASSound::stop()
@@ -154,7 +108,11 @@ bool OASSound::stop()
     if (!isValid())
         return false;
 
-    return OASClientInterface::writeToServer("STOP %ld", _handle);
+    bool result = OASClientInterface::writeToServer("STOP %ld", _handle);
+    if (result)
+        _state = ST_STOPPED;
+
+    return result;
 }
 
 bool OASSound::pause()
@@ -162,7 +120,11 @@ bool OASSound::pause()
     if (!isValid())
         return false;
 
-    return OASClientInterface::writeToServer("PAUS %ld", _handle);
+    bool result = OASClientInterface::writeToServer("PAUS %ld", _handle);
+    if (result)
+        _state = ST_PAUSED;
+
+    return result;
 }
 
 bool OASSound::setPlaybackPosition(float seconds)
@@ -285,7 +247,6 @@ bool OASSound::fade(float finalGain, float durationInSeconds)
 
     return OASClientInterface::writeToServer("FADE %ld %f %f",
                                             _handle, finalGain, durationInSeconds);
-
 }
 
 bool OASSound::updateState()
@@ -297,15 +258,12 @@ bool OASSound::updateState()
     
     if (result)
     {
-        char *string;
-        size_t length;
-        long int state;
+        int state;
 
-        result = OASClientInterface::readFromServer(string, length);
+        result = OASClientInterface::readIntegerFromServer(state);
         if (result)
         {
-            state = atol(string);
-            if (state < ST_UNKNOWN || state > ST_DELETED)
+            if (state <= ST_UNKNOWN || state > ST_DELETED)
             {
                 _state = ST_UNKNOWN;
             }
@@ -370,5 +328,55 @@ float OASSound::getGain() const
 bool OASSound::isLooping() const
 {
     return _isLooping;
+}
+
+
+void OASSound::_init()
+{
+    _isValid = false;
+    _handle = -1;
+    _posX = _posY = _posZ = 0;
+    _dirX = _dirY = _dirZ = 0;
+    _velX = _velY = _velZ = 0;
+    _pitch = 1;
+    _gain = 1;
+    _isLooping = false;
+    _state = ST_UNKNOWN;
+}
+
+void OASSound::_reset()
+{
+    if (isValid())
+        OASClientInterface::writeToServer("RHDL %ld", _handle);
+
+    _path.clear();
+    _filename.clear();
+
+    _init();
+}
+
+void OASSound::_getHandleFromServer()
+{
+    if (OASClientInterface::writeToServer("GHDL %s", _filename.c_str()))
+    {
+        OASClientInterface::readIntegerFromServer(_handle);
+    }
+}
+
+void OASSound::_splitFilename(const std::string &joinedFilePath)
+{
+    size_t pathPos = joinedFilePath.find_last_of('/');
+
+    // If the forward slash wasn't found, use empty path field
+    if (pathPos == joinedFilePath.npos)
+    {
+        _path = "";
+        _filename = joinedFilePath;
+    }
+    else
+    {
+        _path = joinedFilePath.substr(0, pathPos);
+        _filename = joinedFilePath.substr(pathPos + 1);
+    }
 }
 

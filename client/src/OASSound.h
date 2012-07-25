@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <cmath>
+#include <sstream>
 #include "OASClientInterface.h"
 
 namespace oasclient
@@ -62,7 +63,7 @@ public:
     /**
      * Create a new sound source based on a file with the given path and filename.
      * The full path that will be used is "path/filename".
-     * @param path This is the full path to the folder containing the file.
+     * @param path This is the path to the folder containing the file.
      *              (e.g. "/home/user/data")
      * @param filename This is the actual name of the file. (e.g. "funnysound.wav")
      */
@@ -70,16 +71,45 @@ public:
 
     /**
      * Create a new sound source based on the given filepath. The filename will be extracted from
-     * the filepath automatically.
+     * the filepath automatically. If no filepath is specified, the sound object does not
+     * correspond to any sound, and does not attempt any network communication.
      * @param filepath This is the full path to the file. (e.g. "/home/user/data/funnysound.wav")
      */
-    OASSound(const std::string &filepath);
+    OASSound(const std::string &filepath = "");
 
     /**
      * Create a new sound source based on the specified wavetype, frequency and phaseshift.
      */
     OASSound(WaveformType waveType, float frequency, float phaseShift, float durationInSeconds);
+
+    /**
+     * Releases associated sound with server, if any.
+     */
     ~OASSound();
+
+    /**
+     * Initialize this source with the sound file specified by the given path and filename. If the
+     * sound source is already initialized, it will be reset first.
+     *
+     * If both the path and the filename parameters are provided, then they are concatenated with
+     * a forward slash in between, to produce the full path (e.g. "path/filename").
+     *
+     * If filename is not specified, it is assumed that the path parameter is already the full
+     * path to the file. In this case, the filename component will be extracted.
+     *
+     * If neither the path nor the filename are specified, this method will reset the object and
+     * return false.
+     *
+     * @param path This is the path to the folder containing the file (e.g. "/home/user/data")
+     * @param filename This is the actual name of the file. (e.g. "funnysound.wav")
+     */
+    bool initialize(const std::string &path = "", const std::string &filename = "");
+
+    /**
+     * Initialize this source with the specified waveform. If the source is already initialized,
+     * it will be reset and then reassociated with the desired waveform.
+     */
+    bool initialize(WaveformType waveType, float frequency, float phaseShift, float durationInSeconds);
 
     /**
      * Determine whether or not this sound object is valid.
@@ -217,10 +247,11 @@ public:
 
 private:
     void _init();
-    long _getHandleFromServer();
+    void _reset();
+    void _getHandleFromServer();
     void _splitFilename(const std::string &joinedFilepath);
 
-    long _handle;
+    int _handle;
     std::string _filename;
     std::string _path;
 
