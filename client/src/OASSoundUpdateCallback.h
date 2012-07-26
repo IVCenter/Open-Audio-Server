@@ -21,6 +21,7 @@
 #include <osg/ref_ptr>
 #include <osg/Vec3>
 #include <osg/Matrix>
+#include <osg/Transform>
 #include "OASSound.h"
 
 namespace oasclient
@@ -44,7 +45,7 @@ protected:
     double _prevTime;
     osg::Vec3 _prevPosition;
     const double _updateIntervalInSeconds;
-}
+};
 
 }
 
