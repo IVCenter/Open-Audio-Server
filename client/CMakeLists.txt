@@ -20,12 +20,53 @@ SET(OASCLIENT_VERSION "${OASCLIENT_MAJOR_VERSION}.${OASCLIENT_MINOR_VERSION}")
 # Set cmake module path
 SET(CMAKE_MODULE_PATH "${OASCLIENT_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
+# Set the location of the misc. CMake files
+SET(OASCLIENT_CMAKEFILES_DIRECTORY "${OASCLIENT_SOURCE_DIR}/CMake")
+
 # Determine if we should use lib or lib64
 SET(LIBDIR "lib")
 IF (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
     SET(LIBDIR "lib64")
 ENDIF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
 
+# Set the location of the library output directory
+SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/${LIBDIR})
+
+SET(OASCLIENT_LIBRARY_NAME "oasclient")
+
+#### Find relevant packages
+
+# Doxygen
+FIND_PACKAGE(DOXYGEN)
+
+IF(DOXYGEN_FOUND)
+    SET(OASCLIENT_DOCUMENTATION_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs)
+
+    CONFIGURE_FILE(${OASCLIENT_CMAKEFILES_DIRECTORY}/Doxyfile.in
+        ${OASCLIENT_DOCUMENTATION_DIRECTORY}/Doxyfile @ONLY
+    )
+
+    ADD_CUSTOM_TARGET(docs ${DOXYGEN_EXECUTABLE}
+        ${OASCLIENT_DOCUMENTATION_DIRECTORY}/Doxyfile 
+        WORKING_DIRECTORY ${OASCLIENT_DOCUMENTATION_DIRECTORY}
+        COMMENT "Generating API documentation with Doxygen" VERBATIM
+    )
+ENDIF(DOXYGEN_FOUND)
+
+# OSG 
+FIND_PACKAGE(OSG)
+
+IF(OSG_FOUND)
+    OPTION(BUILD_WITH_OSG_SUPPORT "Let sound nodes be a part of the scenegraph" ON)
+ENDIF(OSG_FOUND)
+
+
+# Build examples option - default off
+OPTION(BUILD_EXAMPLES "Build examples that use the OASClient library" OFF)
+
+# Generate the config file, to resolve dependencies at compile-time
+CONFIGURE_FILE(${OASCLIENT_CMAKEFILES_DIRECTORY}/config.h.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/config.h)
 
 SET(TARGET_H
     ${OASCLIENT_SOURCE_DIR}/src/OASClientInterface.h
@@ -38,31 +79,7 @@ SET(TARGET_SRC
     ${OASCLIENT_SOURCE_DIR}/src/OASSoundListener.cpp
     )
 
-OPTION(BUILD_EXAMPLES "Build examples that use the OASClient library" OFF)
-
 INCLUDE_DIRECTORIES(src)
-
-# Set the location of the library output directory
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/${LIBDIR})
-
-# Find relevant packages
-FIND_PACKAGE(DOXYGEN)
-
-IF(DOXYGEN_FOUND)
-    SET(OASCLIENT_DOCUMENTATION_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs)
-
-    CONFIGURE_FILE(${OASCLIENT_DOCUMENTATION_DIRECTORY}/Doxyfile.in
-        ${OASCLIENT_DOCUMENTATION_DIRECTORY}/Doxyfile @ONLY
-    )
-
-    ADD_CUSTOM_TARGET(docs ${DOXYGEN_EXECUTABLE}
-        ${OASCLIENT_DOCUMENTATION_DIRECTORY}/Doxyfile 
-        WORKING_DIRECTORY ${OASCLIENT_DOCUMENTATION_DIRECTORY}
-        COMMENT "Generating API documentation with Doxygen" VERBATIM
-    )
-ENDIF(DOXYGEN_FOUND)
-
-SET(OASCLIENT_LIBRARY_NAME "oasclient")
 
 ADD_LIBRARY(${OASCLIENT_LIBRARY_NAME} SHARED ${TARGET_SRC} ${TARGET_H})
 

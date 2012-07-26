@@ -1,7 +1,7 @@
 
 # Define a macro to create and link examples
 MACRO(ADD_EXAMPLE E_NAME E_EXEC E_SOURCE)
-    OPTION(EXAMPLES_${E_NAME} "Build the ${E_EXEC} example" OFF)
+    OPTION(EXAMPLES_${E_NAME} "Build the ${E_EXEC} example" ON)
 
     IF(EXAMPLES_${E_NAME})
         ADD_EXECUTABLE(${E_EXEC} ${E_SOURCE})
