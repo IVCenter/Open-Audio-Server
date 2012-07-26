@@ -15,6 +15,22 @@
 #include <cmath>
 #include <sstream>
 #include "OASClientInterface.h"
+#include "config.h"
+
+#ifdef OSG_FOUND
+#include <osg/Node>
+#endif
+
+
+#ifdef OSG_FOUND
+#define IF_OSG_FOUND(x) x
+#define IF_OSG_NOT_FOUND(y)
+#define IF_OSG_FOUND_ELSE(x, y) x
+#else
+#define IF_OSG_FOUND(x)
+#define IF_OSG_NOT_FOUND(y) y
+#define IF_OSG_FOUND_ELSE(x, y) y
+#endif
 
 namespace oasclient
 {
@@ -24,7 +40,11 @@ namespace oasclient
  * Each instance of this object corresponds to one fully independent sound source that can be
  * positioned, played, etc.
  */
+#ifdef OSG_FOUND
+class OASSound : public osg::Node
+#else
 class OASSound
+#endif
 {
 public:
 
@@ -175,7 +195,8 @@ public:
     /**
      * Set the direction of the sound source by specifying an angle in the X-Z plane. Note that
      * there is no default value for this angle, because it is not possible to represent
-     * a lack of directionality using angles.
+     * a lack of directionality using angles. This function is considered deprecated, and kept
+     * only to support old client applications using the Windows Audio Server.
      */
     bool setDirection(float angle);
 
@@ -272,7 +293,11 @@ private:
  * @class OASSoundListener
  * Used to communicate properties of the listener to the server.
  */
+#ifdef OSG_FOUND
+class OASSoundListener : public osg::Node
+#else
 class OASSoundListener
+#endif
 {
 public:
 
