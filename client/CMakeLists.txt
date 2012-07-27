@@ -125,4 +125,12 @@ IF(BUILD_EXAMPLES)
     ADD_SUBDIRECTORY(examples)
 ENDIF(BUILD_EXAMPLES)
 
+# 'uninstall' target
+CONFIGURE_FILE(
+    "${OASCLIENT_CMAKEFILES_DIRECTORY}/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
 
+ADD_CUSTOM_TARGET(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+    
