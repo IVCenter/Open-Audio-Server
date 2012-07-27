@@ -1,5 +1,5 @@
 /**
- * @file    OASClientInterface.h
+ * @file    ClientInterface.h
  * @author  Shreenidhi Chowkwale
  */
 
@@ -24,10 +24,10 @@ namespace oasclient
 {
 
 /**
- * @class OASClientInterface
+ * @class ClientInterface
  * This class provides the network interface for the client to connect to the server.
  */
-class OASClientInterface
+class ClientInterface
 {
 public:
 
@@ -36,8 +36,8 @@ public:
      */
     enum { PACKET_SIZE = 1024};
 
-    friend class OASSound;
-    friend class OASSoundListener;
+    friend class Sound;
+    friend class Listener;
 
     /**
      * Initialize the connection to the audio server with the specified host location and port.

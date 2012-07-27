@@ -1,8 +1,8 @@
 /**
- * @file    OASSoundUpdateCallback.h
+ * @file    SoundUpdateCallback.h
  * @author  Shreenidhi Chowkwale
  *
- * This file contains an update callback corresponding to one OASSound object.
+ * This file contains an update callback corresponding to one Sound object.
  * When the callback is used during OpenSceneGraph's update traversal, the
  * position and velocity of the sound will be updated as necessary.
  */
@@ -22,25 +22,25 @@
 #include <osg/Vec3>
 #include <osg/Matrix>
 #include <osg/Transform>
-#include "OASSound.h"
+#include "OASClient.h"
 
 namespace oasclient
 {
 
-class OASSoundUpdateCallback : public osg::NodeCallback
+class SoundUpdateCallback : public osg::NodeCallback
 {
 public:
-    OASSoundUpdateCallback(OASSound *sound = NULL, const double _updateIntervalInSeconds = 0.01);
+    SoundUpdateCallback(Sound *sound = NULL, const double _updateIntervalInSeconds = 0.01);
 
     virtual void operator()(osg::Node *node, osg::NodeVisitor *nv);
 
-    const OASSound* getSound() const;
-    void setSound(OASSound *sound);
+    const Sound* getSound() const;
+    void setSound(Sound *sound);
 
 protected:
-    virtual ~OASSoundUpdateCallback();
+    virtual ~SoundUpdateCallback();
 
-    OASSound *_sound;
+    Sound *_sound;
     bool _firstRun;
     double _prevTime;
     osg::Vec3 _prevPosition;
@@ -51,4 +51,4 @@ protected:
 
 #endif // OSG_FOUND
 
-#endif // _OAS_OSGSOUNDUPDATECALLBACK_H_
+#endif // _OASSOUNDUPDATECALLBACK_H_

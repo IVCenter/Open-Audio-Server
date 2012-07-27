@@ -1,4 +1,4 @@
-#include <OASSound.h>
+#include <OASClient.h>
 #include <iostream>
 #include <unistd.h>
 
@@ -10,7 +10,7 @@ int main(int argc, char **argv)
 
     // Create a test sound that is a simple sine wave corresponding to Middle-C (261.63 hz)
     // and 0 phase shift, with a 2 second duration
-    oasclient::OASSound test = oasclient::OASSound(oasclient::OASSound::SINE, 261.63, 0, 2);
+    oasclient::Sound test = oasclient::Sound(oasclient::Sound::SINE, 261.63, 0, 2);
 
     if (!test.isValid())
     {
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 
     sleep(2);
 
-    oasclient::OASClientInterface::shutdown();
+    oasclient::ClientInterface::shutdown();
 
     return 0;
 }
@@ -49,7 +49,7 @@ void processArgsAndInitConnection(int argc, char **argv)
         exit(3);
     }
 
-    if (!oasclient::OASClientInterface::initialize(ipAddrStr, port))
+    if (!oasclient::ClientInterface::initialize(ipAddrStr, port))
     {
         std::cerr << "--> Unable to create a connection with the server." << std::endl;
         exit(1);

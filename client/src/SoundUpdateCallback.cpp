@@ -1,13 +1,13 @@
 /**
- * @file    OASSoundUpdateCallback.cpp
+ * @file    SoundUpdateCallback.cpp
  * @author  Shreenidhi Chowkwale
  */
 
-#include "OASSoundUpdateCallback.h"
+#include "SoundUpdateCallback.h"
 
 using namespace oasclient;
 
-OASSoundUpdateCallback::OASSoundUpdateCallback(OASSound *sound, double updateIntervalInSeconds) :
+SoundUpdateCallback::SoundUpdateCallback(Sound *sound, double updateIntervalInSeconds) :
         osg::NodeCallback(),
         _sound(sound),
         _updateIntervalInSeconds(updateIntervalInSeconds),
@@ -16,17 +16,17 @@ OASSoundUpdateCallback::OASSoundUpdateCallback(OASSound *sound, double updateInt
 {
 }
 
-OASSoundUpdateCallback::~OASSoundUpdateCallback()
+SoundUpdateCallback::~SoundUpdateCallback()
 {
 }
 
-void OASSoundUpdateCallback::operator()(osg::Node *node, osg::NodeVisitor *nodeVisitor)
+void SoundUpdateCallback::operator()(osg::Node *node, osg::NodeVisitor *nodeVisitor)
 {
     const osg::FrameStamp *frameStamp = nodeVisitor->getFrameStamp();
 
     if ( !_sound || !_sound->isValid() || (frameStamp == NULL))
     {
-        std::cerr << "OASSoundUpdateCallback::operator() - first if check failed" << std::endl;
+        std::cerr << "SoundUpdateCallback::operator() - first if check failed" << std::endl;
         traverse(node, nodeVisitor);
         return;
     }

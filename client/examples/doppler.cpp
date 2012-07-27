@@ -19,19 +19,19 @@
  *
  */
 
-#include <OASSound.h>
+#include <OASClient.h>
 #include <iostream>
 #include <unistd.h>
 
 std::string processArgsAndInitConnection(int argc, char **argv);
-void runExample(oasclient::OASSound &sound);
+void runExample(oasclient::Sound &sound);
 
 int main(int argc, char **argv)
 {
     const std::string &filepath = processArgsAndInitConnection(argc, argv);
 
     // Create a sound using the file specified by filepath
-    oasclient::OASSound sound = oasclient::OASSound(filepath);
+    oasclient::Sound sound = oasclient::Sound(filepath);
 
     if (!sound.isValid())
     {
@@ -41,12 +41,12 @@ int main(int argc, char **argv)
 
     runExample(sound);
 
-    oasclient::OASClientInterface::shutdown();
+    oasclient::ClientInterface::shutdown();
 
     return 0;
 }
 
-void runExample(oasclient::OASSound &sound)
+void runExample(oasclient::Sound &sound)
 {
     if (!sound.isValid())
         return;
@@ -145,7 +145,7 @@ std::string processArgsAndInitConnection(int argc, char **argv)
         return "";
     }
 
-    if (!oasclient::OASClientInterface::initialize(ipAddrStr, port))
+    if (!oasclient::ClientInterface::initialize(ipAddrStr, port))
     {
         std::cerr << "--> Unable to create a connection with the server." << std::endl;
         exit(1);

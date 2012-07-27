@@ -1,20 +1,20 @@
 /**
- * @file    OASSound.h
+ * @file    OASClient.h
  * @author  Shreenidhi Chowkwale
  *
- * This file contains two classes: OASSound, and OASSoundListener.
- * OASSound objects correspond to individual sound sources, whereas
- * OASSoundListener is a singleton that can be used to modify the
+ * This file contains two classes: Sound, and Listener.
+ * Sound objects correspond to individual sound sources, whereas
+ * Listener is a singleton that can be used to modify the
  * attributes of the listener.
  */
 
-#ifndef _OAS_SOUND_H_
-#define _OAS_SOUND_H_
+#ifndef _OAS_CLIENT_H_
+#define _OAS_CLIENT_H_
 
 #include <vector>
 #include <cmath>
 #include <sstream>
-#include "OASClientInterface.h"
+#include "ClientInterface.h"
 #include "config.h"
 
 #ifdef OSG_FOUND
@@ -36,14 +36,14 @@ namespace oasclient
 {
 
 /**
- * @class OASSound
+ * @class Sound
  * Each instance of this object corresponds to one fully independent sound source that can be
  * positioned, played, etc.
  */
 #ifdef OSG_FOUND
-class OASSound : public osg::Node
+class Sound : public osg::Node
 #else
-class OASSound
+class Sound
 #endif
 {
 public:
@@ -87,7 +87,7 @@ public:
      *              (e.g. "/home/user/data")
      * @param filename This is the actual name of the file. (e.g. "funnysound.wav")
      */
-    OASSound(const std::string &path, const std::string &filename);
+    Sound(const std::string &path, const std::string &filename);
 
     /**
      * Create a new sound source based on the given filepath. The filename will be extracted from
@@ -95,17 +95,17 @@ public:
      * correspond to any sound, and does not attempt any network communication.
      * @param filepath This is the full path to the file. (e.g. "/home/user/data/funnysound.wav")
      */
-    OASSound(const std::string &filepath = "");
+    Sound(const std::string &filepath = "");
 
     /**
      * Create a new sound source based on the specified wavetype, frequency and phaseshift.
      */
-    OASSound(WaveformType waveType, float frequency, float phaseShift, float durationInSeconds);
+    Sound(WaveformType waveType, float frequency, float phaseShift, float durationInSeconds);
 
     /**
      * Releases associated sound with server, if any.
      */
-    ~OASSound();
+    ~Sound();
 
     /**
      * Initialize this source with the sound file specified by the given path and filename. If the
@@ -290,22 +290,22 @@ private:
 };
 
 /**
- * @class OASSoundListener
+ * @class Listener
  * Used to communicate properties of the listener to the server.
  */
 #ifdef OSG_FOUND
-class OASSoundListener : public osg::Node
+class Listener : public osg::Node
 #else
-class OASSoundListener
+class Listener
 #endif
 {
 public:
 
     /**
-     * Retrieve a reference to the singleton OASSoundListener object, which
+     * Retrieve a reference to the singleton Listener object, which
      * can then be used to modify listener attributes.
      */
-    static OASSoundListener& getInstance();
+    static Listener& getInstance();
 
     /**
      * Modify the global (listener's) gain level. The default is 1, and a value of 0 will mute all
@@ -372,7 +372,7 @@ private:
     /**
      * @brief Private constructor, for singleton
      */
-    OASSoundListener();
+    Listener();
 
     float _posX, _posY, _posZ;
     float _velX, _velY, _velZ;
@@ -383,5 +383,5 @@ private:
 };
 }
 
-#endif // _OAS_SOUND_H_
+#endif // _OAS_CLIENT_H_
 

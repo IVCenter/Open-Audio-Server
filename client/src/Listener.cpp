@@ -1,23 +1,23 @@
 /**
- * @file    OASSoundListener.cpp
+ * @file    Listener.cpp
  * @author  Shreenidhi Chowkwale
  */
 
-#include "OASSound.h"
+#include "OASClient.h"
 
 using namespace oasclient;
 
 // static
-OASSoundListener& OASSoundListener::getInstance()
+Listener& Listener::getInstance()
 {
-    static OASSoundListener instance;
+    static Listener instance;
 
     return instance;
 }
 
-bool OASSoundListener::setListenerGain(float gain)
+bool Listener::setListenerGain(float gain)
 {
-    bool result = OASClientInterface::writeToServer("GAIN %f", gain);
+    bool result = ClientInterface::writeToServer("GAIN %f", gain);
     if (result)
     {
         _gain = gain;
@@ -26,9 +26,9 @@ bool OASSoundListener::setListenerGain(float gain)
 }
 
 
-bool OASSoundListener::setListenerPosition(float x, float y, float z)
+bool Listener::setListenerPosition(float x, float y, float z)
 {
-    bool result = OASClientInterface::writeToServer("SLPO %f %f %f", x, y, z);
+    bool result = ClientInterface::writeToServer("SLPO %f %f %f", x, y, z);
     if (result)
     {
         _posX = x;
@@ -39,9 +39,9 @@ bool OASSoundListener::setListenerPosition(float x, float y, float z)
 }
 
 
-bool OASSoundListener::setListenerVelocity(float x, float y, float z)
+bool Listener::setListenerVelocity(float x, float y, float z)
 {
-    bool result = OASClientInterface::writeToServer("SLVE %f %f %f", x, y, z);
+    bool result = ClientInterface::writeToServer("SLVE %f %f %f", x, y, z);
     if (result)
     {
         _velX = x;
@@ -52,10 +52,10 @@ bool OASSoundListener::setListenerVelocity(float x, float y, float z)
     return result;
 }
 
-bool OASSoundListener::setListenerOrientation(float atX, float atY, float atZ,
+bool Listener::setListenerOrientation(float atX, float atY, float atZ,
         float upX, float upY, float upZ)
 {
-    bool result = OASClientInterface::writeToServer("SLOR %f %f %f %f %f %f",
+    bool result = ClientInterface::writeToServer("SLOR %f %f %f %f %f %f",
                                         atX, atY, atZ, upX, upY, upZ);
     if (result)
     {
@@ -69,12 +69,12 @@ bool OASSoundListener::setListenerOrientation(float atX, float atY, float atZ,
     return result;
 }
 
-bool OASSoundListener::setSoundRenderingParameters(SoundRenderingParameter whichParameter, float value)
+bool Listener::setSoundRenderingParameters(SoundRenderingParameter whichParameter, float value)
 {
-    return OASClientInterface::writeToServer("PARA %d %f", whichParameter, value);
+    return ClientInterface::writeToServer("PARA %d %f", whichParameter, value);
 }
 
-std::vector<float> OASSoundListener::getPosition() const
+std::vector<float> Listener::getPosition() const
 {
     std::vector<float> retvec(3);
 
@@ -85,7 +85,7 @@ std::vector<float> OASSoundListener::getPosition() const
     return retvec;
 }
 
-std::vector<float> OASSoundListener::getOrientation() const
+std::vector<float> Listener::getOrientation() const
 {
     std::vector<float> retvec(6);
 
@@ -99,7 +99,7 @@ std::vector<float> OASSoundListener::getOrientation() const
     return retvec;
 }
 
-std::vector<float> OASSoundListener::getVelocity() const
+std::vector<float> Listener::getVelocity() const
 {
     std::vector<float> retvec(3);
 
@@ -110,13 +110,13 @@ std::vector<float> OASSoundListener::getVelocity() const
     return retvec;
 }
 
-float OASSoundListener::getGain() const
+float Listener::getGain() const
 {
     return _gain;
 }
 
 // private constructor
-OASSoundListener::OASSoundListener()
+Listener::Listener()
 {
     _gain = 1.0;
 

@@ -68,30 +68,24 @@ OPTION(BUILD_EXAMPLES "Build examples that use the OASClient library" OFF)
 CONFIGURE_FILE(${OASCLIENT_CMAKEFILES_DIRECTORY}/config.h.in
     ${CMAKE_CURRENT_SOURCE_DIR}/src/config.h)
 
+SET(TARGET_H
+    ${OASCLIENT_SOURCE_DIR}/src/ClientInterface.h
+    ${OASCLIENT_SOURCE_DIR}/src/OASClient.h
+    )
+
+SET(TARGET_SRC
+    ${OASCLIENT_SOURCE_DIR}/src/ClientInterface.cpp
+    ${OASCLIENT_SOURCE_DIR}/src/Sound.cpp
+    ${OASCLIENT_SOURCE_DIR}/src/Listener.cpp
+    )
+
 IF(BUILD_WITH_OSG_SUPPORT)
     SET(TARGET_H
-        ${OASCLIENT_SOURCE_DIR}/src/OASClientInterface.h
-        ${OASCLIENT_SOURCE_DIR}/src/OASSound.h
-        ${OASCLIENT_SOURCE_DIR}/src/OASSoundUpdateCallback.h
-        )
-
+        ${TARGET_H}
+        ${OASCLIENT_SOURCE_DIR}/src/SoundUpdateCallback.h)
     SET(TARGET_SRC
-        ${OASCLIENT_SOURCE_DIR}/src/OASClientInterface.cpp
-        ${OASCLIENT_SOURCE_DIR}/src/OASSound.cpp
-        ${OASCLIENT_SOURCE_DIR}/src/OASSoundListener.cpp
-        ${OASCLIENT_SOURCE_DIR}/src/OASSoundUpdateCallback.cpp
-        )
-ELSE(BUILD_WITH_OSG_SUPPORT)
-    SET(TARGET_H
-        ${OASCLIENT_SOURCE_DIR}/src/OASClientInterface.h
-        ${OASCLIENT_SOURCE_DIR}/src/OASSound.h
-        )
-
-    SET(TARGET_SRC
-        ${OASCLIENT_SOURCE_DIR}/src/OASClientInterface.cpp
-        ${OASCLIENT_SOURCE_DIR}/src/OASSound.cpp
-        ${OASCLIENT_SOURCE_DIR}/src/OASSoundListener.cpp
-        )
+        ${TARGET_SRC}
+        ${OASCLIENT_SOURCE_DIR}/src/SoundUpdateCallback.cpp)
 ENDIF(BUILD_WITH_OSG_SUPPORT)
 
 INCLUDE_DIRECTORIES(src)
@@ -116,14 +110,14 @@ IF(BUILD_WITH_OSG_SUPPORT)
             FILES_MATCHING PATTERN "*.h")
 ELSE(BUILD_WITH_OSG_SUPPORT)
     INSTALL(DIRECTORY src/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include/OAS
-                FILE_PERMISSIONS    OWNER_WRITE OWNER_READ 
+            FILE_PERMISSIONS    OWNER_WRITE OWNER_READ 
                                 GROUP_READ 
                                 WORLD_READ
             DIRECTORY_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
                                   GROUP_EXECUTE GROUP_READ
                                   WORLD_EXECUTE WORLD_READ
             FILES_MATCHING PATTERN "*.h"
-            EXCLUDE "OASSoundUpdateCallback.h")
+            EXCLUDE "SoundUpdateCallback.h")
 ENDIF(BUILD_WITH_OSG_SUPPORT)
 
 
