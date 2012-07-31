@@ -120,7 +120,7 @@ void ServerWindowTable::update()
     Time timeOut;
 
     timeOut.update(Time::OAS_CLOCK_MONOTONIC);
-    timeOut += Time(0.01); // Set the timeout time to be 10 milliseconds from now
+    timeOut += Time(0.05); // Set the timeout time to be 0.05 seconds from now
 
     struct timespec tspec = timeOut.getTime();
 

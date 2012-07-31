@@ -2,17 +2,15 @@
 
 using namespace oas;
 
-// Statics
-BufferMap       AudioHandler::_bufferMap;
-SourceMap       AudioHandler::_sourceMap;
-AudioSource*         AudioHandler::_recentSource;
-
-std::string     AudioHandler::_deviceString;
-ALCdevice*      AudioHandler::_device;
-ALCcontext*     AudioHandler::_context;
-const AudioUnit*   AudioHandler::_recentlyModifiedAudioUnit;
-
 // public, static
+AudioHandler& AudioHandler::getInstance()
+{
+    static AudioHandler instance;
+
+    return instance;
+}
+
+// public
 bool AudioHandler::initialize(std::string const& deviceString)
 {
     // If we have a specific device we're going to try to use,
@@ -80,7 +78,7 @@ bool AudioHandler::initialize(std::string const& deviceString)
     return true;
 }
 
-// public, static
+// public
 void AudioHandler::release()
 {
     // Release the sources
@@ -126,7 +124,7 @@ void AudioHandler::release()
     }
 }
 
-// public, static
+// public
 ALuint AudioHandler::getBuffer(const std::string& filename)
 {
     if (filename.empty())
@@ -205,7 +203,7 @@ void AudioHandler::_setRecentlyModifiedAudioUnit(const AudioUnit *unit)
     _recentlyModifiedAudioUnit = unit;
 }
 
-// public, static
+// public
 const AudioUnit* AudioHandler::getRecentlyModifiedAudioUnit()
 {
     AudioUnit *retval = NULL;
@@ -233,7 +231,7 @@ const AudioUnit* AudioHandler::getRecentlyModifiedAudioUnit()
     return retval;
 }
 
-// public, static
+// public
 const AudioListener* AudioHandler::getListenerCopy()
 {
 	AudioListener *copy = new AudioListener(AudioListener::getInstance());
@@ -261,7 +259,7 @@ void AudioHandler::populateQueueWithUpdatedSources(std::queue <const AudioUnit*>
 }
 
 
-// public, static
+// public
 int AudioHandler::createSource(ALuint buffer)
 {
     if (AL_NONE == buffer)
@@ -285,14 +283,14 @@ int AudioHandler::createSource(ALuint buffer)
     }
 }
 
-// public, static
+// public
 int AudioHandler::createSource(const std::string& filename)
 {
     ALuint buffer = AudioHandler::getBuffer(filename);
     return AudioHandler::createSource(buffer);
 }
 
-// public, static
+// public
 int AudioHandler::createSource(ALint waveShape, ALfloat frequency, ALfloat phase, ALfloat duration)
 {
     // First, a new buffer must be created with the specified waveform.
@@ -327,7 +325,7 @@ int AudioHandler::createSource(ALint waveShape, ALfloat frequency, ALfloat phase
     }
 }
 
-// public, static
+// public
 void AudioHandler::deleteSource(const ALuint sourceHandle)
 {
 	/*
@@ -373,7 +371,7 @@ void AudioHandler::deleteSource(const ALuint sourceHandle)
     }
 }
 
-// public, static
+// public
 void AudioHandler::playSource(const ALuint sourceHandle)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
@@ -387,7 +385,7 @@ void AudioHandler::playSource(const ALuint sourceHandle)
     }
 }
 
-// public, static
+// public
 void AudioHandler::stopSource(const ALuint sourceHandle)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
@@ -401,7 +399,7 @@ void AudioHandler::stopSource(const ALuint sourceHandle)
     }
 }
 
-// public, static
+// public
 void AudioHandler::pauseSource(const ALuint sourceHandle)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
@@ -415,7 +413,7 @@ void AudioHandler::pauseSource(const ALuint sourceHandle)
     }
 }
 
-// public, static
+// public
 void AudioHandler::setSourcePlaybackPosition(const ALuint sourceHandle, const ALfloat seconds)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
@@ -430,7 +428,7 @@ void AudioHandler::setSourcePlaybackPosition(const ALuint sourceHandle, const AL
 
 }
 
-// public, static
+// public
 void AudioHandler::setSourcePosition(const ALuint sourceHandle, const ALfloat x, const ALfloat y, const ALfloat z)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
@@ -445,7 +443,7 @@ void AudioHandler::setSourcePosition(const ALuint sourceHandle, const ALfloat x,
 
 }
 
-// public, static
+// public
 void AudioHandler::setSourceGain(const ALuint sourceHandle, const ALfloat gain)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
@@ -460,7 +458,7 @@ void AudioHandler::setSourceGain(const ALuint sourceHandle, const ALfloat gain)
 
 }
 
-// public, static
+// public
 void AudioHandler::setSourceLoop(const ALuint sourceHandle, const ALint isLoop)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
@@ -475,7 +473,7 @@ void AudioHandler::setSourceLoop(const ALuint sourceHandle, const ALint isLoop)
 
 }
 
-// public, static
+// public
 void AudioHandler::setSourceVelocity(const ALuint sourceHandle, const ALfloat x, const ALfloat y, const ALfloat z)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
@@ -489,7 +487,7 @@ void AudioHandler::setSourceVelocity(const ALuint sourceHandle, const ALfloat x,
     }
 }
 
-// public, static
+// public
 void AudioHandler::setSourceSpeed(const ALuint sourceHandle, const ALfloat speed)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
@@ -508,7 +506,7 @@ void AudioHandler::setSourceSpeed(const ALuint sourceHandle, const ALfloat speed
 
 }
 
-// public, static
+// public
 void AudioHandler::setSourceDirection(const ALuint sourceHandle, const ALfloat x, const ALfloat y, const ALfloat z)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
@@ -523,7 +521,7 @@ void AudioHandler::setSourceDirection(const ALuint sourceHandle, const ALfloat x
 
 }
 
-// public, static
+// public
 void AudioHandler::setSourceDirection(const ALuint sourceHandle, const ALfloat angleInRadians)
 {
     AudioHandler::setSourceDirection( sourceHandle, 
@@ -532,7 +530,7 @@ void AudioHandler::setSourceDirection(const ALuint sourceHandle, const ALfloat a
                                       cos(angleInRadians));
 }
 
-// public, static
+// public
 void AudioHandler::setSourcePitch(const ALuint sourceHandle, const ALfloat pitchFactor)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
@@ -546,7 +544,7 @@ void AudioHandler::setSourcePitch(const ALuint sourceHandle, const ALfloat pitch
     }
 }
 
-// public, static
+// public
 void AudioHandler::setSourceFade(const ALuint sourceHandle, const ALfloat fadeToGainValue, const ALfloat durationInSeconds)
 {
 	AudioSource *source = AudioHandler::_getSource(sourceHandle);
@@ -560,7 +558,7 @@ void AudioHandler::setSourceFade(const ALuint sourceHandle, const ALfloat fadeTo
 	}
 }
 
-// public, static
+// public
 int AudioHandler::getSourceState(const ALuint sourceHandle)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
@@ -625,6 +623,8 @@ void AudioHandler::setSoundRenderingParameters(const ALuint whichParameter, ALfl
         case DOPPLER_FACTOR:
             result = AudioListener::getInstance().setDopplerFactor(value);
             break;
+        case DEFAULT_ROLLOFF:
+            break;
         default:
             oas::Logger::warnf("AudioHandler - Unknown sound rendering parameter %d was specified", whichParameter);
             break;
@@ -632,4 +632,14 @@ void AudioHandler::setSoundRenderingParameters(const ALuint whichParameter, ALfl
 
     if (result)
         _setRecentlyModifiedAudioUnit(&AudioListener::getInstance());
+}
+
+// private constructor
+AudioHandler::AudioHandler() :
+        _recentSource(NULL),
+        _recentlyModifiedAudioUnit(NULL),
+        _device(NULL),
+        _context(NULL)
+{
+
 }

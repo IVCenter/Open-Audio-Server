@@ -27,10 +27,18 @@
 
 namespace oas
 {
+
+
 class Server
 {
 public:
     static Server& getInstance();
+
+    // Static wrapper functions for callbacks
+    static void terminate();
+    static void* runServer(void *parameter);
+    static void* runServerNoGUI(void *parameter);
+
     void initialize(int argc, char **argv);
     const ServerInfo* getServerInfo() const;
 
@@ -40,14 +48,18 @@ private:
 
     ServerInfo* _serverInfo;
 
+    AudioHandler& _audioHandler;
+
+    void* _run(void *parameter = NULL);
+    void* _runNoGUI(void *parameter = NULL);
+
     // private worker methods
     bool _readConfigFile(int argc, char **argv);
 
-    static void* _serverLoop(void *parameter);
-    static void* _serverLoopNoGUI(void *parameter);
     void _processMessage(const Message &message);
     void _fatalError(const char *errorMessage);
-    static void _atExit();
+    void _atExit();
+
 
     static void _computeTimeout(struct timespec &timeout, unsigned long timeoutSeconds,
                                 unsigned long timeoutNanoseconds);

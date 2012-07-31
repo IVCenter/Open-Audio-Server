@@ -1,6 +1,7 @@
 #include "OASServer.h"
 
-oas::Server::Server()
+oas::Server::Server() :
+    _audioHandler(oas::AudioHandler::getInstance())
 {
 	_serverInfo = NULL;
 }
@@ -129,7 +130,7 @@ void oas::Server::_processMessage(const Message &message)
             //      2a) If exists, load audio file into a new buffer, then create new source
             //      2b) Else file does not exist, send  "-1" response
 //            oas::Logger::logf("GHDL %s", message.getFilename());
-            newSource = oas::AudioHandler::createSource(message.getFilename());
+            newSource = _audioHandler.createSource(message.getFilename());
             if (-1 == newSource)
                 oas::Logger::logf("Server was unable to generate new audio source for file \"%s\".",
                                   message.getFilename().c_str());
@@ -140,7 +141,7 @@ void oas::Server::_processMessage(const Message &message)
             oas::SocketHandler::addOutgoingResponse(newSource);
             break;
         case oas::Message::MT_WAVE_1I_3F:
-            newSource = oas::AudioHandler::createSource(message.getIntegerParam(),
+            newSource = _audioHandler.createSource(message.getIntegerParam(),
                                                         message.getFloatParam(0),
                                                         message.getFloatParam(1),
                                                         message.getFloatParam(2));
@@ -157,92 +158,92 @@ void oas::Server::_processMessage(const Message &message)
             oas::SocketHandler::addOutgoingResponse(newSource);
             break;
         case oas::Message::MT_RHDL_HL:
-            oas::AudioHandler::deleteSource(message.getHandle());
+            _audioHandler.deleteSource(message.getHandle());
             break;
         case oas::Message::MT_PTFI_FN_1I:
             // Shouldn't need to do anything!
             break;
         case oas::Message::MT_PLAY_HL:
-            oas::AudioHandler::playSource(message.getHandle());
+            _audioHandler.playSource(message.getHandle());
             break;
         case oas::Message::MT_STOP_HL:
-            oas::AudioHandler::stopSource(message.getHandle());
+            _audioHandler.stopSource(message.getHandle());
             break;
         case oas::Message::MT_PAUS_HL:
-            oas::AudioHandler::pauseSource(message.getHandle());
+            _audioHandler.pauseSource(message.getHandle());
             break;
         case oas::Message::MT_SSEC_HL_1F:
-            oas::AudioHandler::setSourcePlaybackPosition(message.getHandle(), message.getFloatParam(0));
+            _audioHandler.setSourcePlaybackPosition(message.getHandle(), message.getFloatParam(0));
             break;
         case oas::Message::MT_SSPO_HL_3F:
-            oas::AudioHandler::setSourcePosition( message.getHandle(), 
+            _audioHandler.setSourcePosition( message.getHandle(),
                                                   message.getFloatParam(0), 
                                                   message.getFloatParam(1),
                                                   message.getFloatParam(2));
             break;
         case oas::Message::MT_SSVO_HL_1F:
-            oas::AudioHandler::setSourceGain( message.getHandle(),
+            _audioHandler.setSourceGain( message.getHandle(),
                                               message.getFloatParam(0));
             break;
         case oas::Message::MT_SSLP_HL_1I:
-            oas::AudioHandler::setSourceLoop( message.getHandle(),
+            _audioHandler.setSourceLoop( message.getHandle(),
                                               message.getIntegerParam());
             break;
         case oas::Message::MT_SSVE_HL_1F:
             oas::Logger::warnf("SSVE using speed instead of velocity is deprecated!");
-            oas::AudioHandler::setSourceSpeed( message.getHandle(),
+            _audioHandler.setSourceSpeed( message.getHandle(),
                                                message.getFloatParam(0));
             break;
         case oas::Message::MT_SSVE_HL_3F:
-            oas::AudioHandler::setSourceVelocity( message.getHandle(),
+            _audioHandler.setSourceVelocity( message.getHandle(),
                                                   message.getFloatParam(0),
                                                   message.getFloatParam(1),
                                                   message.getFloatParam(2));
             break;
         case oas::Message::MT_SSDI_HL_1F:
-            oas::AudioHandler::setSourceDirection( message.getHandle(),
+            _audioHandler.setSourceDirection( message.getHandle(),
                                                    message.getFloatParam(0));
             break;
         case oas::Message::MT_SSDI_HL_3F:
-            oas::AudioHandler::setSourceDirection( message.getHandle(),
+            _audioHandler.setSourceDirection( message.getHandle(),
                                                    message.getFloatParam(0),
                                                    message.getFloatParam(1),
                                                    message.getFloatParam(2));
             break;
         case oas::Message::MT_SSDV_HL_1F_1F:
-            oas::AudioHandler::setSourceDirection( message.getHandle(),
+            _audioHandler.setSourceDirection( message.getHandle(),
                                                    message.getFloatParam(0));
-            oas::AudioHandler::setSourceGain( message.getHandle(),
+            _audioHandler.setSourceGain( message.getHandle(),
                                               message.getFloatParam(1));
             break;
         case oas::Message::MT_SPIT_HL_1F:
-            oas::AudioHandler::setSourcePitch(	message.getHandle(),
+            _audioHandler.setSourcePitch(	message.getHandle(),
             									message.getFloatParam(0));
             break;
         case oas::Message::MT_FADE_HL_1F_1F:
-        	oas::AudioHandler::setSourceFade(message.getHandle(),
+        	_audioHandler.setSourceFade(message.getHandle(),
         									 message.getFloatParam(0),
         									 message.getFloatParam(1));
         	break;
         case oas::Message::MT_STAT_HL:
-            state = oas::AudioHandler::getSourceState(message.getHandle());
+            state = _audioHandler.getSourceState(message.getHandle());
             oas::SocketHandler::addOutgoingResponse(state);
             break;
         case oas::Message::MT_SLPO_3F:
-            oas::AudioHandler::setListenerPosition(message.getFloatParam(0),
+            _audioHandler.setListenerPosition(message.getFloatParam(0),
                                                    message.getFloatParam(1),
                                                    message.getFloatParam(2));
             break;
         case oas::Message::MT_SLVE_3F:
-            oas::AudioHandler::setListenerVelocity(message.getFloatParam(0),
+            _audioHandler.setListenerVelocity(message.getFloatParam(0),
                                                    message.getFloatParam(1),
                                                    message.getFloatParam(2));
             break;
         case oas::Message::MT_GAIN_1F:
-            oas::AudioHandler::setListenerGain(message.getFloatParam(0));
+            _audioHandler.setListenerGain(message.getFloatParam(0));
             break;
         case oas::Message::MT_SLOR_3F_3F:
-            oas::AudioHandler::setListenerOrientation( message.getFloatParam(0),
+            _audioHandler.setListenerOrientation( message.getFloatParam(0),
                                                        message.getFloatParam(1),
                                                        message.getFloatParam(2),
                                                        message.getFloatParam(3),
@@ -250,7 +251,7 @@ void oas::Server::_processMessage(const Message &message)
                                                        message.getFloatParam(5));
             break;
         case oas::Message::MT_PARA_1I_1F:
-            oas::AudioHandler::setSoundRenderingParameters(message.getIntegerParam(),
+            _audioHandler.setSoundRenderingParameters(message.getIntegerParam(),
                                                            message.getFloatParam(0));
             break;
         case oas::Message::MT_SSDR_HL_1F:
@@ -271,12 +272,12 @@ void oas::Server::_processMessage(const Message &message)
         case oas::Message::MT_QUIT:
             oas::Logger::logf("Terminating current session.");
             // Will need to release all audio resources and then re-initialize them
-            oas::AudioHandler::release();
+            _audioHandler.release();
 #ifdef FLTK_FOUND
             oas::ServerWindow::reset();
 #endif
             // If for some reason initialization fails, try again
-            while (!oas::AudioHandler::initialize(getServerInfo()->getAudioDeviceString()))
+            while (!_audioHandler.initialize(getServerInfo()->getAudioDeviceString()))
             {
                 oas::Logger::errorf("Failed to reset audio resources. Trying again in %d seconds.", delay);
                 sleep(delay);
@@ -299,7 +300,7 @@ void oas::Server::initialize(int argc, char **argv)
     }
 #ifdef FLTK_FOUND
     if (getServerInfo()->useGUI()
-        && !oas::ServerWindow::initialize(argc, argv, &oas::Server::_atExit))
+        && !oas::ServerWindow::initialize(argc, argv, &oas::Server::terminate))
     {
         _fatalError("Could not initialize the windowed user interface!");
     }
@@ -309,7 +310,7 @@ void oas::Server::initialize(int argc, char **argv)
         _fatalError("Could not initialize the File Handler!");
     }
 
-    if (!oas::AudioHandler::initialize(this->_serverInfo->getAudioDeviceString()))
+    if (!_audioHandler.initialize(this->_serverInfo->getAudioDeviceString()))
     {
         _fatalError("Could not initialize the Audio Handler!");
     }
@@ -334,13 +335,13 @@ void oas::Server::initialize(int argc, char **argv)
 #ifdef FLTK_FOUND
     // With the GUI
     if (getServerInfo()->useGUI())
-        threadError = pthread_create(&this->_serverThread, &threadAttr, &this->_serverLoop, NULL);
+        threadError = pthread_create(&this->_serverThread, &threadAttr, &oas::Server::runServer, NULL);
     // Without the GUI
     else
-        threadError = pthread_create(&this->_serverThread, &threadAttr, &this->_serverLoopNoGUI, NULL);
+        threadError = pthread_create(&this->_serverThread, &threadAttr, &oas::Server::runServerNoGUI, NULL);
 #else
     // Without the GUI
-    threadError = pthread_create(&this->_serverThread, &threadAttr, &this->_serverLoopNoGUI, NULL);
+    threadError = pthread_create(&this->_serverThread, &threadAttr, &oas::Server::runServerNoGUI, NULL);
 #endif
     // Destroy thread attribute
     pthread_attr_destroy(&threadAttr);
@@ -352,8 +353,8 @@ void oas::Server::initialize(int argc, char **argv)
 }
 
 #ifdef FLTK_FOUND
-// private, static
-void* oas::Server::_serverLoop(void *parameter)
+// private
+void* oas::Server::_run(void *parameter)
 {
     std::queue<Message*> messages;
     std::queue<const AudioUnit*> sources;
@@ -362,7 +363,7 @@ void* oas::Server::_serverLoop(void *parameter)
     Time timeOut;
 
     // Add the listener to the GUI, before the loop even starts
-    oas::ServerWindow::audioListenerWasModified(oas::AudioHandler::getListenerCopy());
+    oas::ServerWindow::audioListenerWasModified(_audioHandler.getListenerCopy());
 
     while (1)
     {
@@ -384,7 +385,7 @@ void* oas::Server::_serverLoop(void *parameter)
         // before redoing the loop
         if (messages.empty())
         {
-            oas::AudioHandler::populateQueueWithUpdatedSources(sources);
+            _audioHandler.populateQueueWithUpdatedSources(sources);
 
             if (!sources.empty())
                  oas::ServerWindow::audioSourcesWereModified(sources);
@@ -400,7 +401,7 @@ void* oas::Server::_serverLoop(void *parameter)
             delete nextMessage;
             messages.pop();
 
-            audioUnit = oas::AudioHandler::getRecentlyModifiedAudioUnit();
+            audioUnit = _audioHandler.getRecentlyModifiedAudioUnit();
             if (NULL != audioUnit)
             {
                 // Call ServerWindow method that will queue up the source
@@ -413,8 +414,8 @@ void* oas::Server::_serverLoop(void *parameter)
 }
 #endif
 
-// private, static
-void* oas::Server::_serverLoopNoGUI(void *parameter)
+// private
+void* oas::Server::_runNoGUI(void *parameter)
 {
     std::queue<Message*> messages;
     Time timeOut;
@@ -438,7 +439,7 @@ void* oas::Server::_serverLoopNoGUI(void *parameter)
     return NULL;
 }
 
-// private, static
+// private
 void oas::Server::_fatalError(const char *errorMessage)
 {
 	if (!errorMessage)
@@ -453,7 +454,22 @@ void oas::Server::_fatalError(const char *errorMessage)
 void oas::Server::_atExit()
 {
     oas::SocketHandler::terminate();
-    oas::AudioHandler::release();
+    _audioHandler.release();
+}
+
+void oas::Server::terminate()
+{
+    oas::Server::getInstance()._atExit();
+}
+
+void* oas::Server::runServer(void *parameter)
+{
+    return oas::Server::getInstance()._run();
+}
+
+void* oas::Server::runServerNoGUI(void *parameter)
+{
+    return oas::Server::getInstance()._runNoGUI();
 }
 
 // Main
@@ -484,4 +500,5 @@ int main(int argc, char **argv)
     return 0;
 #endif
 }
+
 

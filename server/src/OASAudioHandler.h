@@ -47,28 +47,31 @@ public:
     {
         SPEED_OF_SOUND = 1,
         DOPPLER_FACTOR = 2,
+        DEFAULT_ROLLOFF = 3,
     };
 
-    static bool initialize(std::string const& deviceString);
-    static void release();
+    static AudioHandler& getInstance();
+
+    bool initialize(std::string const& deviceString);
+    void release();
 
     /**
      * @brief Gets the buffer that is associated with the file pointed to by filename. 
      *        Creates a new buffer if necessary.
      */
-    static ALuint getBuffer(const std::string& filename);
+    ALuint getBuffer(const std::string& filename);
 
     /**
      * @brief Create a new source based on the input buffer
      * @retval Unique handle for the created source, or -1 on error
      */
-    static int createSource(const ALuint buffer);
+    int createSource(const ALuint buffer);
 
     /**
      * @brief Create a new source with the audio file that is pointed to by filename
      * @retval Unique handle for the created source, or -1 on error
      */
-    static int createSource(const std::string& filename);
+    int createSource(const std::string& filename);
 
     /**
      * @brief Create a new source based on the specified waveform.
@@ -82,25 +85,25 @@ public:
      * @param duration Duration of waveform in seconds
      * @retval Unique handle for the created source, or -1 on error
      */
-    static int createSource(ALint waveShape, ALfloat frequency, ALfloat phase, ALfloat duration);
+    int createSource(ALint waveShape, ALfloat frequency, ALfloat phase, ALfloat duration);
 
     /**
      * @brief Retrieve a copy of the most recently modified unit
      * @retval NULL if none exists
      */
-    static const AudioUnit* getRecentlyModifiedAudioUnit();
+    const AudioUnit* getRecentlyModifiedAudioUnit();
 
     /**
      * @brief Retrieve a const copy of the listener
      * @retval NULL if some error occured
      */
-    static const AudioListener* getListenerCopy();
+    const AudioListener* getListenerCopy();
 
     /**
      * @brief Retrieve copies of all updated sources inside the given queue
      * @param sources
      */
-    static void populateQueueWithUpdatedSources(std::queue <const AudioUnit*> &sources);
+    void populateQueueWithUpdatedSources(std::queue <const AudioUnit*> &sources);
 
     /**
      * @note:
@@ -114,72 +117,72 @@ public:
     /**
      * @brief Deletes the source with the given handle. Any associated buffers are not deleted.
      */
-    static void deleteSource(const ALuint source);
+    void deleteSource(const ALuint source);
 
     /**
      * @brief Begin playing the source with the given handle.
      */
-    static void playSource(const ALuint source);
+    void playSource(const ALuint source);
 
     /**
      * @brief Stop playing the source with the given handle.
      */
-    static void stopSource(const ALuint source);
+    void stopSource(const ALuint source);
 
     /**
      * @brief Pause the playback of the source with the given handle.
      */
-    static void pauseSource(const ALuint source);
+    void pauseSource(const ALuint source);
 
     /**
      * @brief Set the playback position of the source, in seconds.
      */
-    static void setSourcePlaybackPosition(const ALuint source, const ALfloat seconds);
+    void setSourcePlaybackPosition(const ALuint source, const ALfloat seconds);
 
     /**
      * @brief Set the source's position.
      */
-    static void setSourcePosition(const ALuint source, const ALfloat x, const ALfloat y, const ALfloat z);
+    void setSourcePosition(const ALuint source, const ALfloat x, const ALfloat y, const ALfloat z);
 
     /**
      * @brief Set the source's gain. 
      * @param gain A value 0.0 will effectively mute the source.
      */
-    static void setSourceGain(const ALuint source, const ALfloat gain);
+    void setSourceGain(const ALuint source, const ALfloat gain);
 
     /**
      * @brief Set the source to play repeatedly
      * @param isLoop A value of 1 will enable looping, and a value of 0 will disable looping.
      */
-    static void setSourceLoop(const ALuint source, const ALint isLoop);
+    void setSourceLoop(const ALuint source, const ALint isLoop);
 
     /**
      * @brief Set the source to be moving at the given speed in the same direction that it is facing.
      */
-    static void setSourceSpeed(const ALuint source, const ALfloat speed);
+    void setSourceSpeed(const ALuint source, const ALfloat speed);
 
     /**
      * @brief Set the source to be moving with the given velocity
      */
-    static void setSourceVelocity(const ALuint source, const ALfloat x, const ALfloat y, const ALfloat z);
+    void setSourceVelocity(const ALuint source, const ALfloat x, const ALfloat y, const ALfloat z);
 
     /**
      * @brief Set the direction the source is pointing at, using Cartesian coordinates.
      */
-    static void setSourceDirection(const ALuint source, const ALfloat x, const ALfloat y, const ALfloat z);
+    void setSourceDirection(const ALuint source, const ALfloat x, const ALfloat y, const ALfloat z);
 
     /**
      * @brief Set the direction the source is pointing at with just an angle.
      * @param angleInRadians The angle must be given in radians
      */
-    static void setSourceDirection(const ALuint source, const ALfloat angleInRadians);
+    void setSourceDirection(const ALuint source, const ALfloat angleInRadians);
 
     /**
      * @brief Change the pitch of the source.
      * @param pitchFactor Doubling the factor will increase by one octave, and halving will decrease by one octave.
      *                    Default = 1.
      */
-    static void setSourcePitch(const ALuint source, const ALfloat pitchFactor);
+    void setSourcePitch(const ALuint source, const ALfloat pitchFactor);
 
     /**
      * @brief Set the source to fade in or out over a period of time.
@@ -190,7 +193,7 @@ public:
 	 * 							If the duration is small (< 1 second), then the fade occur quickly.
 	 * 							If the duration is large, then the fade will be more gradual.
      */
-    static void setSourceFade(const ALuint source, const ALfloat fadeToGainValue, const ALfloat durationInSeconds);
+    void setSourceFade(const ALuint source, const ALfloat fadeToGainValue, const ALfloat durationInSeconds);
 
     /**
      * @brief Get the current state of the source.
@@ -201,49 +204,51 @@ public:
      * @retval 4 = Stopped
      * @retval 5 = Deleted
      */
-    static int getSourceState(const ALuint source);
+    int getSourceState(const ALuint source);
 
     /**
      * @brief Change the overall gain via the listener object
      */
-    static void setListenerGain(const ALfloat gain);
+    void setListenerGain(const ALfloat gain);
 
     /**
      * @brief Set the position of the listener
      */
-    static void setListenerPosition(const ALfloat x, const ALfloat y, const ALfloat z);
+    void setListenerPosition(const ALfloat x, const ALfloat y, const ALfloat z);
 
     /**
      * @brief Set the velocity of the listener
      */
-    static void setListenerVelocity(const ALfloat x, const ALfloat y, const ALfloat z);
+    void setListenerVelocity(const ALfloat x, const ALfloat y, const ALfloat z);
 
     /**
      * @brief Set the listener orientation
      */
-    static void setListenerOrientation(const ALfloat atX, const ALfloat atY, const ALfloat atZ,
+    void setListenerOrientation(const ALfloat atX, const ALfloat atY, const ALfloat atZ,
                                        const ALfloat upX, const ALfloat upY, const ALfloat upZ);
 
     /**
      * @brief Set sound rendering parameters
      */
-    static void setSoundRenderingParameters(const ALuint whichParameter, ALfloat value);
+    void setSoundRenderingParameters(const ALuint whichParameter, ALfloat value);
 
 private:
-    static AudioSource* _getSource(const ALuint source);
-    static void _clearRecentlyModifiedAudioUnit();
-    static void _setRecentlyModifiedAudioUnit(const AudioUnit*);
+    AudioHandler();
 
-    static BufferMap _bufferMap;
-    static SourceMap _sourceMap;
+    AudioSource* _getSource(const ALuint source);
+    void _clearRecentlyModifiedAudioUnit();
+    void _setRecentlyModifiedAudioUnit(const AudioUnit*);
 
-    static AudioSource* _recentSource;
+    BufferMap _bufferMap;
+    SourceMap _sourceMap;
 
-    static const AudioUnit *_recentlyModifiedAudioUnit;
+    AudioSource* _recentSource;
 
-    static std::string _deviceString;
-    static ALCdevice* _device;
-    static ALCcontext* _context;
+    const AudioUnit *_recentlyModifiedAudioUnit;
+
+    std::string _deviceString;
+    ALCdevice* _device;
+    ALCcontext* _context;
 };
 
 }
