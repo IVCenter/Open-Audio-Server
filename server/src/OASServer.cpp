@@ -422,6 +422,12 @@ void* oas::Server::_runNoGUI(void *parameter)
 
     while (1)
     {
+        // Update timeOut to current time
+        timeOut.update(oas::Time::OAS_CLOCK_MONOTONIC);
+
+        // Since there is no GUI to update, the timeout can be arbitrary
+        timeOut += Time(1);
+
         // If there are no incoming messages, populateQueueWithIncomingMessages() will block
         // until timeout
         oas::SocketHandler::populateQueueWithIncomingMessages(messages, timeOut);
