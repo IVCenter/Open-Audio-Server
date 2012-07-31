@@ -274,6 +274,7 @@ int AudioHandler::createSource(ALuint buffer)
         _sourceMap.insert(SourcePair(newSource->getHandle(), newSource));
         _recentSource = newSource;
         newSource->setRolloffFactor(_defaultRolloff);
+        newSource->setReferenceDistance(_defaultReferenceDistance);
         _setRecentlyModifiedAudioUnit(newSource);
         return newSource->getHandle();
     }
@@ -418,6 +419,12 @@ void AudioHandler::pauseSource(const ALuint sourceHandle)
 void AudioHandler::setDefaultRolloffFactor(const ALfloat rolloff)
 {
     _defaultRolloff = rolloff;
+}
+
+// public
+void AudioHandler::setDefaultReferenceDistance(const ALfloat referenceDistance)
+{
+    _defaultReferenceDistance = referenceDistance;
 }
 
 // public
@@ -633,6 +640,9 @@ void AudioHandler::setSoundRenderingParameters(const ALuint whichParameter, ALfl
         case DEFAULT_ROLLOFF:
             setDefaultRolloffFactor(value);
             break;
+        case DEFAULT_REFERENCE_DISTANCE:
+            setDefaultReferenceDistance(value);
+            break;
         default:
             oas::Logger::warnf("AudioHandler - Unknown sound rendering parameter %d was specified", whichParameter);
             break;
@@ -648,7 +658,8 @@ AudioHandler::AudioHandler() :
         _recentlyModifiedAudioUnit(NULL),
         _device(NULL),
         _context(NULL),
-        _defaultRolloff(1)
+        _defaultRolloff(1),
+        _defaultReferenceDistance(1)
 {
 
 }

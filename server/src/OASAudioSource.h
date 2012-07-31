@@ -101,8 +101,31 @@ public:
      * the sound does not attenuate with respect to distance - it will seem just as loud no matter
      * how far away it is from the listener.
      *
+     * See the documentation of setReferenceDistance() for a theoretical example of using rolloff.
      */
     bool setRolloffFactor(ALfloat rolloff);
+
+    /**
+     * @brief Set the reference distance for this sound source.
+     * The reference distance is used to describe when the gain of the sound should be clamped,
+     * or when attenuation due to distance should no longer have any effect. The default reference
+     * distance is 1.0. If the distance between the sound and the listener is less than or equal to
+     * the reference distance, the sound will not be attenuated (i.e. the rolloff factor will not be
+     * applied). Reference distance values must be greater than or equal to 0.
+     *
+     * Here is a simple example of the appropriate usage of reference distance and rolloff:
+     *
+     * Suppose you have two sounds - a helicopter, and someone talking (speech). The helicopter should be
+     * very audible in a wide surrounding area, whereas the speech should only be audible in a small area.
+     * To get the desired effect, and assuming units that are approximately in meters, we would want the
+     * reference distance of the helicopter to be ~25. On the other hand, the speech sound would have a
+     * reference distance of ~0.5. The rolloff factor for the helicopter would be in the range of
+     * ~0.1, while the speech sound could have a rolloff factor between 1 and 2. The helicopter would then
+     * be audible even if the listener was far away, and the listener would have to be in the immediate
+     * vicinity of the speech source in order to hear it. Naturally, a wide range of other values can be
+     * used depending on the application, but the desired effect would be the same.
+     */
+    bool setReferenceDistance(ALfloat referenceDistance);
 
     /**
      * @brief Set the position
@@ -150,6 +173,11 @@ public:
      * @brief Get the rolloff factor
      */
     float getRolloffFactor() const;
+
+    /**
+     * @brief Get the reference distance
+     */
+    float getReferenceDistance() const;
 
     /**
      * @brief Get the x, y, z direction
@@ -241,7 +269,7 @@ private:
 
     ALfloat _pitch;
 
-    ALfloat _rolloff;
+    ALfloat _rolloff, _referenceDistance;
 
     ALint _isLooping;
     bool _isDirectional;

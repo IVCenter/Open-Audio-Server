@@ -45,9 +45,10 @@ public:
      */
     enum SoundRenderingParameter
     {
-        SPEED_OF_SOUND = 1,
-        DOPPLER_FACTOR = 2,
-        DEFAULT_ROLLOFF = 3,
+        SPEED_OF_SOUND              = 1,
+        DOPPLER_FACTOR              = 2,
+        DEFAULT_ROLLOFF             = 3,
+        DEFAULT_REFERENCE_DISTANCE  = 4,
     };
 
     static AudioHandler& getInstance();
@@ -134,14 +135,26 @@ public:
     void pauseSource(const ALuint source);
 
     /**
-     * Set the default rolloff factor for all sound sources. This property will not be applied to
-     * existing sources - it will only affect sources created in the future.
+     * Set the default rolloff factor for sound sources created after this point.
+     * This property will not be applied to existing sources - it will only affect sources
+     * created in the future.
      *
      * The rolloff factor is used to describe the rate at which the sound becomes more and more
      * inaudible (attenuates) as it goes farther and farther away from the listener. The default
-     * is 1.0.
+     * is 1.0. Values must be greater than or equal to 0.
      */
     void setDefaultRolloffFactor(const ALfloat rolloff);
+
+    /**
+     * Set the default reference distance for sound sources created after this point.
+     * This property will not be applied to existing sources - it will only affect sources
+     * created in the future.
+     *
+     * The reference distance describes an area around a sound source in which the gain is
+     * not attenuated based on distance. The default is 1.0, and values must be greater than or
+     * equal to 0.
+     */
+    void setDefaultReferenceDistance(const ALfloat referenceDistance);
 
     /**
      * @brief Set the playback position of the source, in seconds.
@@ -260,6 +273,7 @@ private:
     ALCcontext* _context;
 
     ALfloat _defaultRolloff;
+    ALfloat _defaultReferenceDistance;
 };
 
 }

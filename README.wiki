@@ -120,6 +120,29 @@ to the units used to define the speed of sound. By default, the '''speed of soun
 343.3 meters per second. Therefore, by default, velocities need to be specified in terms of meters 
 per second. 
 
+====Attenuation Based on Distance====
+OAS uses the "inverse distance clamped" model to calculate the effective gain/volume of a sound based
+on the distance between the sound and the listener. This is equivalent to the IASIG I3DL2 model, and
+is also the default distance model in OpenAL. In short, the attenuation is calculated as follows:
+<br /> <br />
+<code>distance = Euclidean distance between sound source and listener</code> <br />
+<code>refDistance = the reference distance property of the sound source</code> <br />
+<code>rollOff = the rolloff factor property of the sound source</code> <br />
+<code>distance = MAX(distance, refDistance)</code> <br />
+<code>gain = refDistance / (refDistance + rollOff * (distance - refDistance))</code>
+<br /> <br />
+Here is a simple example of the appropriate usage of reference distance and rolloff: <br />
+Suppose you have two sounds - a helicopter, and someone talking (speech). The helicopter should be
+very audible in a wide surrounding area, whereas the speech should only be audible in a small area.
+To get the desired effect, and assuming units that are approximately in meters, we would want the
+reference distance of the helicopter to be ~25. On the other hand, the speech sound would have a
+reference distance of ~0.5. The rolloff factor for the helicopter would be in the range of 
+~0.1, while the speech sound could have a rolloff factor between 1 and 2. The helicopter would then
+be audible even if the listener was far away, and the listener would have to be in the immediate
+vicinity of the speech source in order to hear it. Naturally, a wide range of other values can be 
+used depending on the application, but the desired effect would be the same.
+
+
 ==Client-Server Communication Protocol==
 
 ===Notes on Message Format===
@@ -491,14 +514,26 @@ is 1.0, and a value of 0 will effectively disable any pitch shifts due to the do
 |
 The default rolloff factor is used to control the rate at which sounds attenuate with respect to their distance away from 
 the listener. NOTE: This property is not applied to existing sources - it only affects sources generated in the future. 
-This parameter is provided so that the client can conveniently set the scale of the world using the rolloff factor during
-the initialization of their program.
+This parameter is provided so that the client can conveniently set the scale of the world during the initialization of 
+their program.
 <br /> <br />
 A higher rolloff factor will result in sounds becoming quieter faster, as the distance between the sound and the listener 
 is increased. A rolloff factor of 1.0 is the default, and a rolloff of 0 will mean that sounds do not attenuate with 
 respect to distance (the sounds will seem just as loud no matter how far away they are from the listener). For a client
 application using distance units of millimeters (so that positoin coordinates are often in the thousands), a rolloff
 factor of 0.001 is likely going to be appropriate.
+|-
+! scope="row" align="center"| Default Reference Distance
+| style="text-align: center;" | 4
+|
+The reference distance describes a sphere around a sound source in which the gain is not attenuated based on distance. 
+If the distance between the sound and the listener is less than or equal to the reference distance, the sound's 
+gain will not be attenuated (reduced) based on how far the sound is from the listener. The default reference distance 
+is initially set to 1.0, and values must be greater than or equal to 0.
+<br /> <br />
+NOTE: This property is not applied to existing sources - it only affects sources generated in the future.
+This parameter is provided so that the client can conveniently configure the scale of the world during the initialization
+of their program.
 |}
 <br /> <br />
 

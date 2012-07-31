@@ -391,6 +391,24 @@ bool AudioSource::setRolloffFactor(ALfloat rolloff)
     return false;
 }
 
+bool AudioSource::setReferenceDistance(ALfloat referenceDistance)
+{
+    if (isValid())
+    {
+        _clearError();
+
+        alSourcef(_id, AL_REFERENCE_DISTANCE, referenceDistance);
+
+        if (_wasOperationSuccessful())
+        {
+            _referenceDistance = referenceDistance;
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool AudioSource::setLoop(ALint isLoop)
 {
     if (isValid())
@@ -526,6 +544,11 @@ float AudioSource::getPitch() const
 float AudioSource::getRolloffFactor() const
 {
     return _rolloff;
+}
+
+float AudioSource::getReferenceDistance() const
+{
+    return _referenceDistance;
 }
 
 float AudioSource::getDirectionX() const
