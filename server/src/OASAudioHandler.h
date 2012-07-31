@@ -107,6 +107,11 @@ public:
     void populateQueueWithUpdatedSources(std::queue <const AudioUnit*> &sources);
 
     /**
+     * @brief Updates sources without retrieving copies of them
+     */
+    void updateSources();
+
+    /**
      * @note:
      * The following functions operate on existing sources. If the given source handle is invalid,
      * there is no change made to the OpenAL state, and the function does nothing.

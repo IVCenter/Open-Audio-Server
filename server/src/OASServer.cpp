@@ -372,7 +372,7 @@ void* oas::Server::_run(void *parameter)
 
         // If a client is connected, use a very short timeout allowing for fast updates
         if (SocketHandler::isConnectedToClient())
-        	timeOut += Time(0.0005); 	// 0.5 ms -> maximum loop rate of ~2000 loops per second
+        	timeOut += Time(0.0005); 	// 0.5 ms -> maximum of ~2000 loop iterations per second
         // Else use a longer timeout to save CPU cycles
         else
             timeOut += Time(2);
@@ -425,8 +425,12 @@ void* oas::Server::_runNoGUI(void *parameter)
         // Update timeOut to current time
         timeOut.update(oas::Time::OAS_CLOCK_MONOTONIC);
 
-        // Since there is no GUI to update, the timeout can be arbitrary
-        timeOut += Time(1);
+        // If a client is connected, use a very short timeout allowing for fast updates
+        if (SocketHandler::isConnectedToClient())
+            timeOut += Time(0.0005);    // 0.5 ms -> maximum of ~2000 loop iterations per second
+        // Else use a longer timeout to save CPU cycles
+        else
+            timeOut += Time(2);
 
         // If there are no incoming messages, populateQueueWithIncomingMessages() will block
         // until timeout
@@ -440,6 +444,8 @@ void* oas::Server::_runNoGUI(void *parameter)
             delete nextMessage;
             messages.pop();
         }
+
+        _audioHandler.updateSources();
     }
 
     return NULL;

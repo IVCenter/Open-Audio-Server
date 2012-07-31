@@ -113,7 +113,7 @@ bool AudioSource::_checkIncrementalFade()
 {
 	if (!isValid()
 	  || _fadeFinalGain < 0
-	  || !_fadeEndTime.hasTime())
+	  || !_needsFade())
 	{
 		return false;
 	}
@@ -151,6 +151,11 @@ bool AudioSource::_checkIncrementalFade()
 	return setGain((ratioOfTimeProgress * _fadeGainDiff) + _fadeInitialGain);
 }
 
+// private
+bool AudioSource::_needsFade()
+{
+    return (isValid() && _fadeEndTime.hasTime());
+}
 
 // static, public
 void AudioSource::resetSources()
@@ -163,8 +168,12 @@ bool AudioSource::update(bool forceUpdate)
     ALint alState;
     SourceState newState;
 
-    // The state does not need to be checked if the source isn't being played
-    if (!forceUpdate && this->_state != ST_PLAYING)
+    if (!isValid())
+        return false;
+
+    // If we're not forcing an update, and if the source is not currently playing or being faded,
+    // we do not need to update anything.
+    if (!forceUpdate && _state != ST_PLAYING && !_needsFade())
         return false;
 
     // Retrieve state information from OpenAL

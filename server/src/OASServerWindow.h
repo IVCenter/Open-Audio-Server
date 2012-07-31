@@ -63,6 +63,7 @@ public:
         if (isInitialized() && listener && !listener->isSoundSource())
             ServerWindow::_listenerTable->audioUnitWasModified(listener);
     }
+
     static inline void addToLogWindow(const char *line)
     {
         if (isInitialized())

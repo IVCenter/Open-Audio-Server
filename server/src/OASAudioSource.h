@@ -249,6 +249,7 @@ private:
     void _clearError();
     bool _wasOperationSuccessful();
     bool _checkIncrementalFade();
+    bool _needsFade();
 
     /*
      * 'id' is used to interact with the OpenAL library, and the values are arbitrary.

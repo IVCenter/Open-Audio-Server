@@ -244,7 +244,7 @@ void AudioHandler::populateQueueWithUpdatedSources(std::queue <const AudioUnit*>
 {
     SourceMapIterator iterator;
 
-    for (iterator = AudioHandler::_sourceMap.begin(); iterator != AudioHandler::_sourceMap.end(); iterator++)
+    for (iterator = _sourceMap.begin(); iterator != _sourceMap.end(); ++iterator)
     {
         if (!iterator->second)
             continue;
@@ -258,6 +258,16 @@ void AudioHandler::populateQueueWithUpdatedSources(std::queue <const AudioUnit*>
     }
 }
 
+void AudioHandler::updateSources()
+{
+    SourceMapIterator iterator;
+
+    for (iterator = _sourceMap.begin(); iterator != _sourceMap.end(); ++iterator)
+    {
+        if (iterator->second)
+            iterator->second->update();
+    }
+}
 
 // public
 int AudioHandler::createSource(ALuint buffer)
