@@ -111,7 +111,6 @@ public:
      * there is no change made to the OpenAL state, and the function does nothing.
      *
      * If the operation is successful, the particular source is marked as the most recently modified source.
-     * The most recently modified source can then be retrieved with the appropriate function.
      */
 
     /**
@@ -133,6 +132,16 @@ public:
      * @brief Pause the playback of the source with the given handle.
      */
     void pauseSource(const ALuint source);
+
+    /**
+     * Set the default rolloff factor for all sound sources. This property will not be applied to
+     * existing sources - it will only affect sources created in the future.
+     *
+     * The rolloff factor is used to describe the rate at which the sound becomes more and more
+     * inaudible (attenuates) as it goes farther and farther away from the listener. The default
+     * is 1.0.
+     */
+    void setDefaultRolloffFactor(const ALfloat rolloff);
 
     /**
      * @brief Set the playback position of the source, in seconds.
@@ -249,6 +258,8 @@ private:
     std::string _deviceString;
     ALCdevice* _device;
     ALCcontext* _context;
+
+    ALfloat _defaultRolloff;
 };
 
 }

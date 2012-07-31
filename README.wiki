@@ -485,6 +485,20 @@ sound sources. The default value is 343.3 meters per second, appropriate for the
 | 
 The doppler factor can be used to emphasize or de-emphasize the pitch shifts due to the doppler effect. The default value
 is 1.0, and a value of 0 will effectively disable any pitch shifts due to the doppler effect.
+|-
+! scope="row" align="center"| Default Rolloff Factor
+| style="text-align: center;" | 3
+|
+The default rolloff factor is used to control the rate at which sounds attenuate with respect to their distance away from 
+the listener. NOTE: This property is not applied to existing sources - it only affects sources generated in the future. 
+This parameter is provided so that the client can conveniently set the scale of the world using the rolloff factor during
+the initialization of their program.
+<br /> <br />
+A higher rolloff factor will result in sounds becoming quieter faster, as the distance between the sound and the listener 
+is increased. A rolloff factor of 1.0 is the default, and a rolloff of 0 will mean that sounds do not attenuate with 
+respect to distance (the sounds will seem just as loud no matter how far away they are from the listener). For a client
+application using distance units of millimeters (so that positoin coordinates are often in the thousands), a rolloff
+factor of 0.001 is likely going to be appropriate.
 |}
 <br /> <br />
 

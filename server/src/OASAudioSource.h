@@ -94,6 +94,17 @@ public:
     bool setFade(ALfloat fadeToGainValue, ALfloat durationInSeconds);
 
     /**
+     * @brief Set the rolloff factor for this sound source.
+     * The rolloff factor is used to describe the rate at which the sound becomes more and more
+     * inaudible (attenuates) as it goes farther and farther away from the listener. The default
+     * is 1.0, and values must be greater than or equal to 0. A rolloff factor of 0 implies that
+     * the sound does not attenuate with respect to distance - it will seem just as loud no matter
+     * how far away it is from the listener.
+     *
+     */
+    bool setRolloffFactor(ALfloat rolloff);
+
+    /**
      * @brief Set the position
      */
     virtual bool setPosition(ALfloat x, ALfloat y, ALfloat z);
@@ -134,6 +145,11 @@ public:
      * @brief Get the pitch
      */
     float getPitch() const;
+
+    /**
+     * @brief Get the rolloff factor
+     */
+    float getRolloffFactor() const;
 
     /**
      * @brief Get the x, y, z direction
@@ -224,6 +240,8 @@ private:
     ALfloat _directionX, _directionY, _directionZ;
 
     ALfloat _pitch;
+
+    ALfloat _rolloff;
 
     ALint _isLooping;
     bool _isDirectional;

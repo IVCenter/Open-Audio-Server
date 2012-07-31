@@ -340,6 +340,7 @@ public:
     {
         SPEED_OF_SOUND = 1,
         DOPPLER_FACTOR = 2,
+        DEFAULT_ROLLOFF = 3,
     };
 
     /**

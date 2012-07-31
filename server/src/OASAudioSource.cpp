@@ -55,6 +55,7 @@ void AudioSource::_init()
     _directionX = _directionY = _directionZ = 0.0;
     _gain = 1.0;
     _pitch = 1.0;
+    _rolloff = 1.0;
     _isValid = false;
     _isLooping = false;
     _isDirectional = false;
@@ -372,6 +373,24 @@ bool AudioSource::setFade(ALfloat fadeToGainValue, ALfloat durationInSeconds)
 	return false;
 }
 
+bool AudioSource::setRolloffFactor(ALfloat rolloff)
+{
+    if (isValid())
+    {
+        _clearError();
+
+        alSourcef(_id, AL_ROLLOFF_FACTOR, rolloff);
+
+        if (_wasOperationSuccessful())
+        {
+            _rolloff = rolloff;
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool AudioSource::setLoop(ALint isLoop)
 {
     if (isValid())
@@ -502,6 +521,11 @@ AudioSource::SourceState AudioSource::getState() const
 float AudioSource::getPitch() const
 {
     return _pitch;
+}
+
+float AudioSource::getRolloffFactor() const
+{
+    return _rolloff;
 }
 
 float AudioSource::getDirectionX() const
