@@ -487,6 +487,7 @@ The example sets the velocity of the listener to -2.0 in the X direction.
 |
 PARA parameter value
 <pre>PARA 1 343300       </pre>
+<pre>PARA 3 0.001        </pre>
 |
 This instruction can be used to set various global sound rendering parameters. Currently, the following parameters are available:
 <br />
@@ -537,7 +538,11 @@ of their program.
 |}
 <br /> <br />
 
-The example sets the speed of sound to 343300, corresponding to the units of millimeters per second, through air.
+The first example sets the speed of sound to 343300, corresponding to the units of millimeters per second, 
+through the medium of air.
+<br /> <br />
+The second example sets the default rolloff factor to 0.001, which is appropriate for generic sounds and positional units
+of millimeters.
 |}
 
 ====Deprecated Messages====
