@@ -24,7 +24,7 @@ public:
     /**
      * The AudioListener is a singleton.
      */
-    static AudioListener& getInstance();
+    static AudioListener* getInstance();
 
     /**
      * Get the handle of the listener

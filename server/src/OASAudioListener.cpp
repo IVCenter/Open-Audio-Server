@@ -3,9 +3,9 @@
 
 using namespace oas;
 
-AudioListener& AudioListener::getInstance()
+AudioListener* AudioListener::getInstance()
 {
-    static AudioListener instance;
+    static AudioListener *instance = new AudioListener();
 
     return instance;
 }

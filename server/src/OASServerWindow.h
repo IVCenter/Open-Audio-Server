@@ -24,7 +24,7 @@ namespace oas
 
 class ServerWindow
 {
-#define WINDOW_TITLE "OpenAL Audio Server"
+#define WINDOW_TITLE "Open Audio Server"
 
 public:
     // Create new thread, make double window, set up browser
@@ -38,42 +38,42 @@ public:
     static inline void reset()
     {
         if (isInitialized())
-            ServerWindow::_sourcesTable->reset();
+            _sourcesTable->reset();
     }
 
     static inline void audioUnitWasModified(const AudioUnit* audioUnit)
     {
-        if (isInitialized() && audioUnit)
+        if (isInitialized())
         {
             if (audioUnit->isSoundSource())
-                ServerWindow::_sourcesTable->audioUnitWasModified(audioUnit);
+                _sourcesTable->audioUnitWasModified(audioUnit);
             else
-                ServerWindow::_listenerTable->audioUnitWasModified(audioUnit);
+                _listenerTable->audioUnitWasModified(audioUnit);
         }
     }
 
     static inline void audioSourcesWereModified(std::queue<const AudioUnit*> &audioUnits)
     {
         if (isInitialized())
-            ServerWindow::_sourcesTable->audioUnitsWereModified(audioUnits);
+            _sourcesTable->audioUnitsWereModified(audioUnits);
     }
 
     static inline void audioListenerWasModified(const AudioListener* listener)
     {
         if (isInitialized() && listener && !listener->isSoundSource())
-            ServerWindow::_listenerTable->audioUnitWasModified(listener);
+            _listenerTable->audioUnitWasModified(listener);
     }
 
     static inline void addToLogWindow(const char *line)
     {
         if (isInitialized())
-            ServerWindow::_browser->add(line);
+            _browser->add(line);
     }
 
     static inline void replaceBottomLine(const char *line)
     {
         if (isInitialized())
-            ServerWindow::_browser->replaceBottomLine(line);
+            _browser->replaceBottomLine(line);
     }
 
     static inline const char* const getBoldBrowserFormatter()

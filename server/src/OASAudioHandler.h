@@ -89,16 +89,14 @@ public:
     int createSource(ALint waveShape, ALfloat frequency, ALfloat phase, ALfloat duration);
 
     /**
-     * @brief Retrieve a copy of the most recently modified unit
-     * @retval NULL if none exists
+     * @brief Retrieve a const pointer to the most recently modified audio unit
      */
     const AudioUnit* getRecentlyModifiedAudioUnit();
 
     /**
-     * @brief Retrieve a const copy of the listener
-     * @retval NULL if some error occured
+     * @brief Retrieve a const pointer to the Listener
      */
-    const AudioListener* getListenerCopy();
+    const AudioListener* getListener();
 
     /**
      * @brief Retrieve copies of all updated sources inside the given queue

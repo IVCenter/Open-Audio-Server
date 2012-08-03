@@ -363,7 +363,7 @@ void* oas::Server::_run(void *parameter)
     Time timeOut;
 
     // Add the listener to the GUI, before the loop even starts
-    oas::ServerWindow::audioListenerWasModified(_audioHandler.getListenerCopy());
+    oas::ServerWindow::audioListenerWasModified(_audioHandler.getListener());
 
     while (1)
     {
@@ -381,18 +381,6 @@ void* oas::Server::_run(void *parameter)
         // until timeout
         oas::SocketHandler::populateQueueWithIncomingMessages(messages, timeOut);
 
-        // If messages is still empty, then we timed out. Check the audio state for updates
-        // before redoing the loop
-        if (messages.empty())
-        {
-            _audioHandler.populateQueueWithUpdatedSources(sources);
-
-            if (!sources.empty())
-                 oas::ServerWindow::audioSourcesWereModified(sources);
-
-            continue;
-        }
-
         while (!messages.empty())
         {
             Message *nextMessage = messages.front();
@@ -402,12 +390,18 @@ void* oas::Server::_run(void *parameter)
             messages.pop();
 
             audioUnit = _audioHandler.getRecentlyModifiedAudioUnit();
-            if (NULL != audioUnit)
+            if (audioUnit)
             {
                 // Call ServerWindow method that will queue up the source
                 oas::ServerWindow::audioUnitWasModified(audioUnit);
             }
         }
+
+        _audioHandler.populateQueueWithUpdatedSources(sources);
+
+        if (!sources.empty())
+             oas::ServerWindow::audioSourcesWereModified(sources);
+
     }
 
     return NULL;

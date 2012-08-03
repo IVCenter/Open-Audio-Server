@@ -51,12 +51,6 @@ void ServerWindowTable::reset()
     // Then clear out the map state
     Fl::lock();
 
-    for (AudioUnitMapConstIterator iterator = _audioUnitMap.begin();
-            iterator != _audioUnitMap.end(); ++iterator)
-    {
-        delete iterator->second;
-    }
-
     _audioUnitMap.clear();
     Fl_Table::rows(0);
 
@@ -65,9 +59,6 @@ void ServerWindowTable::reset()
 
 void ServerWindowTable::audioUnitWasModified(const AudioUnit* audioUnit)
 {
-    if (!audioUnit)
-        return;
-
     // Lock mutex
     pthread_mutex_lock(&_queueMutex);
     // Push the audio unit onto the queue
@@ -180,8 +171,6 @@ void ServerWindowTable::_updateAudioUnitMap(std::queue<const AudioUnit*> &queue)
         else
         {
             // Else, we are either replacing or removing the audio unit
-            // In either case, we have to delete the old entry first
-            delete iterator->second;
 
             // If the audio unit is a sound source and is marked for deletion,
             // remove the entry from the map altogether
@@ -300,7 +289,7 @@ const char* ServerWindowTable::_getColumnHeaderForAudioUnit(int column)
 
 void ServerWindowTable::_writeCellContentsForAudioUnit(const AudioUnit *audioUnit, int column, char *buffer)
 {
-    if (!audioUnit || !buffer)
+    if (!buffer)
         return;
 
     sprintf(buffer, "%s", audioUnit->getStringForIndex(column).c_str());
