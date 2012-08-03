@@ -25,7 +25,7 @@ public:
     /**
      * The state is defined as follows:
      * UNKNOWN: state is unknown
-     * PLAYING: source is playing or has finished playing all the way through
+     * PLAYING: source is playing
      * PAUSED:  source is paused at a specific point, and playback will resume from here
      * STOPPED: source is stopped and playback will resume from the beginning
      * DELETED: source is in the process of being deleted

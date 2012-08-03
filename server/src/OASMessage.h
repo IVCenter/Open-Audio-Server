@@ -38,6 +38,7 @@ namespace oas
 #define M_SET_SOUND_DIRECTION_AND_GAIN_RELATIVE     "SSRV"
 #define M_SET_SOUND_PITCH                           "SPIT"
 #define M_FADE_SOUND                                "FADE"
+#define M_SET_SOUND_PARAMETERS                      "SPAR"
 #define M_GENERATE_SOUND_FROM_WAVEFORM              "WAVE"
 #define M_GET_SOUND_STATE                           "STAT"
 #define M_SET_LISTENER_POSITION                     "SLPO"
@@ -87,13 +88,14 @@ public:
         MT_SSRV_HL_3F_1F,   // Set sound direction relative to listener and gain in one command
         MT_SPIT_HL_1F,      // Set pitch
         MT_FADE_HL_1F_1F,   // Fade sound to gain value, over duration in seconds
+        MT_SPAR_HL_1I_1F,   // Set sound rendering parameters specific to this sound source
         MT_WAVE_1I_3F,      // Generate a sound based on waveform
         MT_STAT_HL,         // Get the state of the sound source
         MT_SLPO_3F,         // Set listener position
         MT_SLVE_3F,         // Set listener velocity
         MT_GAIN_1F,         // Set global (listener) gain
         MT_SLOR_3F_3F,      // Set listener orientation
-        MT_PARA_1I_1F,      // Set global parameters
+        MT_PARA_1I_1F,      // Set global sound rendering parameters
         MT_SYNC,
         MT_QUIT,
         MT_UNKNOWN
@@ -117,7 +119,7 @@ public:
     void setFilename(const std::string& filename);
     const std::string& getFilename() const;
     void setIntegerParam(long iParam);
-    long getIntegerParam() const;
+    int getIntegerParam() const;
     void setFloatParam(ALfloat value, unsigned int index);
     ALfloat getFloatParam(unsigned int index) const;
     bool needsResponse() const;
@@ -138,7 +140,7 @@ private:
     MessageType _mtype;
     ALuint _handle;
     std::string _filename;
-    long _iParam;
+    int _iParam;
     ALfloat _fParams[MAX_NUMBER_FLOAT_PARAM];
     bool _needsResponse;
     MessageError _errorType;

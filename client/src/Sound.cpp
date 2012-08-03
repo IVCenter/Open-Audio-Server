@@ -3,7 +3,7 @@
  * @author  Shreenidhi Chowkwale
  */
 
-#include "OASClient.h"
+#include "Sound.h"
 
 using namespace oasclient;
 
@@ -247,6 +247,14 @@ bool Sound::fade(float finalGain, float durationInSeconds)
 
     return ClientInterface::writeToServer("FADE %ld %f %f",
                                             _handle, finalGain, durationInSeconds);
+}
+
+bool Sound::setRenderingParameter(RenderingParameter whichParameter, float value)
+{
+    if (!isValid())
+        return false;
+
+    return ClientInterface::writeToServer("SPAR %ld %ld %f", _handle, whichParameter, value);
 }
 
 bool Sound::updateState()

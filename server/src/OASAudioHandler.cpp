@@ -555,6 +555,34 @@ void AudioHandler::setSourceFade(const ALuint sourceHandle, const ALfloat fadeTo
 	}
 }
 
+
+void AudioHandler::setSoundRenderingParameter(const ALuint sourceHandle, const ALuint whichParameter, const ALfloat value)
+{
+    AudioSource *source = AudioHandler::_getSource(sourceHandle);
+
+    _clearRecentlyModifiedAudioUnit();
+
+    if (source)
+    {
+        bool result = false;
+
+        switch (whichParameter)
+        {
+            case REFERENCE_DISTANCE:
+                result = source->setReferenceDistance(value);
+                break;
+            case ROLLOFF_FACTOR:
+                result = source->setRolloffFactor(value);
+                break;
+            default:
+                break;
+        }
+
+        if (result)
+            _setRecentlyModifiedAudioUnit(source);
+    }
+}
+
 // public
 int AudioHandler::getSourceState(const ALuint sourceHandle)
 {
@@ -606,7 +634,7 @@ void AudioHandler::setListenerOrientation(const ALfloat atX, const ALfloat atY, 
         _setRecentlyModifiedAudioUnit(AudioListener::getInstance());
 }
 
-void AudioHandler::setSoundRenderingParameters(const ALuint whichParameter, ALfloat value)
+void AudioHandler::setGlobalRenderingParameter(const ALuint whichParameter, ALfloat value)
 {
     _clearRecentlyModifiedAudioUnit();
 

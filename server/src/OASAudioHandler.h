@@ -43,12 +43,18 @@ public:
     /**
      * These constants are used to designate which parameter to modify.
      */
-    enum SoundRenderingParameter
+    enum GlobalRenderingParameter
     {
         SPEED_OF_SOUND              = 1,
         DOPPLER_FACTOR              = 2,
         DEFAULT_ROLLOFF             = 3,
         DEFAULT_REFERENCE_DISTANCE  = 4,
+    };
+
+    enum SoundRenderingParameter
+    {
+        ROLLOFF_FACTOR              = 1,
+        REFERENCE_DISTANCE          = 2,
     };
 
     static AudioHandler& getInstance();
@@ -253,9 +259,14 @@ public:
                                        const ALfloat upX, const ALfloat upY, const ALfloat upZ);
 
     /**
-     * @brief Set sound rendering parameters
+     * @brief Set global rendering parameter
      */
-    void setSoundRenderingParameters(const ALuint whichParameter, ALfloat value);
+    void setGlobalRenderingParameter(const ALuint whichParameter, ALfloat value);
+
+    /**
+     * @brief Set sound rendering parameter
+     */
+    void setSoundRenderingParameter(const ALuint source, const ALuint whichParameter, ALfloat value);
 
 private:
     AudioHandler();

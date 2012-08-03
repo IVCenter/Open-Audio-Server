@@ -483,6 +483,17 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
                     &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 0)
                     &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 1);
     }
+    // SPAR
+    else if (0 == strcmp(pType, M_SET_SOUND_PARAMETERS))
+    {
+        // Set message type to SPAR
+        _mtype = Message::MT_SPAR_HL_1I_1F;
+
+        // Parse tokens: The handle, the parameter, and the value
+        isSuccess =     _parseHandleParameter(tokenBuf, pEnd, maxParseAmount, totalParsed)
+                    &&  _parseIntegerParameter(tokenBuf, pEnd, maxParseAmount, totalParsed)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 0);
+    }
     // WAVE
     else if (0 == strcmp(pType, M_GENERATE_SOUND_FROM_WAVEFORM))
     {
@@ -637,7 +648,7 @@ void Message::setIntegerParam(long iParam)
     _iParam = iParam;   
 }
         
-long Message::getIntegerParam() const
+int Message::getIntegerParam() const
 {
     return _iParam;
 }

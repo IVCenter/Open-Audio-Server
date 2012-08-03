@@ -225,6 +225,11 @@ void oas::Server::_processMessage(const Message &message)
         									 message.getFloatParam(0),
         									 message.getFloatParam(1));
         	break;
+        case oas::Message::MT_SPAR_HL_1I_1F:
+            _audioHandler.setSoundRenderingParameter(message.getHandle(),
+                                                        message.getIntegerParam(),
+                                                        message.getFloatParam(0));
+            break;
         case oas::Message::MT_STAT_HL:
             state = _audioHandler.getSourceState(message.getHandle());
             oas::SocketHandler::addOutgoingResponse(state);
@@ -251,7 +256,7 @@ void oas::Server::_processMessage(const Message &message)
                                                        message.getFloatParam(5));
             break;
         case oas::Message::MT_PARA_1I_1F:
-            _audioHandler.setSoundRenderingParameters(message.getIntegerParam(),
+            _audioHandler.setGlobalRenderingParameter(message.getIntegerParam(),
                                                            message.getFloatParam(0));
             break;
         case oas::Message::MT_SSDR_HL_1F:

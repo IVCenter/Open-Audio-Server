@@ -71,6 +71,8 @@ CONFIGURE_FILE(${OASCLIENT_CMAKEFILES_DIRECTORY}/config.h.in
 SET(TARGET_H
     ${OASCLIENT_SOURCE_DIR}/src/ClientInterface.h
     ${OASCLIENT_SOURCE_DIR}/src/OASClient.h
+    ${OASCLIENT_SOURCE_DIR}/src/Sound.h
+    ${OASCLIENT_SOURCE_DIR}/src/Listener.h
     )
 
 SET(TARGET_SRC

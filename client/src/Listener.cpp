@@ -3,7 +3,7 @@
  * @author  Shreenidhi Chowkwale
  */
 
-#include "OASClient.h"
+#include "Listener.h"
 
 using namespace oasclient;
 
@@ -69,7 +69,7 @@ bool Listener::setListenerOrientation(float atX, float atY, float atZ,
     return result;
 }
 
-bool Listener::setSoundRenderingParameters(SoundRenderingParameter whichParameter, float value)
+bool Listener::setGlobalRenderingParameters(GlobalRenderingParameter whichParameter, float value)
 {
     return ClientInterface::writeToServer("PARA %d %f", whichParameter, value);
 }
