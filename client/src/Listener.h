@@ -2,7 +2,6 @@
  * @file    Listener.h
  * @author  Shreenidhi Chowkwale
  *
- * This file contains the declaration of the Listener class.
  */
 
 #ifndef _OAS_LISTENER_H_
@@ -21,8 +20,7 @@ namespace oasclient
 {
 
 /**
- * @class Listener
- * Used to communicate properties of the listener to the server.
+ * @brief Used to communicate properties of the listener to the server.
  */
 #ifdef OSG_FOUND
 class Listener : public osg::Node

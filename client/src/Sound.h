@@ -2,7 +2,6 @@
  * @file    Sound.h
  * @author  Shreenidhi Chowkwale
  *
- * This file contains the declaration of the Sound class.
  */
 
 #ifndef _OAS_SOUND_H_
@@ -22,8 +21,7 @@ namespace oasclient
 {
 
 /**
- * @class Sound
- * Each instance of this object corresponds to one fully independent sound source that can be
+ * @brief Each instance of this object corresponds to one fully independent sound source that can be
  * positioned, played, etc.
  */
 #ifdef OSG_FOUND

@@ -1,6 +1,7 @@
 /**
  * @file    ClientInterface.h
  * @author  Shreenidhi Chowkwale
+ *
  */
 
 #ifndef _OAS_CLIENT_INTERFACE_H_
@@ -24,8 +25,7 @@ namespace oasclient
 {
 
 /**
- * @class ClientInterface
- * This class provides the network interface for the client to connect to the server.
+ * @brief This class provides the network interface for the client to connect to the server.
  */
 class ClientInterface
 {

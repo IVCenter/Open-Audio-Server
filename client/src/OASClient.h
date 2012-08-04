@@ -2,7 +2,7 @@
  * @file    OASClient.h
  * @author  Shreenidhi Chowkwale
  *
- * This file includes the other necessary files for the OAS client.
+ * @brief This convenience file includes all of the other necessary files for the OAS client.
  */
 
 #ifndef _OAS_CLIENT_H_
