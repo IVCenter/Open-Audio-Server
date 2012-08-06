@@ -5,8 +5,8 @@ using namespace oas;
 
 // Statics
 ALuint AudioSource::_nextHandle = 0;
-const ALfloat AudioSource::_kConeInnerAngle;
-const ALfloat AudioSource::_kConeOuterAngle;
+const ALfloat AudioSource::_coneInnerAngle;
+const ALfloat AudioSource::_coneOuterAngle;
 
 
 AudioSource::AudioSource(ALuint buffer)
@@ -65,6 +65,9 @@ void AudioSource::_init()
     _fadeStartTime.reset();
     _fadeGainDiff = 0;
     _state = ST_UNKNOWN;
+    _coneInnerAngle = 45.0;
+    _coneOuterAngle = 180.0;
+    _coneOuterGain = 0.0;
 }
 
 // private
@@ -382,42 +385,6 @@ bool AudioSource::setFade(ALfloat fadeToGainValue, ALfloat durationInSeconds)
 	return false;
 }
 
-bool AudioSource::setRolloffFactor(ALfloat rolloff)
-{
-    if (isValid())
-    {
-        _clearError();
-
-        alSourcef(_id, AL_ROLLOFF_FACTOR, rolloff);
-
-        if (_wasOperationSuccessful())
-        {
-            _rolloff = rolloff;
-            return true;
-        }
-    }
-
-    return false;
-}
-
-bool AudioSource::setReferenceDistance(ALfloat referenceDistance)
-{
-    if (isValid())
-    {
-        _clearError();
-
-        alSourcef(_id, AL_REFERENCE_DISTANCE, referenceDistance);
-
-        if (_wasOperationSuccessful())
-        {
-            _referenceDistance = referenceDistance;
-            return true;
-        }
-    }
-
-    return false;
-}
-
 bool AudioSource::setLoop(ALint isLoop)
 {
     if (isValid())
@@ -483,8 +450,9 @@ bool AudioSource::setDirection(ALfloat x, ALfloat y, ALfloat z)
             else if (!isDirectional())
             {
                 // Set the inner and outer cone angles
-                alSourcef(_id, AL_CONE_INNER_ANGLE, AudioSource::_kConeInnerAngle);
-                alSourcef(_id, AL_CONE_OUTER_ANGLE, AudioSource::_kConeOuterAngle);
+                alSourcef(_id, AL_CONE_INNER_ANGLE, _coneInnerAngle);
+                alSourcef(_id, AL_CONE_OUTER_ANGLE, _coneOuterAngle);
+                alSourcef(_id, AL_CONE_OUTER_GAIN, _coneOuterGain);
                 _isDirectional = true;
             }
 
@@ -507,6 +475,97 @@ bool AudioSource::setPitch(ALfloat pitchFactor)
         if (_wasOperationSuccessful())
         {
             _pitch = pitchFactor;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+bool AudioSource::setRolloffFactor(ALfloat rolloff)
+{
+    if (isValid())
+    {
+        _clearError();
+
+        alSourcef(_id, AL_ROLLOFF_FACTOR, rolloff);
+
+        if (_wasOperationSuccessful())
+        {
+            _rolloff = rolloff;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool AudioSource::setReferenceDistance(ALfloat referenceDistance)
+{
+    if (isValid())
+    {
+        _clearError();
+
+        alSourcef(_id, AL_REFERENCE_DISTANCE, referenceDistance);
+
+        if (_wasOperationSuccessful())
+        {
+            _referenceDistance = referenceDistance;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool AudioSource::setConeInnerAngle(ALfloat innerAngleInDegrees)
+{
+    if (isValid())
+    {
+        _clearError();
+
+        alSourcef(_id, AL_CONE_INNER_ANGLE, innerAngleInDegrees);
+
+        if (_wasOperationSuccessful())
+        {
+            _coneInnerAngle = innerAngleInDegrees;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool AudioSource::setConeOuterAngle(ALfloat outerAngleInDegrees)
+{
+    if (isValid())
+    {
+        _clearError();
+
+        alSourcef(_id, AL_CONE_OUTER_ANGLE, outerAngleInDegrees);
+
+        if (_wasOperationSuccessful())
+        {
+            _coneOuterAngle = outerAngleInDegrees;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool AudioSource::setConeOuterGain(ALfloat coneOuterGain)
+{
+    if (isValid())
+    {
+        _clearError();
+
+        alSourcef(_id, AL_CONE_OUTER_GAIN, coneOuterGain);
+
+        if (_wasOperationSuccessful())
+        {
+            _coneOuterGain = coneOuterGain;
             return true;
         }
     }
@@ -558,6 +617,21 @@ float AudioSource::getRolloffFactor() const
 float AudioSource::getReferenceDistance() const
 {
     return _referenceDistance;
+}
+
+float AudioSource::getConeInnerAngle() const
+{
+    return _coneInnerAngle;
+}
+
+float AudioSource::getConeOuterAngle() const
+{
+    return _coneOuterAngle;
+}
+
+float AudioSource::getConeOuterGain() const
+{
+    return _coneOuterGain;
 }
 
 float AudioSource::getDirectionX() const

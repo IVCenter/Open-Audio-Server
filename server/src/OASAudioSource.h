@@ -94,6 +94,33 @@ public:
     bool setFade(ALfloat fadeToGainValue, ALfloat durationInSeconds);
 
     /**
+     * @brief Set the position
+     */
+    virtual bool setPosition(ALfloat x, ALfloat y, ALfloat z);
+
+    /**
+     * @brief Set the velocity
+     */
+    virtual bool setVelocity(ALfloat x, ALfloat y, ALfloat z);
+
+    /**
+     * @brief Set the direction of the source
+     */
+    bool setDirection(ALfloat x, ALfloat y, ALfloat z);
+
+    /**
+     * @brief Set the source to play in a continuous loop, until it is stopped
+     */
+    bool setLoop(ALint isLoop);
+
+    /**
+     * @brief Change the pitch of the source.
+     * @param pitchFactor Doubling the factor will increase by one octave, and halving will decrease by one octave.
+     *                    Default = 1.
+     */
+    bool setPitch(ALfloat pitchFactor);
+
+    /**
      * @brief Set the rolloff factor for this sound source.
      * The rolloff factor is used to describe the rate at which the sound becomes more and more
      * inaudible (attenuates) as it goes farther and farther away from the listener. The default
@@ -128,31 +155,29 @@ public:
     bool setReferenceDistance(ALfloat referenceDistance);
 
     /**
-     * @brief Set the position
+     * Set the inner angle of the directional sound cone, in degrees. This will only apply to directional
+     * sound sources. The default is 45.0 degrees.
+     *
+     * If the listener falls within the region defined by the inner angle, then the sound is not attenuated,
+     * and the listener hears it at the regular gain value.
      */
-    virtual bool setPosition(ALfloat x, ALfloat y, ALfloat z);
+    bool setConeInnerAngle(ALfloat innerAngleInDegrees);
 
     /**
-     * @brief Set the velocity
+     * Set the outer angle of the directional sound cone, in degrees. This will only apply to directional
+     * sound sources. The default is 180.0 degrees.
+     *
+     * If the listener falls within the region defined by the outer angle, but outside the region of the inner
+     * angle, then the sound will be attenuated based on the computed angle between sound source and listener.
      */
-    virtual bool setVelocity(ALfloat x, ALfloat y, ALfloat z);
+    bool setConeOuterAngle(ALfloat outerAngleInDegrees);
 
     /**
-     * @brief Set the direction of the source
+     * Set the gain of the sound source for the region outside the directional sound cone. This will only apply to
+     * directional sound sources. The default is 0. The coneOuterGain is multiplied by the source's
+     * internal gain to get the effective gain.
      */
-    bool setDirection(ALfloat x, ALfloat y, ALfloat z);
-
-    /**
-     * @brief Set the source to play in a continuous loop, until it is stopped
-     */
-    bool setLoop(ALint isLoop);
-
-    /**
-     * @brief Change the pitch of the source.
-     * @param pitchFactor Doubling the factor will increase by one octave, and halving will decrease by one octave.
-     *                    Default = 1.
-     */
-    bool setPitch(ALfloat pitchFactor);
+    bool setConeOuterGain(ALfloat coneOuterGain);
 
     /**
      * @brief Deletes the audio resources allocated for this sound source
@@ -178,6 +203,21 @@ public:
      * @brief Get the reference distance
      */
     float getReferenceDistance() const;
+
+    /**
+     * @brief Get the cone inner angle
+     */
+    float getConeInnerAngle() const;
+
+    /**
+     * @brief Get the cone outer angle
+     */
+    float getConeOuterAngle() const;
+
+    /**
+     * @brief Get the cone outer gain
+     */
+    float getConeOuterGain() const;
 
     /**
      * @brief Get the x, y, z direction
@@ -271,6 +311,9 @@ private:
     ALfloat _pitch;
 
     ALfloat _rolloff, _referenceDistance;
+    ALfloat _coneInnerAngle;
+    ALfloat _coneOuterAngle;
+    ALfloat _coneOuterGain;
 
     ALint _isLooping;
     bool _isDirectional;
@@ -283,8 +326,6 @@ private:
     Time _fadeEndTime; 	// _fadeEndTime = _fadeStartTime + _fadeDuration
 
     static ALuint _nextHandle;
-    static const ALfloat _kConeInnerAngle = 45.0;
-    static const ALfloat _kConeOuterAngle = 180.0;
 
 };
 }

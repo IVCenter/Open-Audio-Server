@@ -55,6 +55,9 @@ public:
     {
         ROLLOFF_FACTOR              = 1,
         REFERENCE_DISTANCE          = 2,
+        CONE_INNER_ANGLE            = 3,
+        CONE_OUTER_ANGLE            = 4,
+        CONE_OUTER_GAIN             = 5,
     };
 
     static AudioHandler& getInstance();

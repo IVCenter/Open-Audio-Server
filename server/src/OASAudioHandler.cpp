@@ -574,6 +574,15 @@ void AudioHandler::setSoundRenderingParameter(const ALuint sourceHandle, const A
             case REFERENCE_DISTANCE:
                 result = source->setReferenceDistance(value);
                 break;
+            case CONE_INNER_ANGLE:
+                result = source->setConeInnerAngle(value);
+                break;
+            case CONE_OUTER_ANGLE:
+                result = source->setConeOuterAngle(value);
+                break;
+            case CONE_OUTER_GAIN:
+                result = source->setConeOuterGain(value);
+                break;
             default:
                 break;
         }

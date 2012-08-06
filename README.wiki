@@ -474,7 +474,6 @@ of millimeters.
 The second example sets the reference distance of sound source 8 to 100. 
 |}
 
-|}
 
 ====Modifying Properties of the Listener====
 

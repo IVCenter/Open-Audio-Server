@@ -61,7 +61,7 @@ public:
     /**
      * These constants define the sound rendering parameters that can be modified.
      *
-     * @par Example of Using the Sound Rendering Parameters
+     * @par Theoretical Example of Attenuation by Distance Parameters
      * Suppose you have two sounds - a helicopter, and someone talking (speech). The helicopter should be
      * very audible in a wide surrounding area, whereas the speech should only be audible in a small area.
      * To get the desired effect, and assuming units that are approximately in meters, we would want the
@@ -85,6 +85,16 @@ public:
                                       distance is 1.0. If the distance between the sound and the listener is less than or equal to
                                       the reference distance, the sound will not be attenuated (i.e. the rolloff factor will be
                                       applied). Reference distance values must be greater than or equal to 0. */
+
+        CONE_INNER_ANGLE    = 3, /**< When the listener falls within a directional sound source's cone's inner angle, the sound
+                                      is not attenuated/interpolated. The listener hears the source at the regular gain level.
+                                      Angles are in degrees, and the default is 45.0 degrees. */
+        CONE_OUTER_ANGLE    = 4, /**< When the listener falls between the inner angle and the outer angle of a directional source's
+                                      cone, the sound is attenuated based on the interpolation between the angles. Angles are in
+                                      degrees, and the default is 180.0 degrees. */
+        CONE_OUTER_GAIN     = 5, /**< When the listener falls outside the outer angle of a directional source's cone, this outer gain
+                                      is applied. The default is 0, meaning that the listener normally does not hear anything when
+                                      the listener is outside the cone region. */
     };
 
 
