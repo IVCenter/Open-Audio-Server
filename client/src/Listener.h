@@ -56,7 +56,12 @@ public:
 
     /**
      * Modify the listener's orientation, in terms of a "look-at" vector and "up" vector.
-     * Defaults are <0, 0, -1> and <0, 1, 0>, respectively.
+     * Defaults are <0, 0, -1> and <0, 1, 0>, respectively. This corresponds to positive Y
+     * going up, and positive Z coming out of the screen.
+     *
+     * It is simple to convert to another coordinate system. For example, if your application
+     * uses positive Y going into the screen and positive Z going up, use <0, 1, 0> for your
+     * look-at vector and <0, 0, 1> for your up vector.
      */
     bool setListenerOrientation(float atX, float atY, float atZ,
                                 float upX, float upY, float upZ);
