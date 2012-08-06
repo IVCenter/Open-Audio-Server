@@ -428,6 +428,50 @@ sound by one octave. Modifying the pitch also changes the playback speed, so a s
 at a faster speed, and a sound with a pitch less than 1 will play at a slower speed.
 <br /> <br />
 The example sets the pitch of sound 3 to 1.25.
+|-
+|
+SPAR handle parameter value
+<pre>SPAR 8 1 0.001       </pre>
+<pre>SPAR 8 2 100         </pre>
+|
+This instruction can be used to set sound rendering parameters for the sound source specified by '''handle'''. Currently, 
+the following parameters are available:
+<br />
+
+{| border="1"
+|-
+! ''Parameter''
+! ''Value''
+! ''Description''
+|-
+! scope="row" align="center"| Rolloff Factor
+| style="text-align: center;" | 1
+|
+The rolloff factor is used to control the rate at which sounds attenuate with respect to their distance away from 
+the listener. 
+<br /> <br />
+A higher rolloff factor will result in sounds becoming quieter faster, as the distance between the sound and the listener 
+is increased. A rolloff of 0 will mean that sounds do not attenuate with respect to distance (the sounds will seem just 
+as loud no matter how far away they are from the listener). For a client application using distance units of millimeters 
+(so that position coordinates are often in magnitude of thousands), a rolloff factor of 0.001 is likely going to be 
+appropriate.
+|-
+! scope="row" align="center"| Reference Distance
+| style="text-align: center;" | 2
+|
+The reference distance describes the radius for a sphere around a sound source in which the gain is not attenuated based on 
+distance. If the distance between the sound and the listener is less than or equal to the reference distance, the sound's 
+gain will not be attenuated (reduced) based on how far the sound is from the listener. Values must be greater than or equal 
+to 0. See the [[#Attenuation|attenuation section]] for more information.
+|}
+<br /> <br />
+
+The first example sets the rolloff factor of sound source 8 to 0.001, which is appropriate for generic sounds and positional units
+of millimeters.
+<br /> <br />
+The second example sets the reference distance of sound source 8 to 100. 
+|}
+
 |}
 
 ====Modifying Properties of the Listener====
@@ -478,7 +522,7 @@ parameter for doppler effect calculations. See [[#The_Doppler_Effect|the doppler
 The example sets the velocity of the listener to -2.0 in the X direction.
 |}
 
-====Changing Parameters of Sound Rendering====
+====Changing Global Parameters of Sound Rendering====
 {| border="1" bgcolor="#FFFFFF"
 |-
 ! scope="col" width="35%" | Message and Example(s)
@@ -519,18 +563,17 @@ This parameter is provided so that the client can conveniently set the scale of 
 their program.
 <br /> <br />
 A higher rolloff factor will result in sounds becoming quieter faster, as the distance between the sound and the listener 
-is increased. A rolloff factor of 1.0 is the default, and a rolloff of 0 will mean that sounds do not attenuate with 
-respect to distance (the sounds will seem just as loud no matter how far away they are from the listener). For a client
-application using distance units of millimeters (so that positoin coordinates are often in the thousands), a rolloff
-factor of 0.001 is likely going to be appropriate.
+is increased. A rolloff of 0 will mean that sounds do not attenuate with respect to distance (the sounds will seem just 
+as loud no matter how far away they are from the listener). For a client application using distance units of millimeters 
+(so that position coordinates are often in magnitude of thousands), a rolloff factor of 0.001 is likely going to be 
+appropriate.
 |-
 ! scope="row" align="center"| Default Reference Distance
 | style="text-align: center;" | 4
 |
 The reference distance describes a sphere around a sound source in which the gain is not attenuated based on distance. 
 If the distance between the sound and the listener is less than or equal to the reference distance, the sound's 
-gain will not be attenuated (reduced) based on how far the sound is from the listener. The default reference distance 
-is initially set to 1.0, and values must be greater than or equal to 0.
+gain will not be attenuated (reduced) based on how far the sound is from the listener. Values must be greater than or equal to 0.
 <br /> <br />
 NOTE: This property is not applied to existing sources - it only affects sources generated in the future.
 This parameter is provided so that the client can conveniently configure the scale of the world during the initialization

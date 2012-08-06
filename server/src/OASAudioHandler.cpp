@@ -568,11 +568,11 @@ void AudioHandler::setSoundRenderingParameter(const ALuint sourceHandle, const A
 
         switch (whichParameter)
         {
-            case REFERENCE_DISTANCE:
-                result = source->setReferenceDistance(value);
-                break;
             case ROLLOFF_FACTOR:
                 result = source->setRolloffFactor(value);
+                break;
+            case REFERENCE_DISTANCE:
+                result = source->setReferenceDistance(value);
                 break;
             default:
                 break;
