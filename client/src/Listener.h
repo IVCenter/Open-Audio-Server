@@ -40,19 +40,19 @@ public:
      * Modify the global (listener's) gain level. The default is 1, and a value of 0 will mute all
      * sounds completely.
      */
-    bool setListenerGain(float gain);
+    bool setGain(float gain);
 
     /**
      * Modify the listener's position. Default is <0, 0, 0>
      */
-    bool setListenerPosition(float x, float y, float z);
+    bool setPosition(float x, float y, float z);
 
     /**
      * Modify the listener's velocity. Default is <0, 0, 0>. Note that this is ONLY used for
      * doppler effect calculations, and does not cause the position to be updated.
      * If the velocity is NOT set, then doppler effect simulation will not occur.
      */
-    bool setListenerVelocity(float x, float y, float z);
+    bool setVelocity(float x, float y, float z);
 
     /**
      * Modify the listener's orientation, in terms of a "look-at" vector and "up" vector.
@@ -63,7 +63,7 @@ public:
      * uses positive Y going into the screen and positive Z going up, use <0, 1, 0> for your
      * look-at vector and <0, 0, 1> for your up vector.
      */
-    bool setListenerOrientation(float atX, float atY, float atZ,
+    bool setOrientation(float atX, float atY, float atZ,
                                 float upX, float upY, float upZ);
 
 

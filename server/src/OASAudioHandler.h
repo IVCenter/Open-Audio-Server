@@ -132,6 +132,11 @@ public:
     void deleteSource(const ALuint source);
 
     /**
+     * @brief Deletes the given source.
+     */
+    void deleteSource(AudioSource *source);
+
+    /**
      * @brief Begin playing the source with the given handle.
      */
     void playSource(const ALuint source);
@@ -277,6 +282,7 @@ private:
     AudioSource* _getSource(const ALuint source);
     void _clearRecentlyModifiedAudioUnit();
     void _setRecentlyModifiedAudioUnit(const AudioUnit*);
+    void _processLazyDeletionQueue();
 
     BufferMap _bufferMap;
     SourceMap _sourceMap;
@@ -284,6 +290,8 @@ private:
     AudioSource* _recentSource;
 
     const AudioUnit *_recentlyModifiedAudioUnit;
+
+    std::queue<AudioSource*> _lazyDeletionQueue;
 
     std::string _deviceString;
     ALCdevice* _device;

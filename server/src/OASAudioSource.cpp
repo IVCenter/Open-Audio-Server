@@ -5,8 +5,6 @@ using namespace oas;
 
 // Statics
 ALuint AudioSource::_nextHandle = 0;
-const ALfloat AudioSource::_coneInnerAngle;
-const ALfloat AudioSource::_coneOuterAngle;
 
 
 AudioSource::AudioSource(ALuint buffer)

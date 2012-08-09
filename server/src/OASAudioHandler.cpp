@@ -87,7 +87,7 @@ void AudioHandler::release()
     for (sIter = _sourceMap.begin(); sIter != _sourceMap.end(); sIter++)
     {
         if (sIter->second)
-            delete sIter->second;
+            deleteSource(sIter->second);
     }
     
     _sourceMap.clear();
@@ -319,7 +319,6 @@ void AudioHandler::deleteSource(const ALuint sourceHandle)
 	 * for other threads to be notified that this particular audio source has been deleted, and
 	 * prevent access to invalid memory.
 	 */
-    static std::queue<AudioSource*> lazyDeletionQueue;
 
     // Find the source in the map, and if found, queue it up for deletion
     SourceMapIterator iterator = AudioHandler::_sourceMap.find(sourceHandle);
@@ -337,22 +336,48 @@ void AudioHandler::deleteSource(const ALuint sourceHandle)
             {
                 oas::Logger::warnf("AudioHandler: Deletion of sound source failed!");
             }
-
+            else
+            {
+                // Update the recently modified source
+                _setRecentlyModifiedAudioUnit(iterator->second);
+            }
             // Push the pointer to the source onto the lazy deletion queue
-            lazyDeletionQueue.push(iterator->second);
-            // Update the recently modified source
-            _setRecentlyModifiedAudioUnit(iterator->second);
+            _lazyDeletionQueue.push(iterator->second);
         }
         _sourceMap.erase(iterator);
     }
 
-    // If the lazy deletion queue hits a size greater than 5, remove an entry
-    if (lazyDeletionQueue.size() > 5)
+    _processLazyDeletionQueue();
+}
+
+// public
+void AudioHandler::deleteSource(AudioSource *source)
+{
+    if (!source)
+        return;
+
+    if (!source->deleteSource())
+    {
+        oas::Logger::warnf("AudioHandler:: Failed to delete the given audio source!");
+    }
+    else
+    {
+        _setRecentlyModifiedAudioUnit(source);
+    }
+    _lazyDeletionQueue.push(source);
+
+    _processLazyDeletionQueue();
+}
+
+void AudioHandler::_processLazyDeletionQueue()
+{
+    // If the lazy deletion queue hits a size greater than 10, remove an entry
+    if (_lazyDeletionQueue.size() > 10)
     {
         // Delete the Source at the head of the queue
-        delete lazyDeletionQueue.front();
+        delete _lazyDeletionQueue.front();
         // Pop the pointer to freed memory off of the queue
-        lazyDeletionQueue.pop();
+        _lazyDeletionQueue.pop();
     }
 }
 

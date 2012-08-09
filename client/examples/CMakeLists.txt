@@ -12,4 +12,5 @@ ENDMACRO(ADD_EXAMPLE)
 # Add examples here
 ADD_EXAMPLE(TEST test test.cpp)
 ADD_EXAMPLE(DOPPLER doppler doppler.cpp)
+ADD_EXAMPLE(ORIENTATION orientation orientation.cpp)
 

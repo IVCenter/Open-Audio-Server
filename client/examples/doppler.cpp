@@ -35,7 +35,8 @@ int main(int argc, char **argv)
 
     if (!sound.isValid())
     {
-        std::cerr << "--> Unable to create the test sound." << std::endl;
+        std::cerr << "--> Unable to create the sound specified by '"<< filepath
+                << "'" << std::endl;
         exit(2);
     }
 
@@ -51,8 +52,8 @@ void runExample(oasclient::Sound &sound)
     if (!sound.isValid())
         return;
 
-    float x, y, z, r, theta, velocityX, gain;
-    x = y = z = r = theta = 0;
+    float x, y, z, velocityX, gain;
+    x = y = z = 0;
 
     // This resolution controls the rate at which the demo should run.
     // Increasing the resolution results in a finer "grain" of position and

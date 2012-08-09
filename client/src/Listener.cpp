@@ -15,7 +15,7 @@ Listener& Listener::getInstance()
     return instance;
 }
 
-bool Listener::setListenerGain(float gain)
+bool Listener::setGain(float gain)
 {
     bool result = ClientInterface::writeToServer("GAIN %f", gain);
     if (result)
@@ -26,7 +26,7 @@ bool Listener::setListenerGain(float gain)
 }
 
 
-bool Listener::setListenerPosition(float x, float y, float z)
+bool Listener::setPosition(float x, float y, float z)
 {
     bool result = ClientInterface::writeToServer("SLPO %f %f %f", x, y, z);
     if (result)
@@ -39,7 +39,7 @@ bool Listener::setListenerPosition(float x, float y, float z)
 }
 
 
-bool Listener::setListenerVelocity(float x, float y, float z)
+bool Listener::setVelocity(float x, float y, float z)
 {
     bool result = ClientInterface::writeToServer("SLVE %f %f %f", x, y, z);
     if (result)
@@ -52,7 +52,7 @@ bool Listener::setListenerVelocity(float x, float y, float z)
     return result;
 }
 
-bool Listener::setListenerOrientation(float atX, float atY, float atZ,
+bool Listener::setOrientation(float atX, float atY, float atZ,
         float upX, float upY, float upZ)
 {
     bool result = ClientInterface::writeToServer("SLOR %f %f %f %f %f %f",

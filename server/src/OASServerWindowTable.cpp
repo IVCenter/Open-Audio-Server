@@ -171,13 +171,10 @@ void ServerWindowTable::_updateAudioUnitMap(std::queue<const AudioUnit*> &queue)
         else
         {
             // Else, we are either replacing or removing the audio unit
-
-            // If the audio unit is a sound source and is marked for deletion,
-            // remove the entry from the map altogether
             if (unit->isSoundSource()
-                    && (AudioSource::ST_DELETED
-                            == (static_cast<const AudioSource *>(unit))->getState()))
+                    && (AudioSource::ST_DELETED == (static_cast<const AudioSource *>(unit))->getState()))
             {
+                // If the source was marked for deletion, remove the entry from the map altogether
                 _audioUnitMap.erase(iterator);
                 rows(_audioUnitMap.size());
             }

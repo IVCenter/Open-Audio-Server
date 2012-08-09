@@ -26,7 +26,6 @@ void SoundUpdateCallback::operator()(osg::Node *node, osg::NodeVisitor *nodeVisi
 
     if ( !_sound || !_sound->isValid() || (frameStamp == NULL))
     {
-        std::cerr << "SoundUpdateCallback::operator() - first if check failed" << std::endl;
         traverse(node, nodeVisitor);
         return;
     }
