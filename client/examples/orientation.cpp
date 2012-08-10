@@ -148,9 +148,9 @@ void part2(oasclient::Sound &sound)
     std::cerr << "Finished playing the sound." << std::endl << std::endl;
     std::cerr << "The previous part will now be repeated to demonstrate how directional cones work." << std::endl;
     std::cerr << "The cone properties of the source will be tweaked so that the source uses a much smaller cone." << std::endl;
-    std::cerr << "Here, the cone inner angle will be 20 degrees, and the outer angle will be 60 degrees." << std::endl;
+    std::cerr << "Here, the cone inner angle will be 20 degrees, and the outer angle will be 90 degrees." << std::endl;
     sound.setRenderingParameter(sound.CONE_INNER_ANGLE, 20.0);
-    sound.setRenderingParameter(sound.CONE_OUTER_ANGLE, 60.0);
+    sound.setRenderingParameter(sound.CONE_OUTER_ANGLE, 90.0);
     usleep(5000000);
 
     angle = 3 * (PI / 2);
