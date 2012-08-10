@@ -276,11 +276,11 @@ void oas::Server::_processMessage(const Message &message)
             break;
         case oas::Message::MT_QUIT:
             oas::Logger::logf("Terminating current session.");
-            // Will need to release all audio resources and then re-initialize them
-            _audioHandler.release();
 #ifdef FLTK_FOUND
             oas::ServerWindow::reset();
 #endif
+            // Will need to release all audio resources and then re-initialize them
+            _audioHandler.release();
             // If for some reason initialization fails, try again
             while (!_audioHandler.initialize(getServerInfo()->getAudioDeviceString()))
             {
@@ -464,6 +464,9 @@ void oas::Server::_fatalError(const char *errorMessage)
 
 void oas::Server::_atExit()
 {
+#ifdef FLTK_FOUND
+        oas::ServerWindow::reset();
+#endif
     oas::SocketHandler::terminate();
     _audioHandler.release();
 }

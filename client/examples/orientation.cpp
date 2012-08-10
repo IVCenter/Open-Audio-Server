@@ -49,12 +49,15 @@ void runExample(oasclient::Sound &sound)
     if (!sound.isValid())
         return;
 
-    std::cerr << "This example demonstrates some of the properties of directional audio." << std::endl;
+    std::cerr << "This example demonstrates some of the properties of directional audio, through a series of demos." << std::endl << std::endl;
 
+    std::cerr << "Beginning the first part of the orientation example." << std::endl;
     part1(sound);
-    /*
-    usleep(3000000);
+    std::cerr << std::endl << "Finished the first part of the orientation example." << std::endl;
+
     part2(sound);
+    std::cerr << std::endl << "Finished the second part of the orientation example." << std::endl;
+    /*
     usleep(3000000);
     part3(sound);
     */
@@ -69,7 +72,7 @@ void reset(oasclient::Sound &sound)
     oasclient::Listener::getInstance().setOrientation(0, 1, 0,   0, 0, 1);
 
     // Place the sound 3 units directly in front of the listener
-    sound.setPosition(0, 0, 0);
+    sound.setPosition(0, 3, 0);
 
     // No direction associated with the sound
     sound.setDirection(0, 0, 0);
@@ -79,8 +82,7 @@ void part1(oasclient::Sound &sound)
 {
     reset(sound);
 
-    std::cerr << "Beginning the first part of the orientation example." << std::endl;
-    std::cerr << "The sound will remain stationary, and will be omnidirectional" << std::endl;
+    std::cerr << "In this part, the sound will remain stationary, and will be omnidirectional" << std::endl;
     std::cerr << "    (i.e. it will emit the sound equally in all directions)." << std::endl;
     std::cerr << "The listener's position will remain constant, but the orientation will not." << std::endl;
     std::cerr << "The listener's orientation will be rotated counter-clockwise in the X-Y plane." << std::endl;
@@ -91,8 +93,8 @@ void part1(oasclient::Sound &sound)
     float angle = PI / 2;
 
     const float endAngle = angle + (2 * PI);
-    const float partRunTime = 20;               // Run for approximately this duration, in seconds
-    const float iterationSleepTime = 10000;     // Sleep for this amount each loop, in microseconds
+    const float partRunTime = 20;               // Run this part for approximately this duration, in seconds
+    const float iterationSleepTime = 10000;     // Sleep for this amount each loop iteration, in microseconds
 
     // Based on the above two constants, this is how much the angle needs to be incremented each iteration
     const float angleIncrement = (2 * PI) / (partRunTime * (1000000 / iterationSleepTime));
@@ -103,7 +105,7 @@ void part1(oasclient::Sound &sound)
     while (angle < endAngle)
     {
         listener.setOrientation(cos(angle), sin(angle), 0,  0, 0, 1);
-        usleep(10000);
+        usleep(iterationSleepTime);
         angle += angleIncrement;
     }
 
@@ -113,6 +115,57 @@ void part1(oasclient::Sound &sound)
 void part2(oasclient::Sound &sound)
 {
     reset(sound);
+
+    std::cerr << "Starting the next part soon..." << std::endl << std::endl;;
+
+    std::cerr << "For this part, the listener will remain stationary, and will face the sound source the entire time." << std::endl;
+    std::cerr << "The sound source's position will not be changed, but its orientation will be modified." << std::endl;
+    std::cerr << "The sound will start off facing the listener, and then be rotated counter-clockwise." << std::endl;
+    std::cerr << "The default directional cone properties will be used. (inner angle = 45 degrees, outer angle = 180)" << std::endl;
+    usleep(5000000);
+
+    float angle = 3 * (PI / 2);
+    const float endAngle = angle + (2 * PI);
+    const float partRunTime = 15;               // Run this part for approximately this duration, in seconds
+    const float iterationSleepTime = 10000;     // Sleep for this amount each loop iteration, in microseconds
+
+    // Based on the above two constants, this is how much the angle needs to be incremented each iteration
+    const float angleIncrement = (2 * PI) / (partRunTime * (1000000 / iterationSleepTime));
+
+    sound.setDirection(cos(angle), sin(angle), 0);
+    sound.play();
+    sound.setLoop(true);
+
+    while (angle < endAngle)
+    {
+        sound.setDirection(cos(angle), sin(angle), 0);
+        usleep(iterationSleepTime);
+        angle += angleIncrement;
+    }
+
+    sound.stop();
+    reset(sound);
+    std::cerr << "Finished playing the sound." << std::endl << std::endl;
+    std::cerr << "The previous part will now be repeated to demonstrate how directional cones work." << std::endl;
+    std::cerr << "The cone properties of the source will be tweaked so that the source uses a much smaller cone." << std::endl;
+    std::cerr << "Here, the cone inner angle will be 20 degrees, and the outer angle will be 60 degrees." << std::endl;
+    sound.setRenderingParameter(sound.CONE_INNER_ANGLE, 20.0);
+    sound.setRenderingParameter(sound.CONE_OUTER_ANGLE, 60.0);
+    usleep(5000000);
+
+    angle = 3 * (PI / 2);
+    sound.setDirection(cos(angle), sin(angle), 0);
+    sound.play();
+    sound.setLoop(true);
+
+    while (angle < endAngle)
+    {
+        sound.setDirection(cos(angle), sin(angle), 0);
+        usleep(iterationSleepTime);
+        angle += angleIncrement;
+    }
+
+    sound.stop();
 }
 
 void part3(oasclient::Sound &sound)
