@@ -103,7 +103,6 @@ void ServerWindowTable::update()
      * that are actually adding audio units to the processing queue.
      */
 
-    // If the queue at this point is empty, there is nothing to process
     // Obtain a lock on the queue
     pthread_mutex_lock(&_queueMutex);
 
