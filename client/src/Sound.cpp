@@ -80,6 +80,11 @@ bool Sound::initialize(enum WaveformType waveType, float frequency, float phaseS
     return isValid();
 }
 
+void Sound::release()
+{
+    _reset();
+}
+
 bool Sound::isValid() const
 {
     return _isValid;
@@ -245,6 +250,14 @@ bool Sound::fade(float finalGain, float durationInSeconds)
     if (!isValid())
         return false;
 
+    _fadeFinalGain = finalGain;
+    _fadeInitialGain = getGain();
+    _fadeGainDiff = _fadeFinalGain - _fadeInitialGain;
+
+    _fadeDuration = durationInSeconds;
+    _fadeStartTime.update(Time::OAS_CLOCK_MONOTONIC);
+    _fadeEndTime = _fadeStartTime + Time(_fadeDuration);
+
     return ClientInterface::writeToServer("FADE %ld %f %f",
                                             _handle, finalGain, durationInSeconds);
 }
@@ -328,8 +341,36 @@ float Sound::getPitch() const
     return _pitch;
 }
 
-float Sound::getGain() const
+float Sound::getGain()
 {
+    // If the sound source is in the middle of a fade, update the internal gain accordingly
+    if (isFading())
+    {
+        if (_gain == _fadeFinalGain)
+        {
+            _fadeEndTime.reset();
+        }
+        else
+        {
+            Time currTime;
+            currTime.update(Time::OAS_CLOCK_MONOTONIC);
+
+            if (currTime >= _fadeEndTime)
+            {
+                _fadeEndTime.reset();
+                _gain = _fadeFinalGain;
+            }
+
+            float timePassed = (currTime - _fadeStartTime).asDouble();
+            float ratioOfTimeProgress = timePassed / _fadeDuration;
+
+            if (ratioOfTimeProgress > 1)
+                ratioOfTimeProgress = 1;
+
+            _gain = ((ratioOfTimeProgress * _fadeGainDiff) + _fadeInitialGain);
+        }
+    }
+
     return _gain;
 }
 
@@ -338,6 +379,10 @@ bool Sound::isLooping() const
     return _isLooping;
 }
 
+bool Sound::isFading() const
+{
+    return _fadeEndTime.hasTime();
+}
 
 void Sound::_init()
 {
@@ -350,6 +395,11 @@ void Sound::_init()
     _gain = 1;
     _isLooping = false;
     _state = ST_UNKNOWN;
+    _fadeDuration = 0;
+    _fadeEndTime.reset();
+    _fadeStartTime.reset();
+    _fadeFinalGain = -1;
+    _fadeInitialGain = 0;
 }
 
 void Sound::_reset()

@@ -73,12 +73,14 @@ SET(TARGET_H
     ${OASCLIENT_SOURCE_DIR}/src/OASClient.h
     ${OASCLIENT_SOURCE_DIR}/src/Sound.h
     ${OASCLIENT_SOURCE_DIR}/src/Listener.h
+    ${OASCLIENT_SOURCE_DIR}/src/Time.h
     )
 
 SET(TARGET_SRC
     ${OASCLIENT_SOURCE_DIR}/src/ClientInterface.cpp
     ${OASCLIENT_SOURCE_DIR}/src/Sound.cpp
     ${OASCLIENT_SOURCE_DIR}/src/Listener.cpp
+    ${OASCLIENT_SOURCE_DIR}/src/Time.cpp
     )
 
 IF(BUILD_WITH_OSG_SUPPORT)

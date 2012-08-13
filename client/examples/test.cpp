@@ -10,7 +10,8 @@ int main(int argc, char **argv)
 
     // Create a test sound that is a simple sine wave corresponding to Middle-C (261.63 hz)
     // and 0 phase shift, with a 2 second duration
-    oasclient::Sound test = oasclient::Sound(oasclient::Sound::SINE, 261.63, 0, 2);
+    oasclient::Sound test = oasclient::Sound(oasclient::Sound::SINE, 261.63, 0, 5);
+
 
     if (!test.isValid())
     {
@@ -18,9 +19,14 @@ int main(int argc, char **argv)
         exit(2);
     }
 
-    test.play();
+    test.setGain(0.2);      // Sound is initially at a low gain
+    test.play();            // Play the sound
+    test.fade(0.8, 3);      // Fade in gradually, over 3 seconds
 
-    sleep(2);
+    sleep(6);
+
+    test.stop();
+    test.release();
 
     oasclient::ClientInterface::shutdown();
 

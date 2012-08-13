@@ -1,5 +1,5 @@
 /**
- * @file    OASTime.h
+ * @file    Time.h
  * @author  Shreenidhi Chowkwale
  *
  */
@@ -9,7 +9,7 @@
 
 #include <time.h>
 
-namespace oas
+namespace oasclient
 {
 
 #define OAS_BILLION 1000000000

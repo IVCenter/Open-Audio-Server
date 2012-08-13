@@ -112,9 +112,7 @@ bool AudioSource::_wasOperationSuccessful()
 // private
 bool AudioSource::_checkIncrementalFade()
 {
-	if (!isValid()
-	  || _fadeFinalGain < 0
-	  || !_needsFade())
+	if (!isValid() || !_needsFade())
 	{
 		return false;
 	}
@@ -122,7 +120,6 @@ bool AudioSource::_checkIncrementalFade()
 	// Check if we have already reached the desired gain value
 	if (getGain() == _fadeFinalGain)
 	{
-		_fadeFinalGain = -1;
 		_fadeEndTime.reset();
 
 		return true;
@@ -134,7 +131,6 @@ bool AudioSource::_checkIncrementalFade()
 	// Check if we have reached or passed the fade end time already
 	if (currTime >= _fadeEndTime)
 	{
-		_fadeFinalGain = -1;
 		_fadeEndTime.reset();
 
 		return setGain(_fadeFinalGain);

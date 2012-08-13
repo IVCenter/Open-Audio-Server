@@ -11,10 +11,13 @@
 #include <cmath>
 #include <sstream>
 #include "ClientInterface.h"
+#include "Time.h"
+
 #include "config.h"
 
+
 #ifdef OSG_FOUND
-#include <osg/Node>
+    #include <osg/Node>
 #endif
 
 namespace oasclient
@@ -25,11 +28,10 @@ namespace oasclient
  * positioned, played, etc.
  */
 #ifdef OSG_FOUND
-class Sound : public osg::Node
+class Sound : public osg::Node {
 #else
-class Sound
+class Sound {
 #endif
-{
 public:
 
     /**
@@ -148,6 +150,12 @@ public:
      * it will be reset and then reassociated with the desired waveform.
      */
     bool initialize(WaveformType waveType, float frequency, float phaseShift, float durationInSeconds);
+
+    /**
+     * Tell the server to release the resources allocated for this sound. The sound object will
+     * no longer be valid until it is reinitialized to something else.
+     */
+    void release();
 
     /**
      * Determine whether or not this sound object is valid.
@@ -283,12 +291,17 @@ public:
     /**
      * @brief Get the gain (volume) of this sound source
      */
-    float getGain() const;
+    float getGain();
 
     /**
      * @brief Check if this sound source is set to loop or not
      */
     bool isLooping() const;
+
+    /**
+     * @brief Check if this sound source is in the process of a fade in/out
+     */
+    bool isFading() const;
 
 private:
     void _init();
@@ -309,6 +322,10 @@ private:
     float _pitch;
     float _gain;
     bool _isLooping;
+
+    float _fadeFinalGain, _fadeInitialGain, _fadeGainDiff, _fadeDuration;
+    Time _fadeStartTime;
+    Time _fadeEndTime;  // _fadeEndTime = _fadeStartTime + _fadeDuration
 
     bool _isValid;
 };
