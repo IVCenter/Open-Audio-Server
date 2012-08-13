@@ -142,7 +142,7 @@ is also the default distance model in OpenAL. In short, the attenuation is calcu
 <code>distance = MAX(distance, refDistance)</code> <br />
 <code>gain = refDistance / (refDistance + rollOff * (distance - refDistance))</code>
 <br /> <br />
-Here is a simple example of the appropriate usage of reference distance and rolloff: <br />
+====Example of Distance Attenuation====
 Suppose you have two sounds - a helicopter, and someone talking (speech). The helicopter should be
 very audible in a wide surrounding area, whereas the speech should only be audible in a small area.
 To get the desired effect, and assuming units that are approximately in meters, we would want the
