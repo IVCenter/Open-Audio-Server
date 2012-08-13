@@ -3,8 +3,8 @@
 
 Rich, 3D environments need sound to give the user a feeling of complete immersion. When 
 visualization is provided by a cluster of computers, the sound processing can be handled by a 
-dedicated machine that is in turn connected to the speakers and other audio equipment. The 
-OpenAL Audio Server (OAS) provides this functionality via a network interface on a Linux machine.
+single machine that is in turn connected to the speakers and other audio equipment. The 
+Open Audio Server (OAS) provides this functionality via a network interface on a Linux machine.
 OAS is based loosely on the aging Windows DirectSound [http://www.calit2.net/~jschulze/projects/audioserver/ AudioServer]
 project by Marc Schreier, and is backwards compatible with all known client applications.
 
@@ -108,9 +108,9 @@ single-channel sources, can be thought of as a single point that emits sound, an
 moved around in the 3D-world and rendered accurately. Although it is technically possible to handle
 positional audio rendering of multi-channel sound sources, it was not a primary goal of this project,
 and lies outside the scope of the desired feature set. Multi-channel/stereo sources can still be
-used very effectively for ambient/environmental audio. For example, the sounds of rainfall or a
-rainforest where the position is ambiguous or arbitrary can be a great way to use stereo or
-multi-channel premixed audio samples.
+used very effectively for ambient/environmental audio. For example, stormy weather, forest noises,
+and background music are cases where the position of the sound is ambiguous or arbitrary. These can
+be great opportunities to use stereo or multi-channel premixed audio samples.
 
 ===The Doppler Effect===
 The doppler effect is when the pitch (frequency) of a sound source changes due to the sound source 
@@ -122,14 +122,15 @@ cause the corresponding position property to be updated.
 ===The 3-D Coordinate System, and Units===
 The '''position''' properties of the listener and sound sources are specified in terms of 3-D world 
 coordinates, <nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>. '''Orientation''' of the 
-and listener and '''direction''' of sound sources are also vectors in the same world coordinate system.
+listener and '''direction''' of sound sources are also vectors in the same world coordinate system.
 The units used for '''position''' can be arbitrary, as long as they are consistent between different
 sound sources and the listener. Although the '''velocity''' property is also a vector in the 3D world 
 coordinate system, the units are completely independent from the units used for '''position'''. 
-'''Velocity''', as mentioned above, is only used for the Doppler Effect, and its units are constrained
-to the units used to define the speed of sound. By default, the '''speed of sound''' is defined as 
-343.3 meters per second. Therefore, by default, velocities need to be specified in terms of meters 
-per second. 
+'''Velocity''', as mentioned [[#The_Doppler_Effect|above]], is only used for the Doppler Effect, and 
+its units must be the same as the units used to define the speed of sound. By default, the 
+'''speed of sound''' is defined as 343.3 meters per second. Therefore, by default, velocities need to
+be specified in terms of meters per second. The speed of sound is a global parameter that can be
+modified, as shown [[#Changing_Global_Parameters_of_Sound_Rendering|here]].
 
 ===Attenuation by Distance===
 OAS uses OpenAL's "inverse distance clamped" model to calculate the effective gain/volume of a sound based
