@@ -171,7 +171,7 @@ public:
      * Play the sound source. If the source is already playing, play will restart from
      * the beginning.
      */
-    bool play();
+    bool play(float seconds = 0);
 
     /**
      * Stop playing the sound source. If the source is already stopped, this will have
@@ -301,7 +301,7 @@ public:
     /**
      * @brief Check if this sound source is in the process of a fade in/out
      */
-    bool isFading() const;
+    bool isFading();
 
 private:
     void _init();

@@ -96,10 +96,15 @@ long Sound::getHandle() const
 }
 
 
-bool Sound::play()
+bool Sound::play(float seconds)
 {
     if (!isValid())
         return false;
+
+    if (seconds != 0.0)
+    {
+        setPlaybackPosition(seconds);
+    }
 
     bool result = ClientInterface::writeToServer("PLAY %ld", _handle);
     if (result)
@@ -344,7 +349,7 @@ float Sound::getPitch() const
 float Sound::getGain()
 {
     // If the sound source is in the middle of a fade, update the internal gain accordingly
-    if (isFading())
+    if (_fadeEndTime.hasTime())
     {
         if (_gain == _fadeFinalGain)
         {
@@ -379,8 +384,9 @@ bool Sound::isLooping() const
     return _isLooping;
 }
 
-bool Sound::isFading() const
+bool Sound::isFading()
 {
+    getGain();
     return _fadeEndTime.hasTime();
 }
 
