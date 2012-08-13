@@ -80,35 +80,46 @@ To enable compilation of the examples:
 
 ==Features==
 
-===Sound Rendering===
-
 All of the low level sound rendering is handled by OpenAL. There are two basic components to rendering
 sound: the listener, and the set of all individual sound sources.
 
-====The Listener====
+===The Listener===
 The Listener represents the end-user inside the client application. For 3-D virtual environments, this
 is typically associated with the camera. The '''position''', '''orientation''', and '''velocity''' of the 
 Listener will usually map to their corresponding counterparts for the camera.
 
-====Sound Sources====
+===Sound Sources===
 Each sound source is associated with a particular sound file, and multiple sources can share the 
 same sound file. These sound sources can also be moved around in the 3-D world. They all have 
 their own '''position''', '''velocity''', and '''direction''', as well as other properties like gain 
 or pitch. OAS does not set a hard limit to the number of sound sources that can be allocated at the
 same time. However, the underlying OpenAL implementation and sound card will most likely have a limit,
-(usually around ~250). As long as the client application releases unneeded sound sources in a timely 
+(usually around ~256). As long as the client application releases unneeded sound sources in a timely 
 manner, this limit should not be an issue. The server maps each sound source to a unique handle 
 number, which is greater than or equal to 0. The client can then use this handle to reference the
 corresponding sound source.
 
-====The Doppler Effect====
+====Multi-Channel vs Mono Sources====
+If a sound source is associated with a file that contains multiple channels of audio (such as stereo,
+or 5.1 surround), modifying the sound source's position, velocity, or direction will not have any
+effect. This is because multi-channel sources are assumed to be pre-mixed, and already contain
+all of the spatial information that is needed to render them in a 3D environment. Mono sources, or
+single-channel sources, can be thought of as a single point that emits sound, and therefore can be
+moved around in the 3D-world and rendered accurately. Although it is technically possible to handle
+positional audio rendering of multi-channel sound sources, it was not a primary goal of this project,
+and lies outside the scope of the desired feature set. Multi-channel/stereo sources can still be
+used very effectively for ambient/environmental audio. For example, the sounds of rainfall or a
+rainforest where the position is ambiguous or arbitrary can be a great way to use stereo or
+multi-channel premixed audio samples.
+
+===The Doppler Effect===
 The doppler effect is when the pitch (frequency) of a sound source changes due to the sound source 
 and the listener having a relative velocity to each other. In OpenAL and OAS, the '''velocity''' 
 properties of both sound sources and the listener contribute only to the doppler shift calculations.
 As per the OpenAL specification, setting the '''velocity''' for the listener or sound sources will NOT
 cause the corresponding position property to be updated. 
 
-====The 3-D Coordinate System, and Units====
+===The 3-D Coordinate System, and Units===
 The '''position''' properties of the listener and sound sources are specified in terms of 3-D world 
 coordinates, <nowiki><</nowiki>'''x''', '''y''', '''z'''<nowiki>></nowiki>. '''Orientation''' of the 
 and listener and '''direction''' of sound sources are also vectors in the same world coordinate system.
@@ -120,7 +131,7 @@ to the units used to define the speed of sound. By default, the '''speed of soun
 343.3 meters per second. Therefore, by default, velocities need to be specified in terms of meters 
 per second. 
 
-====Attenuation by Distance====
+===Attenuation by Distance===
 OAS uses OpenAL's "inverse distance clamped" model to calculate the effective gain/volume of a sound based
 on the distance between the sound and the listener. This is equivalent to the IASIG I3DL2 model, and
 is also the default distance model in OpenAL. In short, the attenuation is calculated as follows:
@@ -142,6 +153,17 @@ be audible even if the listener was far away, and the listener would have to be 
 vicinity of the speech source in order to hear it. Naturally, a wide range of other values can be 
 used depending on the application, but the desired effect would be the same.
 
+===Attenuation by Direction===
+When a sound source is directional, there are three important properties that determine how it
+is heard. Directional audio works by emulating a cone of sound. The effective gain of the sound
+changes based on where the listener is in this sound cone. 
+
+;Cone Inner Angle
+: The cone inner angle specifies another conical region inside the main sound cone, where the sound is not attenuated. If the listener falls within this region, it will hear the sound at the maximum possible gain, after accounting for distance. For the default non-directional sources, this value is essentially 360 degrees.
+;Cone Outer Angle
+: The cone outer angle specifies the outer, large conical region, where sound is attenuated based on the angular distance away from the central inner cone, as defined above. When the listener is close to the inner sound cone, the sound will have a higher effective gain. When the listener is far away from the inner sound cone and is near the extremities of the outer cone, the sound will be attenuated greatly, and will have a low effective gain.
+;Cone Outer Gain
+: The cone outer gain specifies the gain to be applied when the listener falls completely outside of the conical regions defined by the above angles. By default, this is 0, so that if the sound source is pointing completely away from a listener, the listener will not be able to hear the source. 
 
 ==Client-Server Communication Protocol==
 
