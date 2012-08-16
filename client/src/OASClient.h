@@ -11,6 +11,7 @@
 #include "ClientInterface.h"
 #include "Sound.h"
 #include "Listener.h"
+#include "SoundUpdateCallback.h"
 
 #endif // _OAS_CLIENT_H_
 
