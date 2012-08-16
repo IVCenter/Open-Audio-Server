@@ -77,26 +77,45 @@ public:
 
     enum RenderingParameter
     {
-        ROLLOFF_FACTOR      = 1, /**< The rolloff factor is used to describe the rate at which the sound becomes more and more
-                                      inaudible (attenuates) as it goes farther and farther away from the listener. The default
-                                      is 1.0, and values must be greater than or equal to 0. A rolloff factor of 0 implies that
-                                      the sound does not attenuate with respect to distance - it will seem just as loud no matter
-                                      how far away it is from the listener. */
-        REFERENCE_DISTANCE  = 2, /**< The reference distance is used to describe when the gain of the sound should be clamped,
-                                      or when attenuation due to distance should no longer have any effect. The default reference
-                                      distance is 1.0. If the distance between the sound and the listener is less than or equal to
-                                      the reference distance, the sound will not be attenuated (i.e. the rolloff factor will be
-                                      applied). Reference distance values must be greater than or equal to 0. */
+        /**
+         *  The rolloff factor is used to describe the rate at which the sound becomes more and more
+         *  inaudible (attenuates) as it goes farther and farther away from the listener. The
+         *  default is 1.0, and values must be greater than or equal to 0. A rolloff factor of 0
+         *  implies that the sound does not attenuate with respect to distance - it will seem just
+         *  as loud no matter how far away it is from the listener.
+         */
+        ROLLOFF_FACTOR      = 1,
 
-        CONE_INNER_ANGLE    = 3, /**< When the listener falls within a directional sound source's cone's inner angle, the sound
-                                      is not attenuated/interpolated. The listener hears the source at the regular gain level.
-                                      Angles are in degrees, and the default is 45.0 degrees. */
-        CONE_OUTER_ANGLE    = 4, /**< When the listener falls between the inner angle and the outer angle of a directional source's
-                                      cone, the sound is attenuated based on the interpolation between the angles. Angles are in
-                                      degrees, and the default is 180.0 degrees. */
-        CONE_OUTER_GAIN     = 5, /**< When the listener falls outside the outer angle of a directional source's cone, this outer gain
-                                      is applied. The default is 0, meaning that the listener normally does not hear anything when
-                                      the listener is outside the cone region. */
+        /**
+         * The reference distance is used to describe when the gain of the sound should be clamped,
+         * or when attenuation due to distance should no longer have any effect. The default
+         * reference distance is 1.0. If the distance between the sound and the listener is less
+         * than or equal to the reference distance, the sound will not be attenuated (i.e. the
+         * rolloff factor will be applied). Reference distance values must be greater than or equal
+         * to 0.
+         */
+        REFERENCE_DISTANCE  = 2,
+
+        /**
+         * When the listener falls within a directional sound source's cone's inner angle, the sound
+         * is not attenuated/interpolated. The listener hears the source at the regular gain level.
+         * Angles are in degrees, and the default is 45.0 degrees.
+         */
+        CONE_INNER_ANGLE    = 3,
+
+        /**
+         * When the listener falls between the inner angle and the outer angle of a directional source's
+         * cone, the sound is attenuated based on the interpolation between the two angles. Angles are
+         * in degrees, and the default is 180.0 degrees.
+         */
+        CONE_OUTER_ANGLE    = 4,
+
+        /**
+         * When the listener falls outside the outer angle of a directional source's cone, the cone
+         * cone outer gain is applied. The default is 0, meaning that the listener normally does
+         * not hear the sound when the listener is outside the cone region.
+         */
+        CONE_OUTER_GAIN     = 5,
     };
 
 

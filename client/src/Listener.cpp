@@ -74,6 +74,27 @@ bool Listener::setGlobalRenderingParameters(GlobalRenderingParameter whichParame
     return ClientInterface::writeToServer("PARA %d %f", whichParameter, value);
 }
 
+bool Listener::setGlobalSpeedOfSound(float speedOfSound)
+{
+    return setGlobalRenderingParameters(SPEED_OF_SOUND, speedOfSound);
+}
+
+bool Listener::setGlobalDopplerFactor(float dopplerFactor)
+{
+    return setGlobalRenderingParameters(DOPPLER_FACTOR, dopplerFactor);
+}
+
+bool Listener::setGlobalReferenceDistance(float defaultRefDistance)
+{
+    return setGlobalRenderingParameters(DEFAULT_REFERENCE_DISTANCE, defaultRefDistance);
+}
+
+bool Listener::setGlobalRolloffFactor(float defaultRolloffFactor)
+{
+    return setGlobalRenderingParameters(DEFAULT_ROLLOFF, defaultRolloffFactor);
+}
+
+
 std::vector<float> Listener::getPosition() const
 {
     std::vector<float> retvec(3);

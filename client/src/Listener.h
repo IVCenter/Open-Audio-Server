@@ -68,13 +68,45 @@ public:
 
 
     /**
-     * These constants are used to designate which parameter to modify.
+     * These constants are designate various global parameters
      */
     enum GlobalRenderingParameter
     {
+        /**
+         * The speed of sound is used for doppler effect calculations. It must
+         * be in the same units as the velocities of the listener and sound
+         * sources. The default is 343.3, appropriate for the speed of sound
+         * through air in meters per second. For an application whose distance
+         * units are all in millimeters, the speed of sound should be set to
+         * 343300 (mm/s).
+         */
         SPEED_OF_SOUND = 1,
+
+        /**
+         * The doppler factor can be used to emphasize or de-emphasize the pitch
+         * shifts due to the doppler effect. The default value is 1.0, and a
+         * value of 0 will effectively disable the doppler effect.
+         */
         DOPPLER_FACTOR = 2,
+
+        /**
+         * The default rolloff factor, when set, will be the rolloff factor
+         * applied to all sound sources generated thereafter. When it is set,
+         * it will not be applied to existing sound sources. Rolloff factor
+         * can be modified on individual sources as well.
+         *
+         * See oasclient::Sound::ROLLOFF_FACTOR for more information.
+         */
         DEFAULT_ROLLOFF = 3,
+
+        /**
+         * The default reference distance, when set, will be the reference
+         * distance applied to all sound sources generated thereafter. When it
+         * is set, it will not be applied to existing sound sources. Reference
+         * distance can be modified on individual sources as well.
+         *
+         * See oasclient::Sound::REFERENCE_DISTANCE for more information.
+         */
         DEFAULT_REFERENCE_DISTANCE = 4,
     };
 
@@ -82,6 +114,27 @@ public:
      * Set sound rendering parameters
      */
     bool setGlobalRenderingParameters(GlobalRenderingParameter whichParameter, float value);
+
+    /**
+     * Convenience method to set oasclient::Listener::SPEED_OF_SOUND
+     *
+     */
+    bool setGlobalSpeedOfSound(float value);
+
+    /**
+     * Convenience method to set oasclient::Listener::DOPPLER_FACTOR
+     */
+    bool setGlobalDopplerFactor(float value);
+
+    /**
+     * Convenience method to set oasclient::Listener::DEFAULT_ROLLOFF
+     */
+    bool setGlobalRolloffFactor(float value);
+
+    /**
+     * Convenience method to set oasclient::Listener::DEFAULT_REFERENCE_DISTANCE
+     */
+    bool setGlobalReferenceDistance(float value);
 
     /**
      * @brief Get the current position of the listener as a std::vector
