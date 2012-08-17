@@ -178,6 +178,12 @@ bool Message::_parseFilenameParameter(char *startBuf, char*& pEnd, const int max
             // i.e. converts "./directory/file" to "directory/file"
             while (*pChar && !isalnum(*pChar))
                 pChar++;
+                
+            char *locateSlash = strrchr(pChar, '/');
+
+            if (locateSlash)
+                pChar = locateSlash + 1;
+
         }
         _filename = pChar;
         return true;
