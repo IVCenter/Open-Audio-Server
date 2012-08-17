@@ -371,8 +371,8 @@ void AudioHandler::deleteSource(AudioSource *source)
 
 void AudioHandler::_processLazyDeletionQueue()
 {
-    // If the lazy deletion queue hits a size greater than 10, remove an entry
-    if (_lazyDeletionQueue.size() > 10)
+    // If the lazy deletion queue hits a size greater than 100, remove an entry
+    if (_lazyDeletionQueue.size() > 100)
     {
         // Delete the Source at the head of the queue
         delete _lazyDeletionQueue.front();
