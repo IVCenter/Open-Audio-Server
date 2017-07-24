@@ -25,6 +25,9 @@
 #include <FL/Fl.H>
 #endif
 
+#include <unistd.h>
+
+
 namespace oas
 {
 

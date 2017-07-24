@@ -19,6 +19,7 @@
 #include <AL/alut.h>
 #include <cerrno>
 #include <time.h>
+#include <unistd.h>
 #include <OASTime.h>
 
 #include "OASFileHandler.h"

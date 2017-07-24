@@ -107,6 +107,15 @@ TARGET_LINK_LIBRARIES(OAS ${ALUT_LIBRARY})
 TARGET_LINK_LIBRARIES(OAS ${MXML_LIBRARY})
 TARGET_LINK_LIBRARIES(OAS rt)
 
+find_package(Threads REQUIRED)
+if(THREADS_HAVE_PTHREAD_ARG)
+  target_compile_options(PUBLIC my_app "-pthread")
+endif()
+if(CMAKE_THREAD_LIBS_INIT)
+  target_link_libraries(OAS "${CMAKE_THREAD_LIBS_INIT}")
+endif()
+
+
 INSTALL(TARGETS OAS DESTINATION bin)
 
 
